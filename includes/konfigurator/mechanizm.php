@@ -304,20 +304,21 @@ if ( ! function_exists('kv_admin_mechanizm_page') ) {
                                 </td>
                                 <td>
                                     <?php 
-                                    // Wyświetl miniatury i nazwy przypisanych kolorów
+                                    // Wyświetl nazwy przypisanych kolorów
                                     if (!empty($mechanizm['selected_colors']) && !empty($kolor_mechanizmu_options)) {
-                                        echo '<div class="assigned-colors">';
+                                        $color_names = array();
                                         foreach ($mechanizm['selected_colors'] as $color_id) {
                                             if (isset($kolor_mechanizmu_options[$color_id])) {
                                                 $color = $kolor_mechanizmu_options[$color_id];
-                                                echo '<div class="assigned-color">';
-                                                if (!empty($color['image'])) {
-                                                    echo '<img src="' . esc_url($color['image']) . '" style="max-width:30px;height:auto;vertical-align:middle;margin-right:3px;" title="' . esc_attr($color['name']) . '">';
-                                                }
-                                                echo '</div>';
+                                                $color_names[] = esc_html($color['name']);
                                             }
                                         }
-                                        echo '</div>';
+                                        
+                                        if (!empty($color_names)) {
+                                            echo implode(', ', $color_names);
+                                        } else {
+                                            echo '<em>Brak</em>';
+                                        }
                                     } else {
                                         echo '<em>Brak</em>';
                                     }
