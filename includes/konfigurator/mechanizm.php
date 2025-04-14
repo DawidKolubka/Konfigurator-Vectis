@@ -11,7 +11,7 @@ require_once __DIR__ . '/crud.php';
 
 /**
  * Funkcja wyświetlająca panel administracyjny dla modułu "Mechanizm".
- * Każdy mechanizm ma: nazwę, ikonę grupy, ikonę grupy do ramki, oraz cząstkę kodu.
+ * Każdy mechanizm ma: nazwę, ikonę grupy, ikonę grupy do ramki, przypisane kolory mechanizmu oraz cząstkę kodu.
  */
 if ( ! function_exists('kv_admin_mechanizm_page') ) {
     function kv_admin_mechanizm_page() {
@@ -52,17 +52,32 @@ if ( ! function_exists('kv_admin_mechanizm_page') ) {
                     // Jeśli pole nie jest wypełnione, ustaw pusty string:
                     $edited_snippet     = isset($_POST['edit_mechanizm_snippet']) ? sanitize_text_field($_POST['edit_mechanizm_snippet']) : '';
                     
+                    // Przetwarzanie wybranych kolorów mechanizmu
+                    $selected_colors = isset($_POST['mechanizm_colors']) ? (array) $_POST['mechanizm_colors'] : array();
+                    // Filtrowanie, aby usunąć nieprawidłowe wartości
+                    $selected_colors = array_filter($selected_colors, 'is_numeric');
+                    // Konwersja indeksów na integery
+                    $selected_colors = array_map('intval', $selected_colors);
+                    
                     kv_update_item( $option_key, $id, array(
-                        'name'        => $edited_name,
-                        'image'       => $edited_image,
-                        'frame_image' => $edited_frame_image,
-                        'snippet'     => $edited_snippet,
+                        'name'           => $edited_name,
+                        'image'          => $edited_image,
+                        'frame_image'    => $edited_frame_image,
+                        'snippet'        => $edited_snippet,
+                        'selected_colors' => $selected_colors,
                     ) );
 
                     echo '<div class="notice notice-success is-dismissible"><p>Mechanizm został zaktualizowany.</p></div>';
                     echo '<a href="' . esc_url( remove_query_arg( array('action','id','kv_mechanizm_nonce') ) ) . '" class="button">Powrót</a>';
                     return;
                 }
+                
+                // Pobieramy dostępne kolory mechanizmów
+                $kolor_mechanizmu_options = kv_get_items('kv_kolor_mechanizmu_options');
+                
+                // Pobieramy wybrane kolory dla tego mechanizmu (jeśli istnieją)
+                $selected_colors = isset($current['selected_colors']) ? (array) $current['selected_colors'] : array();
+                
                 ?>
                 <div class="wrap">
                     <h1>Edytuj Mechanizm</h1>
@@ -87,6 +102,36 @@ if ( ! function_exists('kv_admin_mechanizm_page') ) {
                                 <td>
                                     <input type="text" id="edit_mechanizm_frame_image" name="edit_mechanizm_frame_image" class="regular-text" value="<?php echo isset($current['frame_image']) ? esc_url($current['frame_image']) : ''; ?>">
                                     <input type="button" class="button kv-upload-image-button" value="Wybierz obrazek">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label>Dostępne kolory mechanizmu</label></th>
+                                <td>
+                                    <?php if (!empty($kolor_mechanizmu_options)) : ?>
+                                        <div class="kv-color-options">
+                                            <?php foreach ($kolor_mechanizmu_options as $color_id => $color) : ?>
+                                                <div class="kv-color-option">
+                                                    <label>
+                                                        <input type="checkbox" 
+                                                               name="mechanizm_colors[]" 
+                                                               value="<?php echo esc_attr($color_id); ?>"
+                                                               <?php checked(in_array($color_id, $selected_colors)); ?>>
+                                                        
+                                                        <?php if (!empty($color['image'])) : ?>
+                                                            <img src="<?php echo esc_url($color['image']); ?>" 
+                                                                 alt="<?php echo esc_attr($color['name']); ?>"
+                                                                 style="max-width:40px;height:auto;vertical-align:middle;">
+                                                        <?php endif; ?>
+                                                        
+                                                        <?php echo esc_html($color['name']); ?>
+                                                    </label>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <p class="description">Zaznacz kolory mechanizmu dostępne dla tej grupy</p>
+                                    <?php else : ?>
+                                        <p>Brak dostępnych kolorów mechanizmu. <a href="<?php echo admin_url('admin.php?page=kv-kolor-mechanizmu'); ?>">Dodaj kolory mechanizmu</a></p>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <tr>
@@ -136,13 +181,21 @@ if ( ! function_exists('kv_admin_mechanizm_page') ) {
             $mechanizm_snippet = isset($_POST['mechanizm_snippet'])
                 ? sanitize_text_field($_POST['mechanizm_snippet'])
                 : '';
+                
+            // Przetwarzanie wybranych kolorów mechanizmu
+            $selected_colors = isset($_POST['mechanizm_colors']) ? (array) $_POST['mechanizm_colors'] : array();
+            // Filtrowanie, aby usunąć nieprawidłowe wartości
+            $selected_colors = array_filter($selected_colors, 'is_numeric');
+            // Konwersja indeksów na integery
+            $selected_colors = array_map('intval', $selected_colors);
 
             if ( ! empty($new_mechanizm) ) {
                 kv_add_item( $option_key, array(
-                    'name'        => $new_mechanizm,
-                    'image'       => $mechanizm_image,
-                    'frame_image' => $mechanizm_frame_image,
-                    'snippet'     => $mechanizm_snippet,  // Zapisujemy snippet do bazy
+                    'name'           => $new_mechanizm,
+                    'image'          => $mechanizm_image,
+                    'frame_image'    => $mechanizm_frame_image,
+                    'snippet'        => $mechanizm_snippet,
+                    'selected_colors' => $selected_colors,
                 ) );
                 echo '<div class="notice notice-success is-dismissible"><p>Nowy mechanizm został dodany.</p></div>';
             } else {
@@ -152,6 +205,9 @@ if ( ! function_exists('kv_admin_mechanizm_page') ) {
 
         // Pobierz aktualne mechanizmy
         $mechanizm_options = kv_get_items( $option_key );
+        
+        // Pobieramy dostępne kolory mechanizmów
+        $kolor_mechanizmu_options = kv_get_items('kv_kolor_mechanizmu_options');
         ?>
         <div class="wrap">
             <h1>Konfigurator – Mechanizm</h1>
@@ -179,6 +235,35 @@ if ( ! function_exists('kv_admin_mechanizm_page') ) {
                             <input type="button" class="button kv-upload-image-button" value="Wybierz obrazek">
                         </td>
                     </tr>
+                    <tr>
+                        <th scope="row"><label>Dostępne kolory mechanizmu</label></th>
+                        <td>
+                            <?php if (!empty($kolor_mechanizmu_options)) : ?>
+                                <div class="kv-color-options">
+                                    <?php foreach ($kolor_mechanizmu_options as $color_id => $color) : ?>
+                                        <div class="kv-color-option">
+                                            <label>
+                                                <input type="checkbox" 
+                                                       name="mechanizm_colors[]" 
+                                                       value="<?php echo esc_attr($color_id); ?>">
+                                                
+                                                <?php if (!empty($color['image'])) : ?>
+                                                    <img src="<?php echo esc_url($color['image']); ?>" 
+                                                         alt="<?php echo esc_attr($color['name']); ?>"
+                                                         style="max-width:40px;height:auto;vertical-align:middle;">
+                                                <?php endif; ?>
+                                                
+                                                <?php echo esc_html($color['name']); ?>
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <p class="description">Zaznacz kolory mechanizmu dostępne dla tej grupy</p>
+                            <?php else : ?>
+                                <p>Brak dostępnych kolorów mechanizmu. <a href="<?php echo admin_url('admin.php?page=kv-kolor-mechanizmu'); ?>">Dodaj kolory mechanizmu</a></p>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
                     <!-- Dodajemy pole "Cząstka kodu" -->
                     <tr>
                         <th scope="row"><label for="mechanizm_snippet">Cząstka kodu</label></th>
@@ -198,6 +283,7 @@ if ( ! function_exists('kv_admin_mechanizm_page') ) {
                             <th>Nazwa grupy</th>
                             <th>Ikonka grupy</th>
                             <th>Ikonka do ramki</th>
+                            <th>Dostępne kolory</th>
                             <th>Cząstka kodu</th>
                             <th>Akcje</th>
                         </tr>
@@ -215,6 +301,27 @@ if ( ! function_exists('kv_admin_mechanizm_page') ) {
                                     <?php if ( ! empty($mechanizm['frame_image']) ) : ?>
                                         <img src="<?php echo esc_url($mechanizm['frame_image']); ?>" style="max-width:80px;height:auto;">
                                     <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php 
+                                    // Wyświetl miniatury i nazwy przypisanych kolorów
+                                    if (!empty($mechanizm['selected_colors']) && !empty($kolor_mechanizmu_options)) {
+                                        echo '<div class="assigned-colors">';
+                                        foreach ($mechanizm['selected_colors'] as $color_id) {
+                                            if (isset($kolor_mechanizmu_options[$color_id])) {
+                                                $color = $kolor_mechanizmu_options[$color_id];
+                                                echo '<div class="assigned-color">';
+                                                if (!empty($color['image'])) {
+                                                    echo '<img src="' . esc_url($color['image']) . '" style="max-width:30px;height:auto;vertical-align:middle;margin-right:3px;" title="' . esc_attr($color['name']) . '">';
+                                                }
+                                                echo '</div>';
+                                            }
+                                        }
+                                        echo '</div>';
+                                    } else {
+                                        echo '<em>Brak</em>';
+                                    }
+                                    ?>
                                 </td>
                                 <td><?php echo isset($mechanizm['snippet']) ? esc_html($mechanizm['snippet']) : ''; ?></td>
                                 <td>

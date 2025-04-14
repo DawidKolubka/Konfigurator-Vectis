@@ -265,4 +265,39 @@ select#kolor-mechanizmu-selector {
   .mechanism-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
   .mechanizm-item { width: 80px; text-align: center; border: 1px solid #ccc; padding: 5px; cursor: pointer; }
   .mechanizm-item img { max-width: 60px; }
-  
+
+/* Style dla wyboru kolorów mechanizmu */
+.kv-color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.kv-color-option {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #f9f9f9;
+}
+
+.kv-color-option label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.kv-color-option input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.assigned-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.assigned-color {
+    display: inline-block;
+}
