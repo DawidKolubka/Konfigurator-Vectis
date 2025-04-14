@@ -1,0 +1,119 @@
+/* Pasek postępu */
+#progress-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+#progress-bar .step {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 2px solid #ccc;
+}
+#progress-bar .step.active {
+    border-bottom-color: #0073aa;
+    font-weight: bold;
+}
+
+/* Ogólne style dla opcji */
+.option-container,
+.seria-option,
+.ksztalt-option,
+.uklad-option {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+}
+.option-label {
+    cursor: pointer;
+}
+.option-image img {
+    max-width: 150px;
+    height: auto;
+    margin-top: 5px;
+}
+
+/* Style dla układu graficznego */
+.uklad-graphic.center {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.uklad-graphic.left {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Kolor ramki */
+.kolor-ramki-selection {
+    margin: 20px 0;
+}
+
+.kolor-ramki-selection img{
+    width: 15%;
+}
+
+/* Mechanizm-tile */
+.mechanizm-tile {
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: top;
+    cursor: pointer;
+}
+.mechanizm-tile.active {
+    border: 2px solid #0073aa;
+}
+
+/* Mechanizm-details */
+.mechanizm-details {
+    display: none;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 120px;
+}
+
+/* Przyciski nawigacji */
+.navigation-buttons {
+    margin-top: 20px;
+    text-align: right;
+}
+.navigation-buttons button {
+    margin-left: 5px;
+}
+.btn-prev, .btn-next, .btn-submit {
+    padding: 8px 15px;
+}
+
+/* Wybrany mechanizm */
+.selected-mech-image
+{
+    margin-top: 20px;
+}
+
+/* Podsumowanie */
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+.summary-table th, .summary-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+.summary-frame-color, .summary-uklad {
+    max-width: 80px;
+}
+
+/* Przyciski nawigacji i podsumowania */
+.navigation-buttons, .summary-buttons {
+    margin-top: 20px;
+    text-align: right;
+}
+.navigation-buttons button, .summary-buttons button {
+    margin-left: 5px;
+    padding: 8px 15px;
+}

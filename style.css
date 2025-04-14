@@ -1,0 +1,268 @@
+/* Pasek postępu */
+#progress-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+#progress-bar .step {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 2px solid #ccc;
+}
+#progress-bar .step.active {
+    border-bottom-color: #0073aa;
+    font-weight: bold;
+}
+
+/* Ogólne style dla opcji */
+.option-container {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    display: inline-block;
+    margin-right: 15px;
+    width: 160px;
+}
+.layout-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.layout-group .option-container {
+    flex: 1 0 auto; /* dopasuje szerokość do zawartości */
+}
+.option-label {
+    cursor: pointer;
+}
+.option-image img {
+    max-width: 150px;
+    height: auto;
+    margin-top: 5px;
+}
+
+/* Style dla układu graficznego */
+.uklad-graphic.center {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.uklad-graphic.left {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Kolor ramki */
+.kolor-ramki-selection {
+    margin: 20px 0;
+}
+
+.kolor-ramki-selection img{
+    width: 15%;
+}
+
+/* Mechanizm-tile */
+.mechanizm-tile {
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    vertical-align: top;
+    cursor: pointer;
+}
+.mechanizm-tile.active {
+    border: 2px solid #0073aa;
+}
+
+/* Mechanizm-details */
+.mechanizm-details {
+    display: none;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 120px;
+}
+
+/* Przyciski nawigacji */
+.navigation-buttons {
+    margin-top: 20px;
+    text-align: right;
+}
+.navigation-buttons button {
+    margin-left: 5px;
+}
+.btn-prev, .btn-next, .btn-submit {
+    padding: 8px 15px;
+}
+
+/* Wybrany mechanizm */
+.selected-mech-image
+{
+    margin-top: 20px;
+}
+
+/* Podsumowanie */
+.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+.summary-table th, .summary-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+.summary-frame-color, .summary-uklad {
+    max-width: 80px;
+}
+
+/* Przyciski nawigacji i podsumowania */
+.navigation-buttons, .summary-buttons {
+    margin-top: 20px;
+    text-align: right;
+}
+.navigation-buttons button, .summary-buttons button {
+    margin-left: 5px;
+    padding: 8px 15px;
+}
+
+
+/* Stylizacja układu pionowego i liniowego */
+.linear-layout .graphics-section img {
+    display: block;
+    margin: 10px 0;
+    cursor: pointer;
+    width: 120px;
+    height: auto;
+}
+
+.vertical-layout .graphics-section {
+    display: flex;
+    gap: 10px;
+}
+
+.vertical-layout .graphics-section img {
+    flex: 1;
+    cursor: pointer;
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+}
+
+/* Kontener wyboru koloru ramki */
+.kolor-ramki-section {
+    margin-bottom: 20px;
+}
+
+.kolor-ramki-section select {
+    padding: 6px;
+    margin-top: 5px;
+}
+
+/* Kontener obrazka koloru ramki */
+#ramka-image-container {
+    margin-top: 10px;
+}
+
+#ramka-image-container img {
+    max-width: 150px;
+    height: auto;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+/* Opcje mechanizmów i technologii */
+.mechanizm-options {
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.mechanizm-options label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.mechanizm-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.mechanizm-gallery img {
+    width: 80px;
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+
+.mechanizm-gallery img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    border-color: #aaa;
+}
+
+select#technologia-selector,
+select#kolor-mechanizmu-selector {
+    width: 100%;
+    max-width: 250px;
+    padding: 6px;
+    margin-top: 5px;
+}
+.tile:hover {
+    background: #f2f2f2;
+}
+.tile-detail-panel select {
+    margin-top: 10px;
+}
+.layout-wrapper {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .layout-left, .layout-right {
+    flex: 1;
+  }
+  
+  .tile-grid.poziomy-layout {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .tile-grid.pionowy-layout {
+    display: block;
+    margin-bottom: 20px;
+  }
+  
+
+
+/* Krok 4 */
+  .step-content { font-family: Arial, sans-serif; color: #333; }
+  .message-box { background: #e0ffe0; border: 1px solid green; padding: 10px; margin-bottom: 20px; }
+  .ramka-color-selector { margin-bottom: 20px; }
+  .ramka-color-selector select { min-width: 200px; }
+  .preview-img-container { margin-top: 10px; }
+  .preview-img-container img { max-width: 100px; }
+  .ramka-slots { text-align: center; margin-bottom: 30px; }
+  .ramka-image-container { display: inline-block; }
+  .uklad-image { max-width: 500px; }
+  .slots-container { display: flex; justify-content: center; gap: 20px; margin-top: 20px; }
+  .slot { width: 100px; height: 60px; cursor: pointer; border: 1px solid #ccc; padding: 5px; transition: border 0.3s ease; }
+  .slot img { max-width: 100%; max-height: 100%; }
+  .slot-summary { font-size: 11px; line-height: 25px; margin-top: 35px; text-align: left; }
+  .slot-settings-panel { border: 1px solid #ccc; padding: 10px; margin-bottom: 30px; background: #f9f9f9; }
+  .slot-settings-panel h4 { margin-bottom: 10px; }
+  .edit-panel-content { display: flex; gap: 20px; margin-bottom: 10px; }
+  .mechanism-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+  .mechanizm-item { width: 80px; text-align: center; border: 1px solid #ccc; padding: 5px; cursor: pointer; }
+  .mechanizm-item img { max-width: 60px; }
+  
