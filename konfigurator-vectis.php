@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Konfigurator Vectis
-Plugin URI: https://twojastrona.pl/
+Plugin URI: https://github.com/DawidKolubka/Konfigurator-Vectis
 Description: Wtyczka do zarządzania zamówieniami niezależnie od WooCommerce + konfigurator
-Version: 0.8
+Version: 0.9
 Author: Dawid Kolubka
 Author URI: https://net-help.pl.pl/
 License: GPL2
