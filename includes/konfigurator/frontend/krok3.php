@@ -59,6 +59,11 @@ function analyze_layout_info($layout_name) {
     border-bottom: 1px solid #b8e0f7;
     padding-bottom: 5px;
 }
+.step3-debug-status {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #666;
+}
 </style>
 
 <!-- Panel debugowania - umieść przed generowaniem opcji układów -->
@@ -71,12 +76,14 @@ function analyze_layout_info($layout_name) {
 <div class="step3-debug-panel">
     <h4>Debug Kroku 3 - Wybór Układu</h4>
     <div id="step3-current-choice">
-        <p>Aktualny wybór: <strong><?php echo htmlspecialchars($current_choice); ?></strong></p>
+        <p>Wybór w sesji: <strong><?php echo htmlspecialchars($current_choice); ?></strong></p>
+        <p>Aktualny wybór w interfejsie: <strong id="ui-selection">Nie zaznaczono</strong></p>
     </div>
-    <div id="step3-layout-analysis" style="display: none;">
+    <div id="step3-layout-analysis">
         <p>Analiza wybranego układu:</p>
-        <pre id="step3-analysis-details"></pre>
+        <pre id="step3-analysis-details">Wybierz układ, aby zobaczyć analizę</pre>
     </div>
+    <div class="step3-debug-status" id="debug-save-status"></div>
 </div>
 
 <script>
@@ -114,10 +121,14 @@ jQuery(document).ready(function($) {
     
     function analyzeLayoutChoice() {
         var selectedInput = $('input[name="krok3"]:checked');
-        if (selectedInput.length === 0) return;
+        if (selectedInput.length === 0) {
+            $('#ui-selection').text('Nie zaznaczono');
+            $('#step3-analysis-details').text('Wybierz układ, aby zobaczyć analizę');
+            return;
+        }
         
         var selectedValue = selectedInput.val();
-        $('#step3-current-choice strong').text(selectedValue);
+        $('#ui-selection').text(selectedValue);
         
         // Analizuj układ
         var layoutMatch = selectedValue.match(/X(\d+)/);
@@ -131,16 +142,45 @@ jQuery(document).ready(function($) {
                           'Przewidywana klasa CSS: ' + (isVertical ? 'vertical' : 'horizontal');
         
         $('#step3-analysis-details').text(analysisText);
-        $('#step3-layout-analysis').show();
         
-        // Zapisz do lokalnego magazynu dla kroku 4
-        try {
-            localStorage.setItem('krok3_selected_layout', selectedValue);
-            localStorage.setItem('krok3_slots_count', slotsCount);
-            localStorage.setItem('krok3_is_vertical', isVertical ? '1' : '0');
-        } catch (e) {
-            console.error('Błąd zapisywania do localStorage', e);
-        }
+        // Zapisz natychmiast do sesji przez AJAX
+        $('#debug-save-status').text('Zapisywanie wyboru...');
+        
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'save_configurator_step',
+                step: 'krok3',
+                value: selectedValue
+            },
+            success: function(response) {
+                console.log('Natychmiastowy zapis wyboru:', response);
+                $('#debug-save-status').text('Wybór zapisany do sesji (' + new Date().toLocaleTimeString() + ')');
+                
+                // Odśwież panel debugowania, aby pokazywał aktualną wartość sesji
+                setTimeout(function() {
+                    // Pobierz aktualną wartość z sesji
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'get_configurator_step',
+                            step: 'krok3'
+                        },
+                        success: function(response) {
+                            if (response.success && response.data) {
+                                $('#step3-current-choice p:first-child strong').text(response.data);
+                            }
+                        }
+                    });
+                }, 500);
+            },
+            error: function(xhr, status, error) {
+                $('#debug-save-status').text('Błąd zapisu: ' + error);
+                console.error('Błąd zapisu wyboru:', error);
+            }
+        });
     }
     
     // Nasłuchuj zmiany wyboru

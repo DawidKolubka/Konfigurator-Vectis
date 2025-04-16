@@ -67,3 +67,53 @@ function kv_enqueue_configurator_assets() {
     );
 }
 add_action('wp_enqueue_scripts', 'kv_enqueue_configurator_assets');
+
+// Dodaj funkcję do pobierania wartości z sesji
+function get_configurator_step() {
+    // Sprawdź bezpieczeństwo
+    if (!isset($_POST['step'])) {
+        wp_send_json_error('Brak parametru step');
+        return;
+    }
+    
+    // Pobierz wartość z sesji
+    $step = sanitize_text_field($_POST['step']);
+    $value = isset($_SESSION['configurator'][$step]) ? $_SESSION['configurator'][$step] : '';
+    
+    // Zwróć wartość
+    wp_send_json_success($value);
+    wp_die();
+}
+add_action('wp_ajax_get_configurator_step', 'get_configurator_step');
+add_action('wp_ajax_nopriv_get_configurator_step', 'get_configurator_step');
+
+// Dodaj funkcję do zapisywania wartości w sesji
+function save_configurator_step() {
+    error_log('KONFIGURATOR: Wywołanie save_configurator_step z danymi: ' . print_r($_POST, true));
+    
+    // Sprawdź, czy otrzymano dane
+    if (!isset($_POST['step']) || !isset($_POST['value'])) {
+        error_log('KONFIGURATOR: Brak wymaganych danych w żądaniu');
+        wp_send_json_error('Brak danych');
+        return;
+    }
+
+    // Pobierz dane
+    $step = sanitize_text_field($_POST['step']);
+    $value = sanitize_text_field($_POST['value']);
+
+    // Zapisz dane do sesji
+    $_SESSION['configurator'][$step] = $value;
+    error_log('KONFIGURATOR: Zapisano do sesji ' . $step . ' = ' . $value);
+    
+    // Sprawdź sesję po zapisie
+    error_log('KONFIGURATOR: Zawartość sesji po zapisie: ' . print_r($_SESSION['configurator'], true));
+
+    // Zwróć sukces z dodatkową informacją o tym, co zostało zapisane
+    wp_send_json_success(array(
+        'saved_step' => $step,
+        'saved_value' => $value
+    ));
+}
+add_action('wp_ajax_save_configurator_step', 'save_configurator_step');
+add_action('wp_ajax_nopriv_save_configurator_step', 'save_configurator_step');
