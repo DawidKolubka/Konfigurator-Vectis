@@ -170,7 +170,11 @@ foreach ($technologia_options as $tech_index => $tech) {
     </div>
 
     <!-- (B) Ramka z interaktywnymi slotami -->
-
+    <div class="ramka-slots">
+        <?php if ($uklad_image): ?>
+            <div class="ramka-image-container">
+                <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
+            </div>
             <?php
             // Fragment kodu PHP generujący sloty w kroku Mechanizmy
             ?>
