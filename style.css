@@ -378,13 +378,13 @@ select#kolor-mechanizmu-selector {
   position: relative;
   display: inline-block;
   margin: 0 auto;
-  max-width: 100%;
+  width: 800px;
 }
 
 /* Układ POZIOMY - sloty obok siebie */
 .ramka-slots.horizontal .slot {
   display: inline-block;
-  width: 45%;
+  width: 120px;
   margin: 10px 2%;
   vertical-align: top;
   min-height: 120px;
