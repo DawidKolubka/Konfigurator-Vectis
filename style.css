@@ -484,3 +484,54 @@ select#kolor-mechanizmu-selector {
     display: block;
   }
 }
+
+/* Układ PIONOWY - sloty z podsumowaniem obok */
+.ramka-slots.vertical .slot {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 90%;
+  margin: 15px auto;
+  min-height: 100px;
+  padding: 15px;
+}
+
+/* W układzie pionowym - obrazek po lewej stronie */
+.ramka-slots.vertical .slot img {
+  max-width: 100px;
+  max-height: 80px;
+  margin: 0 20px 0 0;
+  align-self: center;
+}
+
+/* W układzie pionowym - podsumowanie po prawej stronie */
+.ramka-slots.vertical .slot-summary {
+  flex: 1;
+  margin-top: 0;
+  text-align: left;
+  padding-left: 10px;
+}
+
+/* Zachowanie oryginalnych stylów dla układu poziomego */
+.ramka-slots.horizontal .slot {
+  display: inline-block;
+  width: 120px;
+  margin: 10px 2%;
+  vertical-align: top;
+  min-height: 120px;
+  text-align: center;
+}
+
+.ramka-slots.horizontal .slot img {
+  max-width: 100px;
+  max-height: 80px;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+.ramka-slots.horizontal .slot-summary {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 15px;
+  text-align: center;
+}
