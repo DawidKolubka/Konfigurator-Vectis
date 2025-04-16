@@ -81,7 +81,10 @@ jQuery(document).ready(function($) {
 
   /** Funkcja rysująca "ile" slotów z grafiką wybor.svg w rzędzie */
   function renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData, orientacja = 'vertical') {
-    // Upewnij się, że kontener ma właściwą klasę orientacji
+    // Sprawdź najpierw, czy przypadkiem orientacja nie jest już ustawiona przez PHP
+    var phpOrientation = $('.ramka-slots').hasClass('horizontal') ? 'horizontal' : 'vertical';
+    orientacja = phpOrientation; // Użyj orientacji z PHP
+    
     const $wrapper = $('<div class="slots-container ' + orientacja + '" style="display:flex; gap:20px; flex-wrap:wrap;"></div>');
 
     for (let i = 0; i < ile; i++) {
@@ -215,31 +218,48 @@ jQuery(document).ready(function($) {
     $parent.append($techSection);
   }
 
-  // Zmodyfikowana funkcja sprawdzająca typ układu
+  // Zmodyfikowana funkcja sprawdzająca typ układu - bazując na orientacji z PHP
   function checkLayoutOrientation() {
-    // Sprawdź ukrytą wartość z PHP
-    var layoutType = $('#selected_layout_type').val();
-    var selectedOption = $('#selected_layout_option').val();
+    // Odczytaj orientację ustawioną przez PHP
+    var phpOrientation = $('.ramka-slots').hasClass('horizontal') ? 'horizontal' : 'vertical';
     
-    // Sprawdź na podstawie nazwy opcji
-    var isHorizontal = false;
+    // Jeśli mamy div z klasą slots-container, upewnijmy się, że ma tę samą orientację
+    $('.slots-container').removeClass('horizontal vertical').addClass(phpOrientation);
     
-    if (layoutType === 'horizontal' || (selectedOption && selectedOption.toUpperCase().indexOf('POZIOMY') !== -1)) {
-      isHorizontal = true;
-    }
-    
-    // Ustaw odpowiednią klasę
-    if (isHorizontal) {
-      $('.slots-container').removeClass('vertical').addClass('horizontal');
-    } else {
-      $('.slots-container').removeClass('horizontal').addClass('vertical');
-    }
-    
-    // Sprawdź czy zmiany faktycznie zostały zastosowane
-    setTimeout(function() {
-    }, 50);
+    // Zapamiętaj w localStorage dla diagnostyki
+    localStorage.setItem('krok4_orientation', phpOrientation);
   }
   
+  // Uproszczona funkcja inicjalizująca układ
+  function initLayoutFromHiddenField() {
+    // Używamy orientacji ustawionej przez PHP
+    checkLayoutOrientation();
+  }
+  
+  // Funkcja poprawiająca klasy układu po załadowaniu kroku 4
+  function ensureCorrectLayoutClasses() {
+    if ($('#krok4').is(':visible') || $('.step-content').length > 0) {
+      // Używamy orientacji ustawionej przez PHP 
+      checkLayoutOrientation();
+    }
+  }
+
+  // Funkcja do synchronizacji informacji o układzie
+  function synchronizeLayoutInfo() {
+    // Dajemy pierwszeństwo orientacji z PHP
+    checkLayoutOrientation();
+  }
+  
+  // Wywołanie funkcji po załadowaniu strony
+  setTimeout(ensureCorrectLayoutClasses, 300);
+  
+  // Wywołanie funkcji przy zmianie kroków
+  $(document).on('configurator_step_loaded', function(e, step) {
+    if (step === 4) {
+      setTimeout(synchronizeLayoutInfo, 300);
+    }
+  });
+
   // Uruchamiamy przy zmianie wyboru w kroku 3
   $(document).on('change', 'input[name="krok3"]', function() {
     // Zapisz wybór do ukrytego pola
