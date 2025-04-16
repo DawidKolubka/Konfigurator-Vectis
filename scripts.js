@@ -223,4 +223,30 @@ jQuery(document).ready(function($) {
     $parent.append($techSection);
   }
 
+  // Funkcja sprawdzająca czy wybrany układ powinien być poziomy
+  function checkLayoutOrientation() {
+    // Sprawdzamy wybór z kroku 3
+    var krok3Value = $('input[name="krok3"]:checked').val() || '';
+    
+    // Sprawdzamy czy zawiera słowo "POZIOMY"
+    if (krok3Value.toUpperCase().indexOf('POZIOMY') !== -1) {
+        $('.slots-container').removeClass('vertical').addClass('horizontal');
+    } else {
+        $('.slots-container').removeClass('horizontal').addClass('vertical');
+    }
+  }
+  
+  // Uruchamiamy przy zmianie wyboru w kroku 3
+  $('input[name="krok3"]').on('change', function() {
+    // Aktualizuj układ po przejściu do kroku 4
+    setTimeout(checkLayoutOrientation, 100);
+  });
+  
+  // Sprawdź układ po załadowaniu kroku 4
+  $(document).on('configurator_step_loaded', function(e, stepId) {
+    if (stepId === 4) {
+        checkLayoutOrientation();
+    }
+  });
+
 });

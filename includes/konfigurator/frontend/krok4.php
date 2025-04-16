@@ -122,6 +122,12 @@ foreach ($technologia_options as $tech_index => $tech) {
         'colorName' => $colorName
     ];
 }
+
+// Sprawdzanie czy wybór z kroku 3 zawiera słowo "POZIOMY"
+$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : '';
+$is_horizontal = (stripos($selected_option, 'POZIOMY') !== false);
+$container_class = $is_horizontal ? 'horizontal' : 'vertical';
+
 ?>
 
 <div class="step-content">
@@ -162,7 +168,7 @@ foreach ($technologia_options as $tech_index => $tech) {
             <div class="ramka-image-container">
                 <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
             </div>
-            <div class="slots-container">
+            <div class="slots-container <?php echo $container_class; ?>">
                 <?php
                 $empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
                 for ($i = 0; $i < $ileSlotow; $i++):
