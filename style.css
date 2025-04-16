@@ -510,28 +510,10 @@ select#kolor-mechanizmu-selector {
   margin-top: 0;
   text-align: left;
   padding-left: 10px;
+  display: none; /* Domyślnie ukryte - pokaże je JavaScript gdy slot zostanie wypełniony */
 }
 
-/* Zachowanie oryginalnych stylów dla układu poziomego */
-.ramka-slots.horizontal .slot {
-  display: inline-block;
-  width: 120px;
-  margin: 10px 2%;
-  vertical-align: top;
-  min-height: 120px;
-  text-align: center;
-}
-
-.ramka-slots.horizontal .slot img {
-  max-width: 100px;
-  max-height: 80px;
+/* Dodajemy klasę dla pokazanego podsumowania */
+.ramka-slots.vertical .slot-summary.filled {
   display: block;
-  margin: 0 auto 15px;
-}
-
-.ramka-slots.horizontal .slot-summary {
-  font-size: 14px;
-  line-height: 1.4;
-  margin-top: 15px;
-  text-align: center;
 }

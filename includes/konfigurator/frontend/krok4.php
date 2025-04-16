@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
     slots.forEach(slot => {
         slot.addEventListener('click', () => {
             activeSlot = slot.getAttribute('data-slot');
-            updateSlotBorders();
+            updateSlotState(); // Zaktualizowano
             document.getElementById('active-slot-number').innerText = parseInt(activeSlot) + 1;
             showSlotSettings(activeSlot, slot);
         });
@@ -377,25 +377,25 @@ document.addEventListener('DOMContentLoaded', function() {
             // Aktualizacja podsumowania w bloku slotu
             document.getElementById(`slot-tech-summary-${slotIndex}`).textContent = chosenTech ? chosenTech.nazwa : '—';
             document.getElementById(`slot-color-summary-${slotIndex}`).textContent = newColor ? newColor : '—';
-            updateSlotBorders();
+            updateSlotState(); // Zaktualizowano
         };
         
         colorSelect.onchange = function() {
             const chosenColor = this.value;
             document.getElementById(`kolor_mechanizmu_${slotIndex}`).value = chosenColor;
             document.getElementById(`slot-color-summary-${slotIndex}`).textContent = chosenColor ? chosenColor : '—';
-            updateSlotBorders();
+            updateSlotState(); // Zaktualizowano
         };
 
         panel.style.display = 'block';
         slotElement.parentNode.insertBefore(panel, slotElement.nextSibling);
-        updateSlotBorders();
+        updateSlotState(); // Zaktualizowano
     }
 
     // Zamknięcie panelu edycji
     document.getElementById('close-slot-settings').addEventListener('click', () => {
         document.getElementById('slot-settings-panel').style.display = 'none';
-        updateSlotBorders();
+        updateSlotState(); // Zaktualizowano
     });
 
     // Panel mechanizmów – kliknięcie w ikonę zmienia mechanizm
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(`slot-color-summary-${activeSlot}`).textContent = '—';
             const slotEl = document.querySelector(`.slot[data-slot="${activeSlot}"]`);
             showSlotSettings(activeSlot, slotEl);
-            updateSlotBorders();
+            updateSlotState(); // Zaktualizowano
         });
     });
 
@@ -476,7 +476,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Wywołaj na starcie, aby odpowiednio oznaczyć wypełnione sloty
-    updateSlotBorders();
+    updateSlotState(); // Zaktualizowano
     
     // Debug - wypisz zawartość pól na starcie
     console.log("Inicjalne wartości pól:");
@@ -486,5 +486,95 @@ document.addEventListener('DOMContentLoaded', function() {
         const colorField = document.getElementById(`kolor_mechanizmu_${i}`);
         console.log(`Slot ${i+1}: mechanizm=${mechField?.value}, technologia=${techField?.value}, kolor=${colorField?.value}`);
     }
+});
+
+// Funkcja sprawdzająca czy slot ma wypełnione dane i na tej podstawie pokazująca/ukrywająca podsumowanie
+function updateSlotSummaryVisibility() {
+    const slots = document.querySelectorAll('.slot');
+    
+    slots.forEach(slot => {
+        const slotIndex = slot.getAttribute('data-slot');
+        const mechVal = document.getElementById(`mechanizm_${slotIndex}`).value;
+        const summary = slot.querySelector('.slot-summary');
+        
+        // Sprawdzamy czy slot ma wybrany mechanizm
+        if (mechVal) {
+            // Jeśli tak - pokazujemy podsumowanie
+            summary.classList.add('filled');
+        } else {
+            // Jeśli nie - ukrywamy podsumowanie
+            summary.classList.remove('filled');
+        }
+    });
+}
+
+// Wykonaj sprawdzenie widoczności po załadowaniu strony
+updateSlotSummaryVisibility();
+
+// Dodaj aktualizację widoczności podsumowania do istniejących funkcji
+// Wszędzie gdzie wywołujesz updateSlotBorders(), dodaj także updateSlotSummaryVisibility()
+
+// Przykład: Zastąp istniejące wywołania updateSlotBorders() poniższym kodem
+function updateSlotState() {
+    updateSlotBorders();
+    updateSlotSummaryVisibility();
+}
+
+// Zastosowanie nowej funkcji w istniejących punktach wywołania
+// (poniżej przygotowane fragmenty, które należy znaleźć i zastąpić w kodzie)
+
+/* Zmodyfikuj funkcję showSlotSettings */
+function showSlotSettings(slotIndex, slotElement) {
+    // istniejący kod...
+    
+    panel.style.display = 'block';
+    slotElement.parentNode.insertBefore(panel, slotElement.nextSibling);
+    updateSlotState(); // Zaktualizowano
+}
+
+/* Zmodyfikuj obsługę zdarzenia kliknięcia w slot */
+slot.addEventListener('click', () => {
+    activeSlot = slot.getAttribute('data-slot');
+    updateSlotState(); // Zaktualizowano
+    document.getElementById('active-slot-number').innerText = parseInt(activeSlot) + 1;
+    showSlotSettings(activeSlot, slot);
+});
+
+/* Zmodyfikuj zamknięcie panelu edycji */
+document.getElementById('close-slot-settings').addEventListener('click', () => {
+    document.getElementById('slot-settings-panel').style.display = 'none';
+    updateSlotState(); // Zaktualizowano
+});
+
+/* Zmodyfikuj kod obsługi zmiany mechanizmu */
+item.addEventListener('click', () => {
+    // istniejący kod...
+    
+    const slotEl = document.querySelector(`.slot[data-slot="${activeSlot}"]`);
+    showSlotSettings(activeSlot, slotEl);
+    updateSlotState(); // Zaktualizowano
+});
+
+/* Zmodyfikuj kod obsługi zmiany technologii */
+techSelect.onchange = function() {
+    // istniejący kod...
+    
+    document.getElementById(`slot-tech-summary-${slotIndex}`).textContent = chosenTech ? chosenTech.nazwa : '—';
+    document.getElementById(`slot-color-summary-${slotIndex}`).textContent = newColor ? newColor : '—';
+    updateSlotState(); // Zaktualizowano
+};
+
+/* Zmodyfikuj kod obsługi zmiany koloru */
+colorSelect.onchange = function() {
+    // istniejący kod...
+    
+    document.getElementById(`slot-color-summary-${slotIndex}`).textContent = chosenColor ? chosenColor : '—';
+    updateSlotState(); // Zaktualizowano
+};
+
+// Wykonaj na końcu, aby upewnić się, że podsumowania są prawidłowo widoczne/ukryte
+// na podstawie zapisanych danych po załadowaniu strony
+document.addEventListener('DOMContentLoaded', function() {
+    updateSlotSummaryVisibility();
 });
 </script>
