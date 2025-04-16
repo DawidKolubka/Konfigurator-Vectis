@@ -502,13 +502,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Pobierz wybrany układ z sesji
 $selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : '';
 
-// Określ liczbę slotów na podstawie nazwy opcji
+// Określ liczbę slotów na podstawie nazwy opcji (istniejący kod)
 $slots_count = 1; // Domyślnie dla X1
 if (preg_match('/X(\d+)/', $selected_option, $matches)) {
     $slots_count = intval($matches[1]);
 }
 
-// Sprawdź czy nazwa zawiera słowo "PIONOWY"
+// Główna zmiana - sprawdź czy nazwa zawiera słowo "PIONOWY"
 $is_vertical = (stripos($selected_option, 'PIONOWY') !== false);
 
 // Ustaw odpowiednią klasę kontenera
