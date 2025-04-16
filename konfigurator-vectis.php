@@ -1,5 +1,7 @@
-
 <?php
+// Włącz buforowanie wyjścia na początku
+ob_start();
+
 /*
 Plugin Name: Konfigurator Vectis
 Plugin URI: https://github.com/DawidKolubka/Konfigurator-Vectis
@@ -13,18 +15,20 @@ License: GPL2
 // Zabezpieczenie przed bezpośrednim dostępem
 defined('ABSPATH') or die('Brak dostępu');
 
-// Zabezpieczenie przed bezpośrednim dostępem
-if ( ! function_exists('wp_create_nonce') ) {
-    require_once( ABSPATH . 'wp-includes/pluggable.php' );
-}
-
-// Włączenie sesji dla konfiguratora
+// Włączenie sesji dla konfiguratora - zmodyfikowane dla unikania błędów
 function kv_start_session() {
-    if(!session_id()) {
-        session_start();
+    // Sprawdzamy czy nie wysłano już nagłówków
+    if (!headers_sent() && !session_id()) {
+        @session_start();
     }
 }
 add_action('init', 'kv_start_session', 1);
+
+// Zabezpieczenie przed bezpośrednim dostępem do pluggable.php
+// Przesunięte po inicjalizacji sesji
+if (!function_exists('wp_create_nonce')) {
+    require_once(ABSPATH . 'wp-includes/pluggable.php');
+}
 
 // Załaduj pliki modułów
 require_once plugin_dir_path(__FILE__) . 'includes/zamowienia/orders.php'; 

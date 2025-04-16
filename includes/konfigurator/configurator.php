@@ -6,8 +6,8 @@ defined('ABSPATH') or die('Brak dostępu');
  */
 if (!function_exists('kv_start_session')) {
     function kv_start_session() {
-        if (!session_id()) {
-            session_start();
+        if (!headers_sent() && !session_id()) {
+            @session_start();
         }
     }
 }
@@ -49,8 +49,8 @@ add_action('init', 'kv_load_config_state');
 function kv_load_config_state() {
     if (!is_user_logged_in()) return;
 
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
+    if (!headers_sent() && !session_id()) {
+        @session_start();
     }
     $user_id = get_current_user_id();
     $saved   = get_user_meta($user_id, 'kv_saved_configurator', true);
@@ -222,8 +222,8 @@ add_shortcode('konfigurator-vectis', 'kv_configurator_shortcode');
 // Zapisywanie do usermeta
 function kv_save_config_state() {
     if (!is_user_logged_in()) return;
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
+    if (!headers_sent() && !session_id()) {
+        @session_start();
     }
     $user_id = get_current_user_id();
     if (isset($_SESSION['kv_configurator'])) {
@@ -233,8 +233,8 @@ function kv_save_config_state() {
 
 // Reset konfiguracji
 function kv_reset_config_state() {
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
+    if (!headers_sent() && !session_id()) {
+        @session_start();
     }
     
     // Usuń dane z sesji
