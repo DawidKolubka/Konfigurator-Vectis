@@ -69,4 +69,13 @@
         echo "<p>Brak dostępnych układów dla wybranego kształtu.</p>";
     }
     ?>
+    <div class="layout-option" data-layout-type="X-Poziomy">
+        <img src="<?php echo esc_url($layout_image); ?>" alt="Układ poziomy">
+        <p>Układ X - Poziomy</p>
+    </div>
+
+    <div class="layout-option" data-layout-type="X2-Pionowy">
+        <img src="<?php echo esc_url($layout_image); ?>" alt="Układ pionowy">
+        <p>Układ X2 - Pionowy</p>
+    </div>
 </div>

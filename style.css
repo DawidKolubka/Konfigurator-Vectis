@@ -31,7 +31,7 @@
     margin-bottom: 20px;
 }
 .layout-group .option-container {
-    flex: 1 0 auto; /* dopasuje szerokość do zawartości */
+    flex: 1 0 auto;
 }
 .option-label {
     cursor: pointer;
@@ -57,7 +57,7 @@
     margin: 20px 0;
 }
 
-.kolor-ramki-selection img{
+.kolor-ramki-selection img {
     width: 15%;
 }
 
@@ -74,14 +74,6 @@
 }
 .mechanizm-tile.active {
     border: 2px solid #0073aa;
-}
-
-/* Mechanizm-details */
-.mechanizm-details {
-    display: none;
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin-top: 120px;
 }
 
 /* Przyciski nawigacji */
@@ -126,7 +118,6 @@
     margin-left: 5px;
     padding: 8px 15px;
 }
-
 
 /* Stylizacja układu pionowego i liniowego */
 .linear-layout .graphics-section img {
@@ -300,4 +291,44 @@ select#kolor-mechanizmu-selector {
 
 .assigned-color {
     display: inline-block;
+}
+
+/* Style dla slotów w różnych układach */
+.slots-container {
+    display: flex;
+    margin-top: 20px;
+}
+
+/* Układ poziomy (domyślny) */
+.slots-container.horizontal-slots {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Układ pionowy */
+.slots-container.vertical-slots {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.slots-container.vertical-slots .slot {
+    width: 100%;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.slots-container.vertical-slots .slot img {
+    max-height: 80px;
+    margin-right: 20px;
+}
+
+.slots-container.vertical-slots .slot-summary {
+    margin-top: 0;
+    margin-left: 20px;
 }
