@@ -162,24 +162,6 @@ foreach ($technologia_options as $tech_index => $tech) {
             <div class="ramka-image-container">
                 <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
             </div>
-            <?php
-            // Fragment kodu PHP generujący sloty w kroku Mechanizmy
-            ?>
-            <div class="slots-container">
-                <?php foreach ($slots as $slot_id => $slot_info): ?>
-                <div class="slot" data-slot-id="<?php echo esc_attr($slot_id); ?>">
-                    <?php if (!empty($slot_info['image'])): ?>
-                    <img src="<?php echo esc_url($slot_info['image']); ?>" alt="Slot <?php echo esc_attr($slot_id); ?>">
-                    <?php endif; ?>
-                    <div class="slot-summary">
-                        <?php if (!empty($slot_info['name'])): ?>
-                        <div><?php echo esc_html($slot_info['name']); ?></div>
-                        <?php endif; ?>
-                        <!-- Inne informacje o slocie -->
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
             <div class="slots-container">
                 <?php
                 $empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
