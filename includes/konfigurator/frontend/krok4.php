@@ -79,7 +79,7 @@ $layoutName  = isset($uklad_options[$uklad_index]['name']) ? $uklad_options[$ukl
 $uklad_image = isset($uklad_options[$uklad_index]['image']) ? $uklad_options[$uklad_index]['image'] : '';
 
 // Definicja domyślnego obrazka dla pustego slotu
-$empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
+$empty_slot_img = 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg';
 
 $ileSlotow   = 1;
 if (preg_match('/X(\d+)/i', $layoutName, $matches)) {
