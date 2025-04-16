@@ -1,5 +1,93 @@
 <?php
 // krok3.php
+
+// Funkcja do analizy układu i wydobycia liczby slotów
+function analyze_layout_info($layout_name) {
+    // Określ liczbę slotów
+    $slots_count = 1; // Domyślnie dla X1
+    if (preg_match('/X(\d+)/', $layout_name, $matches)) {
+        $slots_count = intval($matches[1]);
+    }
+    
+    // Określ orientację
+    $is_vertical = (stripos($layout_name, 'PIONOWY') !== false);
+    $orientation = $is_vertical ? 'pionowy' : 'poziomy';
+    
+    return [
+        'slots' => $slots_count,
+        'orientation' => $orientation
+    ];
+}
+
+// Tworzenie panelu debugującego, który będzie ukryty domyślnie
+// i pokazany po wybraniu opcji
+?>
+
+<style>
+.layout-debug-panel {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-family: monospace;
+    display: none; /* Ukryte domyślnie */
+}
+.layout-debug-panel.active {
+    display: block;
+}
+</style>
+
+<!-- Panel debugowania - umieść przed generowaniem opcji układów -->
+<div class="layout-debug-panel" id="debug-panel">
+    <h4 style="margin-top: 0;">Informacje debugowania:</h4>
+    <div id="debug-content">Wybierz układ, aby zobaczyć szczegóły.</div>
+</div>
+
+<script>
+jQuery(document).ready(function($) {
+    // Funkcja analizująca wybrany układ
+    function analyzeSelectedLayout() {
+        var selectedLayout = $('input[name="krok3"]:checked').val();
+        if (!selectedLayout) return;
+        
+        // Wyciągnij liczbę slotów z nazwy
+        var slotsMatch = selectedLayout.match(/X(\d+)/);
+        var slotsCount = slotsMatch ? parseInt(slotsMatch[1]) : 1;
+        
+        // Sprawdź orientację
+        var isVertical = selectedLayout.toUpperCase().includes('PIONOWY');
+        var orientation = isVertical ? 'pionowy' : 'poziomy';
+        
+        // Aktualizuj panel debugowania
+        var debugInfo = '<strong>Wybrany układ:</strong> ' + selectedLayout + '<br>' +
+                        '<strong>Liczba slotów:</strong> ' + slotsCount + '<br>' +
+                        '<strong>Orientacja:</strong> ' + orientation + '<br>' +
+                        '<strong>Klasa CSS:</strong> ' + (isVertical ? 'vertical' : 'horizontal');
+        
+        $('#debug-content').html(debugInfo);
+        $('#debug-panel').addClass('active');
+        
+        // Zapisz do localStorage dla kroku 4
+        localStorage.setItem('debug_layout_info', JSON.stringify({
+            name: selectedLayout,
+            slots: slotsCount,
+            orientation: orientation,
+            cssClass: isVertical ? 'vertical' : 'horizontal'
+        }));
+    }
+    
+    // Nasłuchuj zmiany wyboru
+    $('input[name="krok3"]').on('change', function() {
+        analyzeSelectedLayout();
+    });
+    
+    // Sprawdź czy jest już coś wybrane
+    analyzeSelectedLayout();
+});
+</script>
+
+<?php
 ?>
 
 <div class="step-content">
