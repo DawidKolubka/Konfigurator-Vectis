@@ -1,7 +1,6 @@
 <?php
 // krok3.php
-
-
+?>
 
 <div class="step-content">
     <h2>Krok 3: Wybierz układ</h2>
