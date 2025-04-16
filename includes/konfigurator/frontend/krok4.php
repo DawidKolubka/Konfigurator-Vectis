@@ -392,4 +392,130 @@ document.addEventListener('DOMContentLoaded', function() {
             techSelect.value = currentTech;
         }
         
-        const colorSelect = document.getElementById('edit-color
+        const colorSelect = document.getElementById('edit-color-select');
+        colorSelect.innerHTML = '';
+        colorSelect.disabled = true; // Na początku wyłączony
+        
+        // Obsługa zmiany technologii
+        techSelect.onchange = function() {
+            const chosenTechID = this.value;
+            const techInput = document.getElementById(`technologia_${slotIndex}`);
+            techInput.value = chosenTechID;
+            
+            // Debug - wypisujemy wartość wybranej technologii
+            console.log(`Zmieniono technologię dla slotu ${slotIndex}: ID=${chosenTechID}`);
+            
+            const chosenTech = relTech.find(t => t.ID == chosenTechID);
+            const newColor = chosenTech ? chosenTech.colorName : '';
+            document.getElementById(`kolor_mechanizmu_${slotIndex}`).value = newColor;
+            
+            // Aktualizacja podsumowania w bloku slotu
+            document.getElementById(`slot-tech-summary-${slotIndex}`).textContent = chosenTech ? chosenTech.nazwa : '—';
+            document.getElementById(`slot-color-summary-${slotIndex}`).textContent = newColor ? newColor : '—';
+            updateSlotState(); // Zaktualizowano z updateSlotBorders()
+        };
+        
+        panel.style.display = 'block';
+        slotElement.parentNode.insertBefore(panel, slotElement.nextSibling);
+        updateSlotState(); // Zaktualizowano z updateSlotBorders()
+    }
+
+    // Zamknięcie panelu edycji
+    document.getElementById('close-slot-settings').addEventListener('click', () => {
+        document.getElementById('slot-settings-panel').style.display = 'none';
+        updateSlotState(); // Zaktualizowano z updateSlotBorders()
+    });
+
+    // Panel mechanizmów – kliknięcie w ikonę zmienia mechanizm
+    const mechanismItems = document.querySelectorAll('.mechanizm-item');
+    mechanismItems.forEach(item => {
+        item.addEventListener('click', () => {
+            if (activeSlot === null) {
+                alert('Najpierw kliknij w slot, który chcesz edytować.');
+                return;
+            }
+            const newMechID = item.getAttribute('data-mech-id');
+            document.getElementById(`mechanizm_${activeSlot}`).value = newMechID;
+            document.getElementById(`technologia_${activeSlot}`).value = '';
+            document.getElementById(`kolor_mechanizmu_${activeSlot}`).value = '';
+            const slotImg = document.getElementById(`slot-img-${activeSlot}`);
+            const newMech = mechanizmyData.find(m => m.ID == newMechID);
+            slotImg.src = newMech ? (newMech.ikona || 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg') : 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg';
+            document.getElementById(`slot-mech-name-${activeSlot}`).textContent = newMech ? newMech.nazwa : 'Brak';
+            document.getElementById(`slot-tech-summary-${activeSlot}`).textContent = '—';
+            document.getElementById(`slot-color-summary-${activeSlot}`).textContent = '—';
+            const slotEl = document.querySelector(`.slot[data-slot="${activeSlot}"]`);
+            showSlotSettings(activeSlot, slotEl);
+            updateSlotState(); // Zaktualizowano z updateSlotBorders()
+        });
+    });
+
+    // Walidacja formularza – przed wysłaniem
+    const form = document.getElementById('konfigurator-form');
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            // Sprawdź czy kliknięto przycisk "go_next" (Dalej)
+            const isGoingForward = e.submitter && e.submitter.name === 'go_next';
+            
+            if (isGoingForward && document.querySelector('input[name="kv_step"]').value === '4') {
+                let valid = true;
+                let errorMessages = [];
+                
+                // Sprawdź kolor ramki
+                const kolorVal = document.getElementById('kolor_ramki').value;
+                if (!kolorVal) {
+                    errorMessages.push('Musisz wybrać kolor ramki.');
+                    valid = false;
+                }
+                
+                // Sprawdź wszystkie sloty
+                for (let i = 0; i < <?php echo $ileSlotow; ?>; i++) {
+                    const mechField = document.getElementById(`mechanizm_${i}`);
+                    const techField = document.getElementById(`technologia_${i}`);
+                    const colorField = document.getElementById(`kolor_mechanizmu_${i}`);
+                    
+                    // Debug - wypisanie wartości pól przed walidacją
+                    console.log(`Walidacja slotu ${i+1}: mechanizm=${mechField?.value}, technologia=${techField?.value}, kolor=${colorField?.value}`);
+                    
+                    if (!mechField || !mechField.value) {
+                        errorMessages.push(`Slot ${i+1} nie ma wybranego mechanizmu.`);
+                        valid = false;
+                        continue; // Bez mechanizmu nie sprawdzamy dalej
+                    }
+                    
+                    if (!techField || !techField.value) {
+                        errorMessages.push(`Slot ${i+1} nie ma wybranej technologii.`);
+                        valid = false;
+                    }
+                    
+                    if (!colorField || !colorField.value) {
+                        errorMessages.push(`Slot ${i+1} nie ma wybranego koloru mechanizmu.`);
+                        valid = false;
+                    }
+                }
+                
+                if (!valid) {
+                    e.preventDefault();
+                    alert(errorMessages.join('\n'));
+                    return false;
+                }
+            }
+        });
+    }
+    
+    // Wywołaj na starcie, aby odpowiednio oznaczyć wypełnione sloty
+    updateSlotState();
+    
+    // Debug - wypisz zawartość pól na starcie
+    console.log("Inicjalne wartości pól:");
+    for (let i = 0; i < <?php echo $ileSlotow; ?>; i++) {
+        const mechField = document.getElementById(`mechanizm_${i}`);
+        const techField = document.getElementById(`technologia_${i}`);
+        const colorField = document.getElementById(`kolor_mechanizmu_${i}`);
+        console.log(`Slot ${i+1}: mechanizm=${mechField?.value}, technologia=${techField?.value}, kolor=${colorField?.value}`);
+    }
+    
+    // Wykonaj na końcu, aby upewnić się, że podsumowania są prawidłowo widoczne/ukryte
+    updateSlotSummaryVisibility();
+});
+</script>
