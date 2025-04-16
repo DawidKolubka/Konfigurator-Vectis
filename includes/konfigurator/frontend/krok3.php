@@ -70,3 +70,18 @@
     }
     ?>
 </div>
+
+<script>
+// Funkcja sprawdzająca czy wybrany układ powinien być poziomy
+function checkLayoutOrientation() {
+  // Sprawdzamy wybór z kroku 3
+  var krok3Value = $('input[name="krok3"]:checked').val() || '';
+  
+  // Sprawdzamy czy zawiera słowo "POZIOMY"
+  if (krok3Value.toUpperCase().indexOf('POZIOMY') !== -1) {
+      $('.slots-container').removeClass('vertical').addClass('horizontal');
+  } else {
+      $('.slots-container').removeClass('horizontal').addClass('vertical');
+  }
+}
+</script>

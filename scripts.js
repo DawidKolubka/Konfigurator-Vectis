@@ -225,14 +225,29 @@ jQuery(document).ready(function($) {
 
   // Funkcja sprawdzająca czy wybrany układ powinien być poziomy
   function checkLayoutOrientation() {
+    // Debugowanie - sprawdzamy wszystkie inputy
+    console.log("Wszystkie inputy krok3:", $('input[name="krok3"]').map(function() {
+      return {
+        value: $(this).val(),
+        checked: $(this).prop('checked'),
+        text: $(this).next('label').text() || "brak tekstu"
+      };
+    }).get());
+    
     // Sprawdzamy wybór z kroku 3
     var krok3Value = $('input[name="krok3"]:checked').val() || '';
+    var krok3Text = $('input[name="krok3"]:checked').next('label').text() || '';
     
-    // Sprawdzamy czy zawiera słowo "POZIOMY"
-    if (krok3Value.toUpperCase().indexOf('POZIOMY') !== -1) {
-        $('.slots-container').removeClass('vertical').addClass('horizontal');
+    console.log("Zaznaczony element:", krok3Value, "Tekst:", krok3Text);
+    
+    // Sprawdzamy czy zawiera słowo "POZIOMY" (sprawdzamy zarówno wartość jak i tekst etykiety)
+    if (krok3Value.toUpperCase().indexOf('POZIOMY') !== -1 || 
+        krok3Text.toUpperCase().indexOf('POZIOMY') !== -1) {
+      console.log("Wykryto POZIOMY - ustawiam horizontal");
+      $('.slots-container').removeClass('vertical').addClass('horizontal');
     } else {
-        $('.slots-container').removeClass('horizontal').addClass('vertical');
+      console.log("Brak POZIOMY - ustawiam vertical");
+      $('.slots-container').removeClass('horizontal').addClass('vertical');
     }
   }
   
