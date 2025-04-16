@@ -5,11 +5,6 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Na początku pliku, zaraz po komentarzach nagłówkowych
-$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : 'Nie wybrano';
-$is_horizontal = (stripos($selected_option, 'POZIOMY') !== false);
-$container_class = $is_horizontal ? 'slots-container horizontal' : 'slots-container vertical';
-
 // Helper do bezpiecznego pozbycia się slashes
 if (!function_exists('kv_strip_and_sanitize')) {
     function kv_strip_and_sanitize($value) {
@@ -53,21 +48,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $layoutName  = isset($uklad_options[$uklad_index]['name']) ? $uklad_options[$uklad_index]['name'] : '';
 
     $ileSlotow = 1;
-    $orientacja = 'vertical'; // Domyślna orientacja
-
     if (preg_match('/X(\d+)/i', $layoutName, $matches)) {
         $ileSlotow = intval($matches[1]);
-        
-        // Sprawdź czy nazwa zawiera słowo POZIOMY lub POZIOME
-        if (stripos($layoutName, 'poziom') !== false) {
-            $orientacja = 'horizontal';
-        }
-    } elseif (stripos($layoutName, 'pionowy') !== false) {
+    } elseif (stripos($layoutName, 'pionowy') !== false || stripos($layoutName, 'poziomy') !== false) {
         $ileSlotow = 2;
-        $orientacja = 'vertical';
-    } elseif (stripos($layoutName, 'poziomy') !== false) {
-        $ileSlotow = 2;
-        $orientacja = 'horizontal';
     }
 
     // Zapis danych dla każdego slotu
@@ -94,21 +78,10 @@ $uklad_index = isset($_SESSION['kv_configurator']['uklad']) ? kv_strip_and_sanit
 $layoutName  = isset($uklad_options[$uklad_index]['name']) ? $uklad_options[$uklad_index]['name'] : '';
 $uklad_image = isset($uklad_options[$uklad_index]['image']) ? $uklad_options[$uklad_index]['image'] : '';
 $ileSlotow   = 1;
-$orientacja = 'vertical'; // Domyślna orientacja
-
 if (preg_match('/X(\d+)/i', $layoutName, $matches)) {
     $ileSlotow = intval($matches[1]);
-    
-    // Sprawdź czy nazwa zawiera słowo POZIOMY lub POZIOME
-    if (stripos($layoutName, 'poziom') !== false) {
-        $orientacja = 'horizontal';
-    }
-} elseif (stripos($layoutName, 'pionowy') !== false) {
+} elseif (stripos($layoutName, 'pionowy') !== false || stripos($layoutName, 'poziomy') !== false) {
     $ileSlotow = 2;
-    $orientacja = 'vertical';
-} elseif (stripos($layoutName, 'poziomy') !== false) {
-    $ileSlotow = 2;
-    $orientacja = 'horizontal';
 }
 
 // Kolor ramki
@@ -149,15 +122,6 @@ foreach ($technologia_options as $tech_index => $tech) {
         'colorName' => $colorName
     ];
 }
-
-// Sprawdzanie czy wybór z kroku 3 zawiera słowo "POZIOMY"
-$selected_option = '';
-if (isset($_SESSION['configurator']['krok3'])) {
-    $selected_option = $_SESSION['configurator']['krok3'];
-}
-
-// Dodaj ukryte pole z informacją o wybranym układzie
-echo '<input type="hidden" id="selected_layout_type" value="' . ($is_horizontal ? 'horizontal' : 'vertical') . '" />';
 ?>
 
 <div class="step-content">
@@ -198,7 +162,25 @@ echo '<input type="hidden" id="selected_layout_type" value="' . ($is_horizontal 
             <div class="ramka-image-container">
                 <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
             </div>
-            <div class="slots-container <?php echo $orientacja; ?>">
+            <?php
+            // Fragment kodu PHP generujący sloty w kroku Mechanizmy
+            ?>
+            <div class="slots-container">
+                <?php foreach ($slots as $slot_id => $slot_info): ?>
+                <div class="slot" data-slot-id="<?php echo esc_attr($slot_id); ?>">
+                    <?php if (!empty($slot_info['image'])): ?>
+                    <img src="<?php echo esc_url($slot_info['image']); ?>" alt="Slot <?php echo esc_attr($slot_id); ?>">
+                    <?php endif; ?>
+                    <div class="slot-summary">
+                        <?php if (!empty($slot_info['name'])): ?>
+                        <div><?php echo esc_html($slot_info['name']); ?></div>
+                        <?php endif; ?>
+                        <!-- Inne informacje o slocie -->
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <div class="slots-container">
                 <?php
                 $empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
                 for ($i = 0; $i < $ileSlotow; $i++):
@@ -380,6 +362,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const techInput = document.getElementById(`technologia_${slotIndex}`);
             techInput.value = chosenTechID;
             
+            // Debug - wypisujemy wartość wybranej technologii
+            console.log(`Zmieniono technologię dla slotu ${slotIndex}: ID=${chosenTechID}`);
+            
             const chosenTech = relTech.find(t => t.ID == chosenTechID);
             const newColor = chosenTech ? chosenTech.colorName : '';
             document.getElementById(`kolor_mechanizmu_${slotIndex}`).value = newColor;
@@ -456,6 +441,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const techField = document.getElementById(`technologia_${i}`);
                     const colorField = document.getElementById(`kolor_mechanizmu_${i}`);
                     
+                    // Debug - wypisanie wartości pól przed walidacją
+                    console.log(`Walidacja slotu ${i+1}: mechanizm=${mechField?.value}, technologia=${techField?.value}, kolor=${colorField?.value}`);
+                    
                     if (!mechField || !mechField.value) {
                         errorMessages.push(`Slot ${i+1} nie ma wybranego mechanizmu.`);
                         valid = false;
@@ -484,21 +472,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Wywołaj na starcie, aby odpowiednio oznaczyć wypełnione sloty
     updateSlotBorders();
+    
+    // Debug - wypisz zawartość pól na starcie
+    console.log("Inicjalne wartości pól:");
+    for (let i = 0; i < <?php echo $ileSlotow; ?>; i++) {
+        const mechField = document.getElementById(`mechanizm_${i}`);
+        const techField = document.getElementById(`technologia_${i}`);
+        const colorField = document.getElementById(`kolor_mechanizmu_${i}`);
+        console.log(`Slot ${i+1}: mechanizm=${mechField?.value}, technologia=${techField?.value}, kolor=${colorField?.value}`);
+    }
 });
-<?php
-// Pobierz wybrany układ z sesji
-$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : 'Nie wybrano';
-
-// Wyciągnij liczbę z nazwy układu
-$slots_count = 1; // Domyślnie dla X1
-if (preg_match('/X(\d+)/', $selected_option, $matches)) {
-    $slots_count = intval($matches[1]);
-}
-
-// Sprawdź czy nazwa zawiera słowo "PIONOWY"
-$is_vertical = (stripos($selected_option, 'PIONOWY') !== false);
-
-// Ustaw klasę kontenera
-$container_class = $is_vertical ? 'slots-container vertical' : 'slots-container horizontal';
-?>
-
+</script>
