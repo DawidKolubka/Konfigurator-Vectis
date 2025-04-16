@@ -71,12 +71,6 @@
     ?>
 
 </div>
-
-<div class="navigation-buttons">
-    <button class="prev-step" data-step="2">← WSTECZ</button>
-    <button class="next-step" data-step="4">DALEJ →</button>
-</div>
-
 <script>
 // Funkcja sprawdzająca czy wybrany układ powinien być poziomy
 function checkLayoutOrientation() {

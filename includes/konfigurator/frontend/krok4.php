@@ -173,12 +173,7 @@ error_log('[KONFIGURATOR] Ustawiona klasa kontenera: ' . $container_class);
         }
         ?>
     </div>
-    
-    <div class="navigation-buttons">
-        <button class="prev-step" data-step="3">WSTECZ</button>
-        <button class="next-step" data-step="5">DALEJ</button>
-    </div>
-</div>
+
 
 <!-- Dodajemy skrypt diagnostyczny -->
 <script>
