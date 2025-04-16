@@ -298,4 +298,30 @@ jQuery(document).ready(function($) {
     initLayoutFromHiddenField();
   }
 
+  // Dodaj nasłuchiwanie zmiany wyboru układu w kroku 3
+  $(document).on('change', 'input[name="krok3"]', function() {
+    var selectedValue = $(this).val();
+    var selectedLabel = $('label[for="' + $(this).attr('id') + '"]').text();
+    
+    // Aktualizuj informację w debug panelu
+    $('#debug-selected-option').text(selectedValue);
+    
+    // Zapisz wybór do localStorage dla debugowania
+    localStorage.setItem('debug_krok3_value', selectedValue);
+    localStorage.setItem('debug_krok3_label', selectedLabel);
+    
+    console.log('Wybrano opcję:', selectedValue, 'Etykieta:', selectedLabel);
+  });
+  
+  // Sprawdź czy jest już coś wybrane przy załadowaniu strony
+  if ($('#krok3').is(':visible')) {
+    var selectedOption = $('input[name="krok3"]:checked');
+    if (selectedOption.length) {
+      var selectedValue = selectedOption.val();
+      var selectedLabel = $('label[for="' + selectedOption.attr('id') + '"]').text();
+      $('#debug-selected-option').text(selectedValue + ' (Etykieta: ' + selectedLabel + ')');
+      console.log('Już wybrana opcja:', selectedValue, 'Etykieta:', selectedLabel);
+    }
+  }
+
 });

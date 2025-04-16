@@ -1,6 +1,18 @@
 <?php
 // krok3.php
+
+// Początek pliku - dodajemy informację debugującą
+$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : 'Nie wybrano';
 ?>
+
+<!-- Debug panel - dodać na samym początku kroku 3 -->
+<div class="debug-panel" style="background-color: #f0f8ff; border: 1px solid #add8e6; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+    <p style="margin: 0; font-family: monospace;">
+        <strong>Debug - Aktualny wybór w kroku 3:</strong> 
+        <span id="debug-selected-option"><?php echo htmlspecialchars($selected_option); ?></span>
+    </p>
+</div>
+
 <div class="step-content">
     <h2>Krok 3: Wybierz układ</h2>
     <?php

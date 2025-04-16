@@ -5,6 +5,11 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Na początku pliku, zaraz po komentarzach nagłówkowych
+$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : 'Nie wybrano';
+$is_horizontal = (stripos($selected_option, 'POZIOMY') !== false);
+$container_class = $is_horizontal ? 'slots-container horizontal' : 'slots-container vertical';
+
 // Helper do bezpiecznego pozbycia się slashes
 if (!function_exists('kv_strip_and_sanitize')) {
     function kv_strip_and_sanitize($value) {
@@ -142,6 +147,15 @@ echo '<input type="hidden" id="selected_layout_type" value="' . ($is_horizontal 
 // Debugowanie
 error_log('Wybrana klasa kontenera: ' . $container_class);
 ?>
+
+<!-- Debug panel dla kroku 4 -->
+<div class="debug-panel" style="background-color: #fff0f5; border: 1px solid #ffb6c1; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
+    <p style="margin: 0; font-family: monospace;">
+        <strong>Debug - Wybór z kroku 3:</strong> <?php echo htmlspecialchars($selected_option); ?><br>
+        <strong>Typ układu:</strong> <?php echo $is_horizontal ? 'poziomy' : 'pionowy'; ?><br>
+        <strong>Klasa kontenera:</strong> <span id="debug-container-class"><?php echo $container_class; ?></span>
+    </p>
+</div>
 
 <div class="step-content">
     <h2>Krok 4: Wybierz mechanizmy i kolor ramki</h2>
