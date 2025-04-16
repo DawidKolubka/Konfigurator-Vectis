@@ -1,50 +1,5 @@
 jQuery(document).ready(function($) {
 
-  // Obsługa przycisku uploadera obrazków
-  $('.kv-upload-image-button').on('click', function(e) {
-      e.preventDefault();
-      var custom_uploader = wp.media({
-          title: 'Wybierz obrazek',
-          library: { type: 'image' },
-          button: { text: 'Wybierz obrazek' },
-          multiple: false
-      }).on('select', function() {
-          var attachment = custom_uploader.state().get('selection').first().toJSON();
-          $(e.target).siblings('input[type="text"]').first().val(attachment.url);
-      }).open();
-  });
-  
-  // Sprawdzanie typu układu i dostosowanie wyglądu slotów w kroku Mechanizmy
-  function adjustSlotsLayout() {
-      // Sprawdzamy, czy jesteśmy w kroku Mechanizmy
-      if ($('.slots-container').length) {
-          // Pobieramy informację o wybranym układzie z localStorage lub sesji
-          var selectedLayoutType = localStorage.getItem('selected_layout_type') || '';
-          
-          // Jeśli wybrany jest układ pionowy
-          if (selectedLayoutType.toLowerCase().includes('pionowy')) {
-              $('.slots-container').removeClass('horizontal-slots').addClass('vertical-slots');
-          } else {
-              // Domyślnie układ poziomy
-              $('.slots-container').removeClass('vertical-slots').addClass('horizontal-slots');
-          }
-      }
-  }
-  
-  // Zapisywanie wybranego układu przy przejściu do następnego kroku
-  $(document).on('click', '.layout-option', function() {
-      var layoutType = $(this).data('layout-type') || '';
-      localStorage.setItem('selected_layout_type', layoutType);
-  });
-  
-  // Uruchom funkcję dostosowującą po załadowaniu strony
-  adjustSlotsLayout();
-  
-  // Dodatkowe wywołanie przy zmianie kroku konfiguratora
-  $(document).on('konfigurator_step_change', function() {
-      adjustSlotsLayout();
-  });
-
   // Sprawdzamy, czy jesteśmy na kroku 4 (czy istnieje #step4-container)
   if ($('#step4-container').length) {
     initStep4();
