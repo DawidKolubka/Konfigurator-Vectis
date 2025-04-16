@@ -354,4 +354,90 @@ jQuery(document).ready(function($) {
     }
   });
 
+  // Funkcja do synchronizacji informacji o układzie
+  function synchronizeLayoutInfo() {
+    // Sprawdź, czy jesteśmy w kroku 4
+    if (!$('#krok4').is(':visible')) return;
+    
+    // Pobierz informacje z localStorage (dla diagnostyki)
+    var storedLayout = localStorage.getItem('krok3_selected_layout') || '';
+    var storedSlots = localStorage.getItem('krok3_slots_count') || '1';
+    var storedIsVertical = localStorage.getItem('krok3_is_vertical') === '1';
+    
+    console.log('Zapisane dane układu:', {
+        layout: storedLayout,
+        slots: storedSlots,
+        isVertical: storedIsVertical
+    });
+    
+    // Pobierz aktualne ustawienia kontenera
+    var container = $('.slots-container');
+    if (container.length) {
+        var currentClass = container.attr('class');
+        console.log('Aktualna klasa kontenera:', currentClass);
+        
+        // Sprawdź czy klasa jest zgodna z orientacją
+        var hasVertical = currentClass.includes('vertical');
+        var hasHorizontal = currentClass.includes('horizontal');
+        
+        if (storedIsVertical && !hasVertical) {
+            console.log('Korygowanie klasy - powinno być vertical');
+            container.removeClass('horizontal').addClass('vertical');
+        } else if (!storedIsVertical && !hasHorizontal) {
+            console.log('Korygowanie klasy - powinno być horizontal');
+            container.removeClass('vertical').addClass('horizontal');
+        }
+    }
+  }
+  
+  // Wywołaj funkcję przy zmianie kroków
+  $(document).on('configurator_step_loaded', function(e, step) {
+    console.log('Załadowano krok:', step);
+    if (step === 4) {
+        setTimeout(synchronizeLayoutInfo, 300);
+    }
+  });
+
+  // Znajdź kod obsługujący przycisk "Dalej"
+  $(document).on('click', '.next-step', function() {
+    var currentStep = parseInt($(this).data('step')) - 1;
+    var nextStep = $(this).data('step');
+    
+    // Jeśli przechodzimy z kroku 3 do 4, upewnij się, że wybór jest zapisany
+    if (currentStep === 3) {
+        var selectedLayout = $('input[name="krok3"]:checked').val();
+        
+        if (selectedLayout) {
+            // Analiza układu
+            var layoutMatch = selectedLayout.match(/X(\d+)/);
+            var slotsCount = layoutMatch ? parseInt(layoutMatch[1]) : 1;
+            var isVertical = selectedLayout.toUpperCase().includes('PIONOWY');
+            
+            console.log('Przejście do kroku 4 z układem:', {
+                layout: selectedLayout,
+                slots: slotsCount,
+                isVertical: isVertical
+            });
+            
+            // Zapisz do sesji przez AJAX przed przejściem
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                async: false, // Ważne - wykonaj synchronicznie przed przejściem
+                data: {
+                    action: 'save_configurator_step',
+                    step: 'krok3',
+                    value: selectedLayout
+                },
+                success: function(response) {
+                    console.log('Zapisano wybór do sesji przed przejściem do kroku 4');
+                }
+            });
+        }
+    }
+    
+    // Istniejący kod przejścia do następnego kroku
+    // ...
+  });
+
 });

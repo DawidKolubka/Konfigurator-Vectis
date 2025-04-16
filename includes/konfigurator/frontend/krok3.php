@@ -1,6 +1,13 @@
 <?php
 // krok3.php
 
+// Pobierz aktualny wybór z sesji (jeśli istnieje)
+$current_choice = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : 'Nie wybrano';
+
+// Dodaj debugowanie zmiennych sesji
+error_log('KONFIGURATOR krok3: Aktualny wybór z sesji: "' . $current_choice . '"');
+error_log('KONFIGURATOR krok3: Zawartość $_SESSION[\'configurator\']: ' . print_r($_SESSION['configurator'] ?? [], true));
+
 // Funkcja do analizy układu i wydobycia liczby slotów
 function analyze_layout_info($layout_name) {
     // Określ liczbę slotów
@@ -36,12 +43,40 @@ function analyze_layout_info($layout_name) {
 .layout-debug-panel.active {
     display: block;
 }
+
+.step3-debug-panel {
+    background-color: #e8f4fb;
+    border: 1px solid #b8e0f7;
+    padding: 12px;
+    margin: 15px 0 20px 0;
+    border-radius: 5px;
+    font-family: monospace;
+    line-height: 1.5;
+}
+.step3-debug-panel h4 {
+    margin-top: 0;
+    color: #0078bf;
+    border-bottom: 1px solid #b8e0f7;
+    padding-bottom: 5px;
+}
 </style>
 
 <!-- Panel debugowania - umieść przed generowaniem opcji układów -->
 <div class="layout-debug-panel" id="debug-panel">
     <h4 style="margin-top: 0;">Informacje debugowania:</h4>
     <div id="debug-content">Wybierz układ, aby zobaczyć szczegóły.</div>
+</div>
+
+<!-- Panel debugowania dla kroku 3 -->
+<div class="step3-debug-panel">
+    <h4>Debug Kroku 3 - Wybór Układu</h4>
+    <div id="step3-current-choice">
+        <p>Aktualny wybór: <strong><?php echo htmlspecialchars($current_choice); ?></strong></p>
+    </div>
+    <div id="step3-layout-analysis" style="display: none;">
+        <p>Analiza wybranego układu:</p>
+        <pre id="step3-analysis-details"></pre>
+    </div>
 </div>
 
 <script>
@@ -77,13 +112,49 @@ jQuery(document).ready(function($) {
         }));
     }
     
+    function analyzeLayoutChoice() {
+        var selectedInput = $('input[name="krok3"]:checked');
+        if (selectedInput.length === 0) return;
+        
+        var selectedValue = selectedInput.val();
+        $('#step3-current-choice strong').text(selectedValue);
+        
+        // Analizuj układ
+        var layoutMatch = selectedValue.match(/X(\d+)/);
+        var slotsCount = layoutMatch ? parseInt(layoutMatch[1]) : 1;
+        var isVertical = selectedValue.toUpperCase().includes('PIONOWY');
+        
+        // Pokaż analizę
+        var analysisText = 'Układ: ' + selectedValue + '\n' +
+                          'Liczba slotów: ' + slotsCount + '\n' +
+                          'Orientacja: ' + (isVertical ? 'PIONOWY' : 'POZIOMY') + '\n' +
+                          'Przewidywana klasa CSS: ' + (isVertical ? 'vertical' : 'horizontal');
+        
+        $('#step3-analysis-details').text(analysisText);
+        $('#step3-layout-analysis').show();
+        
+        // Zapisz do lokalnego magazynu dla kroku 4
+        try {
+            localStorage.setItem('krok3_selected_layout', selectedValue);
+            localStorage.setItem('krok3_slots_count', slotsCount);
+            localStorage.setItem('krok3_is_vertical', isVertical ? '1' : '0');
+        } catch (e) {
+            console.error('Błąd zapisywania do localStorage', e);
+        }
+    }
+    
     // Nasłuchuj zmiany wyboru
     $('input[name="krok3"]').on('change', function() {
         analyzeSelectedLayout();
+        analyzeLayoutChoice();
+        
+        // Wyślij do konsoli dla celów diagnostycznych
+        console.log('Zmieniono wybór na:', $(this).val());
     });
     
     // Sprawdź czy jest już coś wybrane
     analyzeSelectedLayout();
+    analyzeLayoutChoice();
 });
 </script>
 

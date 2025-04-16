@@ -500,63 +500,55 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <?php
 // Pobierz wybrany układ z sesji
-$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : '';
+$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : 'Nie wybrano';
+error_log('KONFIGURATOR krok4: Opcja wybrana w kroku 3: "' . $selected_option . '"');
 
-// Określ liczbę slotów na podstawie nazwy opcji (istniejący kod)
+// Dokładne wyświetlenie zawartości sesji dla celów diagnostycznych
+error_log('KONFIGURATOR krok4: Zawartość $_SESSION[\'configurator\']: ' . print_r($_SESSION['configurator'] ?? [], true));
+
+// Wyciągnij liczbę z nazwy układu
 $slots_count = 1; // Domyślnie dla X1
 if (preg_match('/X(\d+)/', $selected_option, $matches)) {
     $slots_count = intval($matches[1]);
 }
 
-// Główna zmiana - sprawdź czy nazwa zawiera słowo "PIONOWY"
+// Sprawdź czy nazwa zawiera słowo "PIONOWY"
 $is_vertical = (stripos($selected_option, 'PIONOWY') !== false);
 
-// Ustaw odpowiednią klasę kontenera
+// Ustaw klasę kontenera
 $container_class = $is_vertical ? 'slots-container vertical' : 'slots-container horizontal';
 
-// Możemy dodać informację debugującą
-error_log('[KONFIGURATOR] Krok 4: Wybór="' . $selected_option . '", Slotów=' . $slots_count . ', Układ=' . ($is_vertical ? 'pionowy' : 'poziomy'));
+// Dodaj jeden jasny i czytelny panel debugowania
 ?>
 
 <style>
-.step4-debug-panel {
-    background-color: #fff3cd;
-    border: 1px solid #ffeeba;
-    padding: 10px;
-    margin: 10px 0 20px 0;
+.unified-debug-panel {
+    background-color: #e9f5ff;
+    border: 1px solid #a8d1ff;
+    padding: 12px;
+    margin: 15px 0 20px 0;
     border-radius: 5px;
     font-family: monospace;
+    line-height: 1.5;
+}
+.unified-debug-panel h4 {
+    margin-top: 0;
+    color: #0066cc;
+    border-bottom: 1px solid #cce5ff;
+    padding-bottom: 5px;
 }
 </style>
 
-<div class="step4-debug-panel">
-    <h4 style="margin-top: 0;">Debug kroku 4:</h4>
-    <div>
-        <strong>Opcja wybrana w kroku 3:</strong> <?php echo htmlspecialchars($selected_option); ?><br>
-        <strong>Wyciągnięta liczba slotów:</strong> <?php echo $slots_count; ?><br>
-        <strong>Wykryta orientacja:</strong> <?php echo $is_vertical ? 'pionowy' : 'poziomy'; ?><br>
-        <strong>Zastosowana klasa CSS:</strong> <?php echo $container_class; ?>
-    </div>
+<!-- Jeden ujednolicony panel debugowania -->
+<div class="unified-debug-panel">
+    <h4>Debug Kroku 4 - Analiza Układu</h4>
+    <pre>
+Opcja wybrana w kroku 3: "<?php echo htmlspecialchars($selected_option); ?>"
+Wyciągnięta liczba slotów: <?php echo $slots_count; ?>
+Wykryta orientacja: <?php echo $is_vertical ? 'PIONOWY' : 'POZIOMY'; ?>
+Zastosowana klasa CSS: <?php echo $container_class; ?>
+    </pre>
 </div>
-
-<script>
-jQuery(document).ready(function($) {
-    // Pobierz zapisane informacje z kroku 3 (jeśli są)
-    try {
-        var savedDebugInfo = localStorage.getItem('debug_layout_info');
-        if (savedDebugInfo) {
-            var debugInfo = JSON.parse(savedDebugInfo);
-            console.log('Informacje zapisane w kroku 3:', debugInfo);
-        }
-    } catch (e) {
-        console.error('Błąd odczytu danych debugowania:', e);
-    }
-    
-    // Sprawdź aktualną klasę kontenera slotów
-    var actualContainerClass = $('.slots-container').attr('class');
-    console.log('Aktualna klasa kontenera slotów:', actualContainerClass);
-});
-</script>
 
 <?php
 // Reszta istniejącego kodu generowania slotów
