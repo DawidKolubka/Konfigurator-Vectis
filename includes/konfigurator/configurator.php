@@ -256,3 +256,14 @@ function kv_add_order($order_number, $all_items) {
     // return $wpdb->insert_id;
     return rand(1000, 9999);
 }
+
+// Funkcja do obsługi zapisu wybranego układu do sesji
+function kv_save_selected_layout() {
+    if (isset($_POST['layout'])) {
+        $_SESSION['selected_layout'] = sanitize_text_field($_POST['layout']);
+        wp_send_json_success('Layout saved');
+    }
+    wp_send_json_error('No layout provided');
+}
+add_action('wp_ajax_save_selected_layout', 'kv_save_selected_layout');
+add_action('wp_ajax_nopriv_save_selected_layout', 'kv_save_selected_layout');

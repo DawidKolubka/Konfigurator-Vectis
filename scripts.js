@@ -14,6 +14,47 @@ jQuery(document).ready(function($) {
         }).open();
     });
     
+    // Obsługa zmiany układu w kroku "Układ"
+    $(document).on('click', '.layout-option', function() {
+        var layoutType = $(this).data('layout-type') || '';
+        
+        // Zapisujemy wybrany typ układu w sessionStorage
+        sessionStorage.setItem('selectedLayoutType', layoutType);
+        
+        console.log('Zapisano układ: ' + layoutType);
+    });
+    
+    // Funkcja sprawdzająca układ przy ładowaniu strony
+    function checkLayoutAndApplyStyles() {
+        // Sprawdzamy czy jesteśmy w kroku Mechanizmy
+        if ($('#konfigurator-step-mechanizmy').length || $('.mechanizm-container').length) {
+            var selectedLayout = sessionStorage.getItem('selectedLayoutType') || '';
+            console.log('Odczytano układ: ' + selectedLayout);
+            
+            // Sprawdzamy czy wybrany został układ pionowy
+            if (selectedLayout.toLowerCase().includes('pionowy')) {
+                // Zastosuj styl dla układu pionowego
+                $('.mechanizm-container').removeClass('horizontal-layout').addClass('vertical-layout');
+                console.log('Zastosowano układ pionowy');
+            } else {
+                // Domyślnie układ poziomy
+                $('.mechanizm-container').removeClass('vertical-layout').addClass('horizontal-layout');
+                console.log('Zastosowano układ poziomy');
+            }
+        }
+    }
+    
+    // Wykonaj sprawdzenie po załadowaniu strony
+    checkLayoutAndApplyStyles();
+    
+    // Nasłuchuj na zdarzenia nawigacji konfiguratora
+    $(document).on('click', '.btn-next, .btn-prev', function() {
+        // Opóźnienie, aby dać czas na załadowanie nowego kroku
+        setTimeout(function() {
+            checkLayoutAndApplyStyles();
+        }, 300);
+    });
+
     // Sprawdzanie typu układu i dostosowanie wyglądu slotów w kroku Mechanizmy
     function adjustSlotsLayout() {
         // Sprawdzamy, czy jesteśmy w kroku Mechanizmy
@@ -268,4 +309,68 @@ jQuery(document).ready(function($) {
       $parent.append($techSection);
     }
   
-  });
+    // Funkcja zapisująca wybór układu
+    function selectLayout(layoutType) {
+        // Zapisz w sesji przeglądarki
+        sessionStorage.setItem('selectedLayoutType', layoutType);
+        
+        // Zaktualizuj również dane sesji PHP (poprzez AJAX)
+        jQuery.ajax({
+            url: ajaxurl || kv_ajax_object.ajax_url, // Preferuj zdefiniowaną zmienną ajaxurl lub obiekt konfiguracyjny
+            type: 'POST',
+            data: {
+                action: 'save_selected_layout', // Nazwa akcji używanej w WordPress
+                layout: layoutType,
+                security: kv_ajax_object.nonce || '' // Jeśli używasz nonce dla bezpieczeństwa
+            },
+            success: function(response) {
+                console.log('Zapisano układ: ' + layoutType);
+            },
+            error: function(error) {
+                console.log('Błąd zapisywania układu: ', error);
+            }
+        });
+        
+        // Dodaj dodatkowe działania wyboru układu, jeśli są potrzebne
+        // ...
+    }
+    
+    // Sprawdzanie układu przy ładowaniu strony
+    jQuery(document).ready(function($) {
+        // Debugowanie - wyświetl informacje o zapisanym układzie
+        var currentLayout = sessionStorage.getItem('selectedLayoutType');
+        console.log('Inicjalizacja konfiguratora, zapisany układ: ' + currentLayout);
+        
+        // Funkcja do sprawdzania i aplikowania stylów układu
+        function checkLayoutAndApplyStyles() {
+            if ($('#konfigurator-step-mechanizmy').length || $('.mechanizm-container').length) {
+                var selectedLayout = sessionStorage.getItem('selectedLayoutType') || '';
+                console.log('Odczytano układ: ' + selectedLayout);
+                
+                // Sprawdzamy czy wybrany został układ pionowy
+                if (selectedLayout.toLowerCase().includes('pionowy')) {
+                    // Zastosuj styl dla układu pionowego
+                    $('.mechanizm-container').removeClass('horizontal-layout').addClass('vertical-layout');
+                    console.log('Zastosowano układ pionowy');
+                } else {
+                    // Domyślnie układ poziomy
+                    $('.mechanizm-container').removeClass('vertical-layout').addClass('horizontal-layout');
+                    console.log('Zastosowano układ poziomy');
+                }
+            }
+        }
+        
+        // Wykonaj sprawdzenie po załadowaniu strony
+        checkLayoutAndApplyStyles();
+        
+        // Sprawdź układ po przejściu do następnego kroku
+        $(document).on('click', '.btn-next, .btn-prev', function() {
+            console.log('Nawigacja, aktualny układ: ' + sessionStorage.getItem('selectedLayoutType'));
+            
+            // Opóźnienie dla załadowania nowego kroku
+            setTimeout(function() {
+                checkLayoutAndApplyStyles();
+            }, 300);
+        });
+    });
+});

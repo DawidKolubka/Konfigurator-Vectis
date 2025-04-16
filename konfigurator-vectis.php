@@ -63,6 +63,15 @@ function kv_enqueue_configurator_assets() {
 }
 add_action('wp_enqueue_scripts', 'kv_enqueue_configurator_assets');
 
+// Przekazywanie parametrów AJAX do JavaScript
+function kv_enqueue_ajax_data() {
+    wp_localize_script('kv-konfigurator-js', 'kv_ajax_object', array(
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('kv_ajax_nonce')
+    ));
+}
+add_action('wp_enqueue_scripts', 'kv_enqueue_ajax_data');
+
 
 
 

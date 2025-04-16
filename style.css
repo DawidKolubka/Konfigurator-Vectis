@@ -332,3 +332,102 @@ select#kolor-mechanizmu-selector {
     margin-top: 0;
     margin-left: 20px;
 }
+
+/* Kontener mechanizmów - układy */
+.mechanizm-container {
+    margin: 20px 0;
+    width: 100%;
+}
+
+/* Układ poziomy (domyślny) */
+.mechanizm-container.horizontal-layout .slot-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+
+.mechanizm-container.horizontal-layout .mechanizm-slot {
+    width: 120px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.mechanizm-container.horizontal-layout .mechanizm-slot img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.mechanizm-container.horizontal-layout .slot-info {
+    margin-top: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Układ pionowy */
+.mechanizm-container.vertical-layout .slot-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.mechanizm-container.vertical-layout .mechanizm-slot {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+
+.mechanizm-container.vertical-layout .mechanizm-slot img {
+    width: 60px;
+    height: auto;
+    margin-right: 15px;
+    border: 1px solid #ddd;
+    padding: 3px;
+    background: white;
+}
+
+.mechanizm-container.vertical-layout .slot-info {
+    flex: 1;
+}
+
+.mechanizm-container.vertical-layout .slot-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+}
+
+.mechanizm-container.vertical-layout .slot-details {
+    font-size: 12px;
+    color: #555;
+}
+
+/* Style dla karty wybranego mechanizmu */
+.selected-mechanizm {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #f5f5f5;
+}
+
+/* Ogólne style dla slotów */
+.mechanizm-slot {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mechanizm-slot.selected {
+    border-color: #0073aa;
+    box-shadow: 0 0 5px rgba(0, 115, 170, 0.5);
+}
+
+.mechanizm-slot:hover {
+    transform: translateY(-2px);
+}
