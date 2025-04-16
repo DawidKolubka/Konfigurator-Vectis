@@ -366,3 +366,121 @@ select#kolor-mechanizmu-selector {
 .slot-header {
     margin-bottom: 10px;
 }
+
+/* Styl dla ramki-slots - kontener główny */
+.ramka-slots {
+  margin: 20px 0;
+  position: relative;
+}
+
+/* Kontener obrazu ramki */
+.ramka-image-container {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* Układ POZIOMY - sloty obok siebie */
+.ramka-slots.horizontal .slot {
+  display: inline-block;
+  width: 45%;
+  margin: 10px 2%;
+  vertical-align: top;
+  min-height: 120px;
+}
+
+/* Układ PIONOWY - sloty jeden pod drugim */
+.ramka-slots.vertical .slot {
+  display: block;
+  width: 90%;
+  margin: 15px auto;
+  min-height: 100px;
+}
+
+/* Style dla pojedynczego slotu */
+.slot {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  background: #f9f9f9;
+  position: relative;
+}
+
+.slot:hover {
+  border-color: #999;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/* Poprawa wyświetlania obrazka w slocie */
+.slot img {
+  max-width: 100px;
+  max-height: 80px;
+  display: block;
+  margin: 0 auto 15px;
+}
+
+/* Podsumowanie slotu */
+.slot-summary {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 15px;
+  text-align: left;
+}
+
+.slot-summary div {
+  margin-bottom: 5px;
+}
+
+/* Panel ustawień slotu */
+.slot-settings-panel {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.edit-panel-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.edit-panel-content p {
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.edit-panel-content select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#close-slot-settings {
+  margin-top: 15px;
+  padding: 8px 15px;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#close-slot-settings:hover {
+  background: #ddd;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  /* Na małych ekranach nawet w układzie poziomym wyświetlamy jeden pod drugim */
+  .ramka-slots.horizontal .slot {
+    width: 90%;
+    margin: 10px auto;
+    display: block;
+  }
+}
