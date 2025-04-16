@@ -185,7 +185,6 @@ foreach ($technologia_options as $tech_index => $tech) {
     <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>">
         <?php if ($uklad_image): ?>
             <div class="ramka-image-container" style="position: relative;">
-                <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
                 <?php
                 // Generowanie slotów (zakładając, że są wewnątrz ramka-image-container)
                 // Jeśli sloty są generowane gdzie indziej, klasę trzeba dodać do ich bezpośredniego kontenera
