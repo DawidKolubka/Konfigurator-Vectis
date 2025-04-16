@@ -134,28 +134,9 @@ if (isset($_SESSION['configurator']['krok3'])) {
     $selected_option = $_SESSION['configurator']['krok3'];
 }
 
-// Debugowanie
-error_log('Wybrana opcja w kroku 3: ' . $selected_option);
-
-// Sprawdzamy czy opcja zawiera "POZIOMY"
-$is_horizontal = (stripos($selected_option, 'POZIOMY') !== false);
-$container_class = $is_horizontal ? 'slots-container horizontal' : 'slots-container vertical';
-
 // Dodaj ukryte pole z informacją o wybranym układzie
 echo '<input type="hidden" id="selected_layout_type" value="' . ($is_horizontal ? 'horizontal' : 'vertical') . '" />';
-
-// Debugowanie
-error_log('Wybrana klasa kontenera: ' . $container_class);
 ?>
-
-<!-- Debug panel dla kroku 4 -->
-<div class="debug-panel" style="background-color: #fff0f5; border: 1px solid #ffb6c1; padding: 10px; margin-bottom: 20px; border-radius: 5px;">
-    <p style="margin: 0; font-family: monospace;">
-        <strong>Debug - Wybór z kroku 3:</strong> <?php echo htmlspecialchars($selected_option); ?><br>
-        <strong>Typ układu:</strong> <?php echo $is_horizontal ? 'poziomy' : 'pionowy'; ?><br>
-        <strong>Klasa kontenera:</strong> <span id="debug-container-class"><?php echo $container_class; ?></span>
-    </p>
-</div>
 
 <div class="step-content">
     <h2>Krok 4: Wybierz mechanizmy i kolor ramki</h2>
@@ -377,9 +358,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const techInput = document.getElementById(`technologia_${slotIndex}`);
             techInput.value = chosenTechID;
             
-            // Debug - wypisujemy wartość wybranej technologii
-            console.log(`Zmieniono technologię dla slotu ${slotIndex}: ID=${chosenTechID}`);
-            
             const chosenTech = relTech.find(t => t.ID == chosenTechID);
             const newColor = chosenTech ? chosenTech.colorName : '';
             document.getElementById(`kolor_mechanizmu_${slotIndex}`).value = newColor;
@@ -456,9 +434,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const techField = document.getElementById(`technologia_${i}`);
                     const colorField = document.getElementById(`kolor_mechanizmu_${i}`);
                     
-                    // Debug - wypisanie wartości pól przed walidacją
-                    console.log(`Walidacja slotu ${i+1}: mechanizm=${mechField?.value}, technologia=${techField?.value}, kolor=${colorField?.value}`);
-                    
                     if (!mechField || !mechField.value) {
                         errorMessages.push(`Slot ${i+1} nie ma wybranego mechanizmu.`);
                         valid = false;
@@ -487,24 +462,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Wywołaj na starcie, aby odpowiednio oznaczyć wypełnione sloty
     updateSlotBorders();
-    
-    // Debug - wypisz zawartość pól na starcie
-    console.log("Inicjalne wartości pól:");
-    for (let i = 0; i < <?php echo $ileSlotow; ?>; i++) {
-        const mechField = document.getElementById(`mechanizm_${i}`);
-        const techField = document.getElementById(`technologia_${i}`);
-        const colorField = document.getElementById(`kolor_mechanizmu_${i}`);
-        console.log(`Slot ${i+1}: mechanizm=${mechField?.value}, technologia=${techField?.value}, kolor=${colorField?.value}`);
-    }
 });
-</script>
 <?php
 // Pobierz wybrany układ z sesji
 $selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : 'Nie wybrano';
-error_log('KONFIGURATOR krok4: Opcja wybrana w kroku 3: "' . $selected_option . '"');
-
-// Dokładne wyświetlenie zawartości sesji dla celów diagnostycznych
-error_log('KONFIGURATOR krok4: Zawartość $_SESSION[\'configurator\']: ' . print_r($_SESSION['configurator'] ?? [], true));
 
 // Wyciągnij liczbę z nazwy układu
 $slots_count = 1; // Domyślnie dla X1
