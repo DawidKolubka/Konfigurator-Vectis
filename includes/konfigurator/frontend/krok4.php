@@ -178,21 +178,7 @@ foreach ($technologia_options as $tech_index => $tech) {
             <?php
             // Fragment kodu PHP generujący sloty w kroku Mechanizmy
             ?>
-            <div class="slots-container">
-                <?php foreach ($slots as $slot): ?>
-                <div class="slot" data-slot-id="<?php echo esc_attr($slot['slot_index']); ?>">
-                    <?php if (!empty($slot['image'])): ?>
-                    <img src="<?php echo esc_url($slot['image']); ?>" alt="Slot <?php echo esc_attr($slot['slot_index']); ?>">
-                    <?php endif; ?>
-                    <div class="slot-summary">
-                        <?php if (!empty($slot['name'])): ?>
-                        <div><?php echo esc_html($slot['name']); ?></div>
-                        <?php endif; ?>
-                        <!-- Inne informacje o slocie -->
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
+
             <div class="slots-container">
                 <?php
                 $empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
