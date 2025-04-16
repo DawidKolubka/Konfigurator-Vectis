@@ -84,6 +84,13 @@ if (preg_match('/X(\d+)/i', $layoutName, $matches)) {
     $ileSlotow = 2;
 }
 
+// --- NOWA LOGIKA: Określenie klasy orientacji ---
+$orientation_class = 'vertical'; // Domyślnie pionowy
+if (stripos($layoutName, 'POZIOMY') !== false) {
+    $orientation_class = 'horizontal'; // Zmień na poziomy, jeśli nazwa zawiera "POZIOMY"
+}
+// --- KONIEC NOWEJ LOGIKI ---
+
 // Tuż po określeniu zmiennej $ileSlotow i $orientacja, a przed linią 169
 $slots = [];
 for ($i = 0; $i < $ileSlotow; $i++) {
@@ -170,18 +177,14 @@ foreach ($technologia_options as $tech_index => $tech) {
     </div>
 
     <!-- (B) Ramka z interaktywnymi slotami -->
-    <div class="ramka-slots">
+    <?php // --- ZMIANA: Dodanie klasy $orientation_class --- ?>
+    <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>">
         <?php if ($uklad_image): ?>
-            <div class="ramka-image-container">
+            <div class="ramka-image-container" style="position: relative;">
                 <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
-            </div>
-            <?php
-            // Fragment kodu PHP generujący sloty w kroku Mechanizmy
-            ?>
-
-            <div class="slots-container">
                 <?php
-                $empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
+                // Generowanie slotów (zakładając, że są wewnątrz ramka-image-container)
+                // Jeśli sloty są generowane gdzie indziej, klasę trzeba dodać do ich bezpośredniego kontenera
                 for ($i = 0; $i < $ileSlotow; $i++):
                     $mechID = $slotData[$i]['mechanizm'];
                     $slotImg = $empty_slot_img;

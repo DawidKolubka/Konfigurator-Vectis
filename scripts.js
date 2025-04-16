@@ -80,21 +80,34 @@ jQuery(document).ready(function($) {
   }
 
   /** Funkcja rysująca "ile" slotów z grafiką wybor.svg w rzędzie */
-  function renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData, orientacja) {
-    const $wrapper = $('<div style="display:flex; gap:20px; flex-wrap:wrap;"></div>');
+  function renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData, orientacja = 'vertical') {
+    // Upewnij się, że kontener ma właściwą klasę orientacji
+    const $wrapper = $('<div class="slots-container ' + orientacja + '" style="display:flex; gap:20px; flex-wrap:wrap;"></div>');
 
     for (let i = 0; i < ile; i++) {
-      const $slot = $('<div style="text-align:center;"></div>');
+      const $slot = $('<div class="slot" data-slot="' + i + '" style="text-align:center; cursor:pointer;"></div>');
       const $img = $('<img>')
         .attr('src', 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg')
-        .css({ width:'100px', cursor:'pointer' });
+        .attr('id', 'slot-img-' + i)
+        .css({ width:'100px' });
       
-      // Klik -> pokazujemy mechanizmy
-      $img.on('click', function() {
-        showMechanizmOptions($slot, mechanizmData, technologiaData);
-      });
+      // Dodajemy opis pod obrazkiem
+      const $summary = $('<div class="slot-summary"></div>');
+      $summary.html(
+        '<div><strong>Slot ' + (i+1) + '</strong></div>' +
+        '<div>Mechanizm: <span id="slot-mech-name-' + i + '">—</span></div>' +
+        '<div>Technologia: <span id="slot-tech-summary-' + i + '">—</span></div>' +
+        '<div>Kolor: <span id="slot-color-summary-' + i + '">—</span></div>'
+      );
 
-      $slot.append($img);
+      // Ukryte pola formularza
+      const $hiddenFields = $(
+        '<input type="hidden" name="mechanizm_' + i + '" id="mechanizm_' + i + '" value="">' +
+        '<input type="hidden" name="technologia_' + i + '" id="technologia_' + i + '" value="">' +
+        '<input type="hidden" name="kolor_mechanizmu_' + i + '" id="kolor_mechanizmu_' + i + '" value="">'
+      );
+
+      $slot.append($img).append($summary).append($hiddenFields);
       $wrapper.append($slot);
     }
 
@@ -103,44 +116,12 @@ jQuery(document).ready(function($) {
 
   /** Podobnie - pionowy układ */
   function renderGrafikiPionowe(ile, $container, mechanizmData, technologiaData) {
-    const $wrapper = $('<div style="display:flex; flex-direction:column; align-items:center; gap:20px;"></div>');
-    
-    for (let i = 0; i < ile; i++) {
-      const $slot = $('<div style="text-align:center;"></div>');
-      const $img = $('<img>')
-        .attr('src', 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg')
-        .css({ width:'100px', cursor:'pointer' });
-
-      $img.on('click', function() {
-        showMechanizmOptions($slot, mechanizmData, technologiaData);
-      });
-
-      $slot.append($img);
-      $wrapper.append($slot);
-    }
-
-    $container.append($wrapper);
+    renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData, 'vertical');
   }
 
   /** Podobnie - poziomy układ */
   function renderGrafikiPoziome(ile, $container, mechanizmData, technologiaData) {
-    const $wrapper = $('<div style="display:flex; flex-direction:row; gap:20px;"></div>');
-
-    for (let i = 0; i < ile; i++) {
-      const $slot = $('<div style="text-align:center;"></div>');
-      const $img = $('<img>')
-        .attr('src', 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg')
-        .css({ width:'100px', cursor:'pointer' });
-
-      $img.on('click', function() {
-        showMechanizmOptions($slot, mechanizmData, technologiaData);
-      });
-
-      $slot.append($img);
-      $wrapper.append($slot);
-    }
-
-    $container.append($wrapper);
+    renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData, 'horizontal');
   }
 
   /**
