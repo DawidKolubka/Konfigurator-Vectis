@@ -223,48 +223,55 @@ jQuery(document).ready(function($) {
     $parent.append($techSection);
   }
 
-  // Funkcja sprawdzająca czy wybrany układ powinien być poziomy
+  // Zmodyfikowana funkcja sprawdzająca typ układu
   function checkLayoutOrientation() {
-    // Debugowanie - sprawdzamy wszystkie inputy
-    console.log("Wszystkie inputy krok3:", $('input[name="krok3"]').map(function() {
-      return {
-        value: $(this).val(),
-        checked: $(this).prop('checked'),
-        text: $(this).next('label').text() || "brak tekstu"
-      };
-    }).get());
+    // Sprawdź ukrytą wartość z PHP
+    var layoutType = $('#selected_layout_type').val();
+    var selectedOption = $('#selected_layout_option').val();
     
-    // Sprawdzamy wybór z kroku 3
-    var krok3Value = $('input[name="krok3"]:checked').val() || '';
-    var krok3Text = $('input[name="krok3"]:checked').next('label').text() || '';
+    console.log("Sprawdzam układ - typ:", layoutType, "opcja:", selectedOption);
     
-    console.log("Zaznaczony element:", krok3Value, "Tekst:", krok3Text);
+    // Sprawdź na podstawie nazwy opcji
+    var isHorizontal = false;
     
-    // Sprawdzamy czy zawiera słowo "POZIOMY" (sprawdzamy zarówno wartość jak i tekst etykiety)
-    if (krok3Value.toUpperCase().indexOf('POZIOMY') !== -1 || 
-        krok3Text.toUpperCase().indexOf('POZIOMY') !== -1) {
-      console.log("Wykryto POZIOMY - ustawiam horizontal");
+    if (layoutType === 'horizontal' || (selectedOption && selectedOption.toUpperCase().indexOf('POZIOMY') !== -1)) {
+      isHorizontal = true;
+    }
+    
+    // Ustaw odpowiednią klasę
+    if (isHorizontal) {
+      console.log("Ustawiam układ POZIOMY");
       $('.slots-container').removeClass('vertical').addClass('horizontal');
     } else {
-      console.log("Brak POZIOMY - ustawiam vertical");
+      console.log("Ustawiam układ PIONOWY");
       $('.slots-container').removeClass('horizontal').addClass('vertical');
     }
+    
+    // Sprawdź czy zmiany faktycznie zostały zastosowane
+    setTimeout(function() {
+      console.log("Klasy po zmianie:", $('.slots-container').attr('class'));
+    }, 50);
   }
   
   // Uruchamiamy przy zmianie wyboru w kroku 3
-  $('input[name="krok3"]').on('change', function() {
-    console.log("Zmieniono wybór w kroku 3");
-    // Aktualizuj układ po przejściu do kroku 4
-    setTimeout(checkLayoutOrientation, 100);
+  $(document).on('change', 'input[name="krok3"]', function() {
+    console.log("Zmieniono wybór w kroku 3:", $(this).val());
+    // Zapisz wybór do ukrytego pola
+    $('#temp_selected_option').val($(this).val());
   });
   
   // Sprawdź układ po załadowaniu kroku 4
   $(document).on('configurator_step_loaded', function(e, stepId) {
     console.log("Załadowano krok:", stepId);
     if (stepId === 4) {
-      checkLayoutOrientation();
+      setTimeout(checkLayoutOrientation, 100);
     }
   });
+  
+  // Jeśli już jesteśmy w kroku 4, sprawdź układ
+  if ($('.configurator-step#krok4').length > 0) {
+    setTimeout(checkLayoutOrientation, 100);
+  }
 
   // Dodatkowe bezpośrednie sprawdzenie po załadowaniu dokumentu
   if ($('#step4-container').length || $('.slots-container').length) {

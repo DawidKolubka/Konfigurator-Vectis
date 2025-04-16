@@ -123,134 +123,77 @@ foreach ($technologia_options as $tech_index => $tech) {
     ];
 }
 
-// Sprawdzanie czy wybór z kroku 3 zawiera słowo "POZIOMY"
-$selected_option = '';
-if (isset($_SESSION['configurator']['krok3'])) {
-    $selected_option = $_SESSION['configurator']['krok3'];
-}
+// Sprawdzanie czy wybór z kroku 3 jest z grupy POZIOMY
+$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : '';
 
-// Debugowanie
-error_log('Wybrana opcja w kroku 3: ' . $selected_option);
+// Zapisz do logu wartość dla debugowania
+error_log('[KONFIGURATOR] Wybrana opcja w kroku 3: ' . $selected_option);
 
-// Sprawdzamy czy opcja zawiera "POZIOMY"
+// Sprawdź czy opcja zawiera "POZIOMY" - wtedy ustawia układ poziomy
+// W przeciwnym razie ustaw układ pionowy (dla X1 lub X-PIONOWY)
 $is_horizontal = (stripos($selected_option, 'POZIOMY') !== false);
 $container_class = $is_horizontal ? 'slots-container horizontal' : 'slots-container vertical';
 
-// Dodaj ukryte pole z informacją o wybranym układzie
-echo '<input type="hidden" id="selected_layout_type" value="' . ($is_horizontal ? 'horizontal' : 'vertical') . '" />';
-
-// Debugowanie
-error_log('Wybrana klasa kontenera: ' . $container_class);
+// Zapisz do logu informację o wybranej klasie
+error_log('[KONFIGURATOR] Ustawiona klasa kontenera: ' . $container_class);
 ?>
 
-<div class="step-content">
-    <h2>Krok 4: Wybierz mechanizmy i kolor ramki</h2>
-
-    <?php if (!empty($message)): ?>
-        <div class="message-box">
-            <?php echo esc_html($message); ?>
-        </div>
-    <?php endif; ?>
-
-    <!-- (A) Wybór koloru ramki -->
-    <div class="ramka-color-selector">
-        <h3>Wybierz kolor ramki</h3>
-        <select name="kolor_ramki" id="kolor_ramki">
-            <option value="">— Wybierz kolor —</option>
-            <?php foreach ($kolor_ramki_options as $colorIndex => $colorData): ?>
-                <?php if (!isset($colorData['name'])) continue; ?>
-                <?php $sel = ($colorIndex == $selected_color_index) ? 'selected' : ''; ?>
-                <option value="<?php echo esc_attr($colorIndex); ?>" <?php echo $sel; ?>
-                        data-img="<?php echo esc_attr($colorData['image'] ?? ''); ?>">
-                    <?php echo esc_html($colorData['name']); ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <div class="preview-img-container">
-            <?php if ($initial_img): ?>
-                <img id="preview-img" src="<?php echo esc_url($initial_img); ?>" alt="Podgląd koloru">
-            <?php else: ?>
-                <img id="preview-img" src="" alt="Podgląd koloru" style="display:none;">
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- (B) Ramka z interaktywnymi slotami -->
-    <div class="ramka-slots">
-        <?php if ($uklad_image): ?>
-            <div class="ramka-image-container">
-                <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
+<div class="configurator-step" id="krok4">
+    <h2>Krok 4: Wybierz elementy</h2>
+    
+    <!-- Dodajemy ukryte pole dla JavaScript -->
+    <input type="hidden" id="selected_layout_type" value="<?php echo $is_horizontal ? 'horizontal' : 'vertical'; ?>" />
+    <input type="hidden" id="selected_layout_option" value="<?php echo htmlspecialchars($selected_option); ?>" />
+    
+    <!-- Tu używamy zmiennej, a nie hardkodowanej klasy -->
+    <div class="<?php echo $container_class; ?>">
+        <?php
+        // Określamy liczbę slotów na podstawie wybranej opcji w kroku 3
+        $slots_count = 1; // Domyślnie dla X1
+        
+        if (isset($_SESSION['configurator']['krok3'])) {
+            // Wyciągamy liczbę z nazwy opcji (np. X2, X3)
+            if (preg_match('/X(\d+)/', $_SESSION['configurator']['krok3'], $matches)) {
+                $slots_count = intval($matches[1]);
+            }
+        }
+        
+        // Generujemy odpowiednią liczbę slotów
+        for ($i = 0; $i < $slots_count; $i++) {
+            ?>
+            <div class="slot" data-slot-id="<?php echo $i; ?>">
+                <div class="slot-header">
+                    <h3>Element <?php echo ($i + 1); ?></h3>
+                </div>
+                <div class="slot-content">
+                    <!-- Zawartość slotów -->
+                </div>
             </div>
-            <div class="<?php echo $container_class; ?>">
-                <?php
-                $empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
-                for ($i = 0; $i < $ileSlotow; $i++):
-                    $mechID = $slotData[$i]['mechanizm'];
-                    $slotImg = $empty_slot_img;
-                    if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
-                        $slotImg = $mechanizm_options[$mechID]['frame_image'];
-                    }
-                ?>
-                    <div class="slot" data-slot="<?php echo $i; ?>">
-                        <img id="slot-img-<?php echo $i; ?>" src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo ($i+1); ?>">
-                        <div class="slot-summary">
-                            <div><b>Mechanizm:</b> <span id="slot-mech-name-<?php echo $i; ?>">
-                                <?php echo (!empty($mechID) && isset($mechanizm_options[$mechID]['name'])) ? esc_html($mechanizm_options[$mechID]['name']) : 'Brak'; ?>
-                            </span></div>
-                            <div><b>Technologia:</b> <span id="slot-tech-summary-<?php echo $i; ?>">
-                                <?php 
-                                $techID = $slotData[$i]['technologia'];
-                                $techName = '—';
-                                if (!empty($techID) && isset($technologia_options[$techID])) {
-                                    $techName = $technologia_options[$techID]['technology'] ?? '—';
-                                }
-                                echo esc_html($techName);
-                                ?>
-                            </span></div>
-                            <div><b>Kolor:</b> <span id="slot-color-summary-<?php echo $i; ?>">
-                                <?php echo ($slotData[$i]['kolor_mechanizmu']) ? esc_html($slotData[$i]['kolor_mechanizmu']) : '—'; ?>
-                            </span></div>
-                        </div>
-                        <!-- Ukryte pola -->
-                        <input type="hidden" name="mechanizm_<?php echo $i; ?>" id="mechanizm_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['mechanizm']); ?>">
-                        <input type="hidden" name="technologia_<?php echo $i; ?>" id="technologia_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['technologia']); ?>">
-                        <input type="hidden" name="kolor_mechanizmu_<?php echo $i; ?>" id="kolor_mechanizmu_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['kolor_mechanizmu']); ?>">
-                    </div>
-                <?php endfor; ?>
-            </div>
-        <?php else: ?>
-            <div>Brak grafiki układu</div>
-        <?php endif; ?>
-    </div>
-
-    <!-- (C) Panel edycji ustawień dla aktywnego slotu (dynamiczny, wstawiany pod klikniętym slotem) -->
-    <div id="slot-settings-panel" class="slot-settings-panel" style="display:none;">
-        <h4>Edycja slotu <span id="active-slot-number"></span></h4>
-        <div class="edit-panel-content">
-            <div class="tech-color-edit">
-                <p>Wybierz technologię:</p>
-                <select id="edit-tech-select" class="edit-tech-select"></select>
-                <p>Wybierz kolor mechanizmu:</p>
-                <select id="edit-color-select" class="edit-color-select"></select>
-            </div>
-        </div>
-        <button type="button" id="close-slot-settings">Zamknij edycję</button>
-    </div>
-
-    <!-- (D) Panel mechanizmów – zawsze widoczny na dole -->
-    <h3>Mechanizmy</h3>
-    <div id="mechanism-list" class="mechanism-list">
-        <?php foreach ($mechanizm_options as $m_index => $mech): 
-            $mName  = $mech['name'] ?? 'Bez nazwy';
-            $mIkona = $mech['frame_image'] ?? $empty_slot_img;
+            <?php
+        }
         ?>
-            <div class="mechanizm-item" data-mech-id="<?php echo esc_attr($m_index); ?>">
-                <img src="<?php echo esc_url($mIkona); ?>" alt="">
-                <div><?php echo esc_html($mName); ?></div>
-            </div>
-        <?php endforeach; ?>
+    </div>
+    
+    <div class="navigation-buttons">
+        <button class="prev-step" data-step="3">WSTECZ</button>
+        <button class="next-step" data-step="5">DALEJ</button>
     </div>
 </div>
+
+<!-- Dodajemy skrypt diagnostyczny -->
+<script>
+jQuery(document).ready(function($) {
+    console.log("Wybrana opcja w kroku 3: <?php echo addslashes($selected_option); ?>");
+    console.log("Typ układu: <?php echo $is_horizontal ? 'poziomy' : 'pionowy'; ?>");
+    console.log("Klasa kontenera: <?php echo $container_class; ?>");
+    
+    // Weryfikacja czy kontener ma właściwą klasę
+    setTimeout(function() {
+        var container = $('.slots-container');
+        console.log("Aktualne klasy kontenera:", container.attr('class'));
+    }, 100);
+});
+</script>
 
 <script>
 // Dane z PHP

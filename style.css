@@ -307,20 +307,19 @@ select#kolor-mechanizmu-selector {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 15px;
-  justify-content: space-between;
+  gap: 20px;
 }
 
 .slots-container.horizontal .slot {
-  flex: 0 1 calc(50% - 15px);
-  min-width: 200px; /* Minimalna szerokość slotu */
+  flex: 1 1 300px; /* elastyczna szerokość, min 300px */
+  max-width: 48%; /* maksymalnie około połowy szerokości */
 }
 
 /* Style dla układu pionowego slotów */
 .slots-container.vertical {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 .slots-container.vertical .slot {
