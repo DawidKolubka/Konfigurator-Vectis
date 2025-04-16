@@ -84,6 +84,19 @@ if (preg_match('/X(\d+)/i', $layoutName, $matches)) {
     $ileSlotow = 2;
 }
 
+// Tuż po określeniu zmiennej $ileSlotow i $orientacja, a przed linią 169
+$slots = [];
+for ($i = 0; $i < $ileSlotow; $i++) {
+    $mechanizm_value = isset($_SESSION['kv_configurator']['mechanizm_' . $i]) ? $_SESSION['kv_configurator']['mechanizm_' . $i] : '';
+    $technologia_value = isset($_SESSION['kv_configurator']['technologia_' . $i]) ? $_SESSION['kv_configurator']['technologia_' . $i] : '';
+    
+    $slots[] = [
+        'slot_index' => $i,
+        'mechanizm' => $mechanizm_value,
+        'technologia' => $technologia_value
+    ];
+}
+
 // Kolor ramki
 $selected_color_index = isset($_SESSION['kv_configurator']['kolor_ramki']) ? kv_strip_and_sanitize($_SESSION['kv_configurator']['kolor_ramki']) : '';
 $initial_img = ($selected_color_index !== '' && isset($kolor_ramki_options[$selected_color_index]['image']))
@@ -166,14 +179,14 @@ foreach ($technologia_options as $tech_index => $tech) {
             // Fragment kodu PHP generujący sloty w kroku Mechanizmy
             ?>
             <div class="slots-container">
-                <?php foreach ($slots as $slot_id => $slot_info): ?>
-                <div class="slot" data-slot-id="<?php echo esc_attr($slot_id); ?>">
-                    <?php if (!empty($slot_info['image'])): ?>
-                    <img src="<?php echo esc_url($slot_info['image']); ?>" alt="Slot <?php echo esc_attr($slot_id); ?>">
+                <?php foreach ($slots as $slot): ?>
+                <div class="slot" data-slot-id="<?php echo esc_attr($slot['slot_index']); ?>">
+                    <?php if (!empty($slot['image'])): ?>
+                    <img src="<?php echo esc_url($slot['image']); ?>" alt="Slot <?php echo esc_attr($slot['slot_index']); ?>">
                     <?php endif; ?>
                     <div class="slot-summary">
-                        <?php if (!empty($slot_info['name'])): ?>
-                        <div><?php echo esc_html($slot_info['name']); ?></div>
+                        <?php if (!empty($slot['name'])): ?>
+                        <div><?php echo esc_html($slot['name']); ?></div>
                         <?php endif; ?>
                         <!-- Inne informacje o slocie -->
                     </div>
