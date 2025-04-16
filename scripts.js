@@ -30,25 +30,36 @@ jQuery(document).ready(function($) {
     //    Przykład: jeśli nazwa zawiera "X2" -> 2 sloty, 
     //              jeśli "PIONOWY" -> generujemy np. 2 sloty w pionie, itd.
     //    Możesz zmodyfikować warunki według własnego klucza.
+    let orientacja = 'vertical'; // Domyślna orientacja
+    
     if (layoutName.match(/X(\d+)/i)) {
       // Szukamy liczby po literze X
       const match = layoutName.match(/X(\d+)/i); // np. "X2 POZIOMY" -> ["X2","2"]
       const ile = match ? parseInt(match[1], 10) : 1; // domyślnie 1
-      // Rysujemy sloty w poziomie
-      renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData);
+      
+      // Sprawdzamy orientację
+      if (layoutName.toUpperCase().includes('POZIOM')) {
+        orientacja = 'horizontal';
+      }
+      
+      // Rysujemy sloty z odpowiednią orientacją
+      renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData, orientacja);
 
     } else if (layoutName.toUpperCase().includes('PIONOWY')) {
-      // Rysujemy 2 sloty w pionie (przykład)
+      orientacja = 'vertical';
       renderGrafikiPionowe(2, $container, mechanizmData, technologiaData);
 
     } else if (layoutName.toUpperCase().includes('POZIOMY')) {
-      // Rysujemy 2 sloty w poziomie (przykład)
+      orientacja = 'horizontal';
       renderGrafikiPoziome(2, $container, mechanizmData, technologiaData);
 
     } else {
       // Inny layout, nie rozpoznany
       $container.append('<p>Nie rozpoznano layoutu: '+layoutName+'</p>');
     }
+    
+    // Ustawienie klasy dla kontenera
+    $('.slots-container').removeClass('vertical horizontal').addClass(orientacja);
   }
 
   /** Funkcja do wyświetlenia listy kolorów ramki */
@@ -69,7 +80,7 @@ jQuery(document).ready(function($) {
   }
 
   /** Funkcja rysująca "ile" slotów z grafiką wybor.svg w rzędzie */
-  function renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData) {
+  function renderWyboroweGrafiki(ile, $container, mechanizmData, technologiaData, orientacja) {
     const $wrapper = $('<div style="display:flex; gap:20px; flex-wrap:wrap;"></div>');
 
     for (let i = 0; i < ile; i++) {
@@ -402,5 +413,14 @@ jQuery(document).ready(function($) {
     // Istniejący kod przejścia do następnego kroku
     // ...
   });
+
+  // Funkcja renderująca sloty w zależności od wybranego układu
+  function renderWyboroweGrafiki(ilosc, container, mechanizmData, technologiaData, orientacja = 'vertical') {
+    // Upewnij się, że kontener ma właściwą klasę orientacji
+    container.find('.slots-container').removeClass('vertical horizontal').addClass(orientacja);
+    
+    // Tutaj dalsza logika funkcji, która już istnieje w twoim kodzie
+    // np. tworzenie elementów HTML dla slotów, ustawienie mechanizmów, itd.
+  }
 
 });

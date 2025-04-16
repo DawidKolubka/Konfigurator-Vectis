@@ -53,10 +53,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $layoutName  = isset($uklad_options[$uklad_index]['name']) ? $uklad_options[$uklad_index]['name'] : '';
 
     $ileSlotow = 1;
+    $orientacja = 'vertical'; // Domyślna orientacja
+
     if (preg_match('/X(\d+)/i', $layoutName, $matches)) {
         $ileSlotow = intval($matches[1]);
-    } elseif (stripos($layoutName, 'pionowy') !== false || stripos($layoutName, 'poziomy') !== false) {
+        
+        // Sprawdź czy nazwa zawiera słowo POZIOMY lub POZIOME
+        if (stripos($layoutName, 'poziom') !== false) {
+            $orientacja = 'horizontal';
+        }
+    } elseif (stripos($layoutName, 'pionowy') !== false) {
         $ileSlotow = 2;
+        $orientacja = 'vertical';
+    } elseif (stripos($layoutName, 'poziomy') !== false) {
+        $ileSlotow = 2;
+        $orientacja = 'horizontal';
     }
 
     // Zapis danych dla każdego slotu
@@ -83,10 +94,21 @@ $uklad_index = isset($_SESSION['kv_configurator']['uklad']) ? kv_strip_and_sanit
 $layoutName  = isset($uklad_options[$uklad_index]['name']) ? $uklad_options[$uklad_index]['name'] : '';
 $uklad_image = isset($uklad_options[$uklad_index]['image']) ? $uklad_options[$uklad_index]['image'] : '';
 $ileSlotow   = 1;
+$orientacja = 'vertical'; // Domyślna orientacja
+
 if (preg_match('/X(\d+)/i', $layoutName, $matches)) {
     $ileSlotow = intval($matches[1]);
-} elseif (stripos($layoutName, 'pionowy') !== false || stripos($layoutName, 'poziomy') !== false) {
+    
+    // Sprawdź czy nazwa zawiera słowo POZIOMY lub POZIOME
+    if (stripos($layoutName, 'poziom') !== false) {
+        $orientacja = 'horizontal';
+    }
+} elseif (stripos($layoutName, 'pionowy') !== false) {
     $ileSlotow = 2;
+    $orientacja = 'vertical';
+} elseif (stripos($layoutName, 'poziomy') !== false) {
+    $ileSlotow = 2;
+    $orientacja = 'horizontal';
 }
 
 // Kolor ramki
@@ -176,7 +198,7 @@ echo '<input type="hidden" id="selected_layout_type" value="' . ($is_horizontal 
             <div class="ramka-image-container">
                 <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
             </div>
-            <div class="<?php echo $container_class; ?>">
+            <div class="slots-container <?php echo $orientacja; ?>">
                 <?php
                 $empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
                 for ($i = 0; $i < $ileSlotow; $i++):
