@@ -498,3 +498,50 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<?php
+// Pobierz wybrany układ z sesji
+$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : '';
+
+// Określ liczbę slotów na podstawie nazwy opcji
+$slots_count = 1; // Domyślnie dla X1
+if (preg_match('/X(\d+)/', $selected_option, $matches)) {
+    $slots_count = intval($matches[1]);
+}
+
+// Sprawdź czy nazwa zawiera słowo "PIONOWY"
+$is_vertical = (stripos($selected_option, 'PIONOWY') !== false);
+
+// Ustaw odpowiednią klasę kontenera
+$container_class = $is_vertical ? 'slots-container vertical' : 'slots-container horizontal';
+
+// Możemy dodać informację debugującą
+error_log('[KONFIGURATOR] Krok 4: Wybór="' . $selected_option . '", Slotów=' . $slots_count . ', Układ=' . ($is_vertical ? 'pionowy' : 'poziomy'));
+?>
+
+<div class="configurator-step" id="krok4">
+    <h2>Krok 4: Wybierz elementy</h2>
+    
+    <!-- Dodajmy ukryte pole dla JavaScript -->
+    <input type="hidden" id="selected-layout" value="<?php echo htmlspecialchars($selected_option); ?>" />
+    <input type="hidden" id="layout-orientation" value="<?php echo $is_vertical ? 'vertical' : 'horizontal'; ?>" />
+    
+    <!-- Kontener slotów z poprawną klasą -->
+    <div class="<?php echo $container_class; ?>">
+        <?php for ($i = 0; $i < $slots_count; $i++) : ?>
+            <div class="slot" data-slot-id="<?php echo $i; ?>">
+                <div class="slot-header">
+                    <h3>Element <?php echo ($i + 1); ?></h3>
+                </div>
+                <div class="slot-content">
+                    <!-- Zawartość slotu - istniejący kod -->
+                </div>
+            </div>
+        <?php endfor; ?>
+    </div>
+    
+    <!-- Przyciski nawigacyjne -->
+    <div class="navigation-buttons">
+        <button class="prev-step" data-step="3">← WSTECZ</button>
+        <button class="next-step" data-step="5">DALEJ →</button>
+    </div>
+</div>

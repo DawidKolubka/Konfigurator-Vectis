@@ -324,4 +324,34 @@ jQuery(document).ready(function($) {
     }
   }
 
+  // Funkcja poprawiająca klasy układu po załadowaniu kroku 4
+  function ensureCorrectLayoutClasses() {
+    if ($('#krok4').is(':visible')) {
+      var selectedLayout = $('#selected-layout').val() || '';
+      var isVertical = selectedLayout.toUpperCase().indexOf('PIONOWY') !== -1;
+      
+      // Ustaw odpowiednie klasy kontenera slotów
+      var container = $('.slots-container');
+      if (container.length) {
+        if (isVertical) {
+          container.addClass('vertical').removeClass('horizontal');
+          console.log('Ustawiono układ pionowy');
+        } else {
+          container.addClass('horizontal').removeClass('vertical');
+          console.log('Ustawiono układ poziomy');
+        }
+      }
+    }
+  }
+
+  // Wywołaj funkcję po załadowaniu strony
+  setTimeout(ensureCorrectLayoutClasses, 300);
+
+  // Wywołaj funkcję po załadowaniu kroku 4
+  $(document).on('configurator_step_loaded', function(e, step) {
+    if (step === 4) {
+      setTimeout(ensureCorrectLayoutClasses, 300);
+    }
+  });
+
 });

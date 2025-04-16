@@ -325,3 +325,48 @@ select#kolor-mechanizmu-selector {
 .slots-container.vertical .slot {
   width: 100%;
 }
+
+/* Upewnij się, że te style są zdefiniowane dla układów */
+
+/* Układ poziomy - sloty obok siebie */
+.slots-container.horizontal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.slots-container.horizontal .slot {
+    flex: 1 1 300px;
+    min-width: 250px;
+    max-width: 48%;
+    margin-bottom: 15px;
+}
+
+/* Układ pionowy - sloty jeden pod drugim */
+.slots-container.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.slots-container.vertical .slot {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* Style dla slotów ogólnie */
+.slot {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+}
+
+.slot-header {
+    margin-bottom: 10px;
+}
+
+.slot-content {
+    /* Style dla zawartości slotu */
+}
