@@ -267,17 +267,3 @@ function kv_save_selected_layout() {
 }
 add_action('wp_ajax_save_selected_layout', 'kv_save_selected_layout');
 add_action('wp_ajax_nopriv_save_selected_layout', 'kv_save_selected_layout');
-
-// Dodaj do pliku funkcję do debugowania sesji
-function debug_configurator_session() {
-    if (isset($_SESSION['configurator'])) {
-        error_log('Zawartość sesji konfiguratora:');
-        error_log(print_r($_SESSION['configurator'], true));
-    } else {
-        error_log('Sesja konfiguratora nie istnieje');
-    }
-}
-
-// Wywołaj tę funkcję w odpowiednim miejscu, np. przy zapisywaniu wyboru z kroku 3
-// i przy ładowaniu kroku 4
-debug_configurator_session();

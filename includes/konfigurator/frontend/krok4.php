@@ -517,40 +517,5 @@ $is_vertical = (stripos($selected_option, 'PIONOWY') !== false);
 
 // Ustaw klasę kontenera
 $container_class = $is_vertical ? 'slots-container vertical' : 'slots-container horizontal';
-
-// Dodaj jeden jasny i czytelny panel debugowania
-?>
-
-<style>
-.unified-debug-panel {
-    background-color: #e9f5ff;
-    border: 1px solid #a8d1ff;
-    padding: 12px;
-    margin: 15px 0 20px 0;
-    border-radius: 5px;
-    font-family: monospace;
-    line-height: 1.5;
-}
-.unified-debug-panel h4 {
-    margin-top: 0;
-    color: #0066cc;
-    border-bottom: 1px solid #cce5ff;
-    padding-bottom: 5px;
-}
-</style>
-
-<!-- Jeden ujednolicony panel debugowania -->
-<div class="unified-debug-panel">
-    <h4>Debug Kroku 4 - Analiza Układu</h4>
-    <pre>
-Opcja wybrana w kroku 3: "<?php echo htmlspecialchars($selected_option); ?>"
-Wyciągnięta liczba slotów: <?php echo $slots_count; ?>
-Wykryta orientacja: <?php echo $is_vertical ? 'PIONOWY' : 'POZIOMY'; ?>
-Zastosowana klasa CSS: <?php echo $container_class; ?>
-    </pre>
-</div>
-
-<?php
-// Reszta istniejącego kodu generowania slotów
 ?>
 

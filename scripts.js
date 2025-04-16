@@ -229,8 +229,6 @@ jQuery(document).ready(function($) {
     var layoutType = $('#selected_layout_type').val();
     var selectedOption = $('#selected_layout_option').val();
     
-    console.log("Sprawdzam układ - typ:", layoutType, "opcja:", selectedOption);
-    
     // Sprawdź na podstawie nazwy opcji
     var isHorizontal = false;
     
@@ -240,29 +238,24 @@ jQuery(document).ready(function($) {
     
     // Ustaw odpowiednią klasę
     if (isHorizontal) {
-      console.log("Ustawiam układ POZIOMY");
       $('.slots-container').removeClass('vertical').addClass('horizontal');
     } else {
-      console.log("Ustawiam układ PIONOWY");
       $('.slots-container').removeClass('horizontal').addClass('vertical');
     }
     
     // Sprawdź czy zmiany faktycznie zostały zastosowane
     setTimeout(function() {
-      console.log("Klasy po zmianie:", $('.slots-container').attr('class'));
     }, 50);
   }
   
   // Uruchamiamy przy zmianie wyboru w kroku 3
   $(document).on('change', 'input[name="krok3"]', function() {
-    console.log("Zmieniono wybór w kroku 3:", $(this).val());
     // Zapisz wybór do ukrytego pola
     $('#temp_selected_option').val($(this).val());
   });
   
   // Sprawdź układ po załadowaniu kroku 4
   $(document).on('configurator_step_loaded', function(e, stepId) {
-    console.log("Załadowano krok:", stepId);
     if (stepId === 4) {
       setTimeout(checkLayoutOrientation, 100);
     }
@@ -275,21 +268,17 @@ jQuery(document).ready(function($) {
 
   // Dodatkowe bezpośrednie sprawdzenie po załadowaniu dokumentu
   if ($('#step4-container').length || $('.slots-container').length) {
-    console.log("Wykryto kontener kroku 4 - uruchamiam sprawdzenie układu");
     setTimeout(checkLayoutOrientation, 500); // Dajemy trochę czasu na załadowanie
   }
 
   // Dodatkowa funkcja inicjalizująca układ na podstawie ukrytego pola
   function initLayoutFromHiddenField() {
     var layoutType = $('#selected_layout_type').val();
-    console.log("Znaleziono ukryty typ układu:", layoutType);
     
     if (layoutType === 'horizontal') {
       $('.slots-container').removeClass('vertical').addClass('horizontal');
-      console.log("Ustawiono układ poziomy na podstawie ukrytego pola");
     } else {
       $('.slots-container').removeClass('horizontal').addClass('vertical');
-      console.log("Ustawiono układ pionowy na podstawie ukrytego pola");
     }
   }
   
@@ -303,14 +292,9 @@ jQuery(document).ready(function($) {
     var selectedValue = $(this).val();
     var selectedLabel = $('label[for="' + $(this).attr('id') + '"]').text();
     
-    // Aktualizuj informację w debug panelu
-    $('#debug-selected-option').text(selectedValue);
-    
     // Zapisz wybór do localStorage dla debugowania
     localStorage.setItem('debug_krok3_value', selectedValue);
     localStorage.setItem('debug_krok3_label', selectedLabel);
-    
-    console.log('Wybrano opcję:', selectedValue, 'Etykieta:', selectedLabel);
   });
   
   // Sprawdź czy jest już coś wybrane przy załadowaniu strony
@@ -319,8 +303,6 @@ jQuery(document).ready(function($) {
     if (selectedOption.length) {
       var selectedValue = selectedOption.val();
       var selectedLabel = $('label[for="' + selectedOption.attr('id') + '"]').text();
-      $('#debug-selected-option').text(selectedValue + ' (Etykieta: ' + selectedLabel + ')');
-      console.log('Już wybrana opcja:', selectedValue, 'Etykieta:', selectedLabel);
     }
   }
 
@@ -335,10 +317,8 @@ jQuery(document).ready(function($) {
       if (container.length) {
         if (isVertical) {
           container.addClass('vertical').removeClass('horizontal');
-          console.log('Ustawiono układ pionowy');
         } else {
           container.addClass('horizontal').removeClass('vertical');
-          console.log('Ustawiono układ poziomy');
         }
       }
     }
@@ -364,27 +344,18 @@ jQuery(document).ready(function($) {
     var storedSlots = localStorage.getItem('krok3_slots_count') || '1';
     var storedIsVertical = localStorage.getItem('krok3_is_vertical') === '1';
     
-    console.log('Zapisane dane układu:', {
-        layout: storedLayout,
-        slots: storedSlots,
-        isVertical: storedIsVertical
-    });
-    
     // Pobierz aktualne ustawienia kontenera
     var container = $('.slots-container');
     if (container.length) {
         var currentClass = container.attr('class');
-        console.log('Aktualna klasa kontenera:', currentClass);
         
         // Sprawdź czy klasa jest zgodna z orientacją
         var hasVertical = currentClass.includes('vertical');
         var hasHorizontal = currentClass.includes('horizontal');
         
         if (storedIsVertical && !hasVertical) {
-            console.log('Korygowanie klasy - powinno być vertical');
             container.removeClass('horizontal').addClass('vertical');
         } else if (!storedIsVertical && !hasHorizontal) {
-            console.log('Korygowanie klasy - powinno być horizontal');
             container.removeClass('vertical').addClass('horizontal');
         }
     }
@@ -392,7 +363,6 @@ jQuery(document).ready(function($) {
   
   // Wywołaj funkcję przy zmianie kroków
   $(document).on('configurator_step_loaded', function(e, step) {
-    console.log('Załadowano krok:', step);
     if (step === 4) {
         setTimeout(synchronizeLayoutInfo, 300);
     }
@@ -413,12 +383,6 @@ jQuery(document).ready(function($) {
             var slotsCount = layoutMatch ? parseInt(layoutMatch[1]) : 1;
             var isVertical = selectedLayout.toUpperCase().includes('PIONOWY');
             
-            console.log('Przejście do kroku 4 z układem:', {
-                layout: selectedLayout,
-                slots: slotsCount,
-                isVertical: isVertical
-            });
-            
             // Zapisz do sesji przez AJAX przed przejściem
             $.ajax({
                 url: ajaxurl,
@@ -430,7 +394,6 @@ jQuery(document).ready(function($) {
                     value: selectedLayout
                 },
                 success: function(response) {
-                    console.log('Zapisano wybór do sesji przed przejściem do kroku 4');
                 }
             });
         }
