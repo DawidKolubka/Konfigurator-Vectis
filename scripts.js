@@ -90,7 +90,7 @@ jQuery(document).ready(function($) {
     for (let i = 0; i < ile; i++) {
       const $slot = $('<div class="slot" data-slot="' + i + '" style="text-align:center; cursor:pointer;"></div>');
       const $img = $('<img>')
-        .attr('src', 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg')
+        .attr('src', 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg')
         .attr('id', 'slot-img-' + i)
         .css({ width:'100px' });
       
