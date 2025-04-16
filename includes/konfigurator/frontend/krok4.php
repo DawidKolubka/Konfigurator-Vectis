@@ -124,10 +124,23 @@ foreach ($technologia_options as $tech_index => $tech) {
 }
 
 // Sprawdzanie czy wybór z kroku 3 zawiera słowo "POZIOMY"
-$selected_option = isset($_SESSION['configurator']['krok3']) ? $_SESSION['configurator']['krok3'] : '';
-$is_horizontal = (stripos($selected_option, 'POZIOMY') !== false);
-$container_class = $is_horizontal ? 'horizontal' : 'vertical';
+$selected_option = '';
+if (isset($_SESSION['configurator']['krok3'])) {
+    $selected_option = $_SESSION['configurator']['krok3'];
+}
 
+// Debugowanie
+error_log('Wybrana opcja w kroku 3: ' . $selected_option);
+
+// Sprawdzamy czy opcja zawiera "POZIOMY"
+$is_horizontal = (stripos($selected_option, 'POZIOMY') !== false);
+$container_class = $is_horizontal ? 'slots-container horizontal' : 'slots-container vertical';
+
+// Dodaj ukryte pole z informacją o wybranym układzie
+echo '<input type="hidden" id="selected_layout_type" value="' . ($is_horizontal ? 'horizontal' : 'vertical') . '" />';
+
+// Debugowanie
+error_log('Wybrana klasa kontenera: ' . $container_class);
 ?>
 
 <div class="step-content">
@@ -168,7 +181,7 @@ $container_class = $is_horizontal ? 'horizontal' : 'vertical';
             <div class="ramka-image-container">
                 <img src="<?php echo esc_url($uklad_image); ?>" alt="Układ" class="uklad-image">
             </div>
-            <div class="slots-container <?php echo $container_class; ?>">
+            <div class="<?php echo $container_class; ?>">
                 <?php
                 $empty_slot_img = 'http://konfigurator-vectis.local/wp-content/uploads/2025/02/wybor.svg';
                 for ($i = 0; $i < $ileSlotow; $i++):

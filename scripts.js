@@ -253,15 +253,42 @@ jQuery(document).ready(function($) {
   
   // Uruchamiamy przy zmianie wyboru w kroku 3
   $('input[name="krok3"]').on('change', function() {
+    console.log("Zmieniono wybór w kroku 3");
     // Aktualizuj układ po przejściu do kroku 4
     setTimeout(checkLayoutOrientation, 100);
   });
   
   // Sprawdź układ po załadowaniu kroku 4
   $(document).on('configurator_step_loaded', function(e, stepId) {
+    console.log("Załadowano krok:", stepId);
     if (stepId === 4) {
-        checkLayoutOrientation();
+      checkLayoutOrientation();
     }
   });
+
+  // Dodatkowe bezpośrednie sprawdzenie po załadowaniu dokumentu
+  if ($('#step4-container').length || $('.slots-container').length) {
+    console.log("Wykryto kontener kroku 4 - uruchamiam sprawdzenie układu");
+    setTimeout(checkLayoutOrientation, 500); // Dajemy trochę czasu na załadowanie
+  }
+
+  // Dodatkowa funkcja inicjalizująca układ na podstawie ukrytego pola
+  function initLayoutFromHiddenField() {
+    var layoutType = $('#selected_layout_type').val();
+    console.log("Znaleziono ukryty typ układu:", layoutType);
+    
+    if (layoutType === 'horizontal') {
+      $('.slots-container').removeClass('vertical').addClass('horizontal');
+      console.log("Ustawiono układ poziomy na podstawie ukrytego pola");
+    } else {
+      $('.slots-container').removeClass('horizontal').addClass('vertical');
+      console.log("Ustawiono układ pionowy na podstawie ukrytego pola");
+    }
+  }
+  
+  // Wywołaj funkcję po załadowaniu dokumentu
+  if ($('#selected_layout_type').length) {
+    initLayoutFromHiddenField();
+  }
 
 });

@@ -69,6 +69,21 @@
         echo "<p>Brak dostępnych układów dla wybranego kształtu.</p>";
     }
     ?>
+
+    <div class="option-item">
+        <input type="radio" id="x2poziomy" name="krok3" value="X2 POZIOMY" <?php echo (isset($_SESSION['configurator']['krok3']) && $_SESSION['configurator']['krok3'] == 'X2 POZIOMY') ? 'checked' : ''; ?>>
+        <label for="x2poziomy">X2 POZIOMY</label>
+    </div>
+
+    <div class="option-item">
+        <input type="radio" id="x3poziomy" name="krok3" value="X3 POZIOMY" <?php echo (isset($_SESSION['configurator']['krok3']) && $_SESSION['configurator']['krok3'] == 'X3 POZIOMY') ? 'checked' : ''; ?>>
+        <label for="x3poziomy">X3 POZIOMY</label>
+    </div>
+
+    <div class="option-item">
+        <input type="radio" id="x2pionowy" name="krok3" value="X2 PIONOWY" <?php echo (isset($_SESSION['configurator']['krok3']) && $_SESSION['configurator']['krok3'] == 'X2 PIONOWY') ? 'checked' : ''; ?>>
+        <label for="x2pionowy">X2 PIONOWY</label>
+    </div>
 </div>
 
 <script>
