@@ -608,7 +608,7 @@ select#kolor-mechanizmu-selector {
   background: #ffffff;
   padding: 15px;
   border-radius: 5px;
-  margin-top: 50px;
+  margin-top: 0px;
 }
 
 .ramka-slots-summary.horizontal {
@@ -634,6 +634,7 @@ select#kolor-mechanizmu-selector {
 /* Pokazuje podsumowanie, gdy ma klasę filled */
 .slot-summary.filled {
   display: block;
+  margin-top: 50px;
 }
 
 /* W układzie vertical wyrównujemy podsumowania z odpowiadającymi slotami */
