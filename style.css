@@ -531,7 +531,7 @@ select#kolor-mechanizmu-selector {
 
 /* Poziomy układ - podsumowania po prawej */
 .konfigurator-layout.horizontal {
-  flex-direction: row;
+  flex-direction: column; /* Zmieniono z row na column aby podsumowania były pod slotami */
 }
 
 /* Pionowy układ - podsumowania pod slotami */
@@ -550,8 +550,13 @@ select#kolor-mechanizmu-selector {
 }
 
 .ramka-slots.horizontal {
-  flex: 2;
-  min-width: 300px;
+  width: 100%; /* Pełna szerokość kontenera */
+}
+
+.ramka-slots.horizontal .ramka-image-container {
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap; /* Pozwala zawijać sloty w nowe linie na małych ekranach */
 }
 
 .ramka-slots.vertical {
@@ -567,85 +572,32 @@ select#kolor-mechanizmu-selector {
   margin: 0 auto;
 }
 
-
-
-/* Układ POZIOMY - sloty obok siebie */
-.ramka-slots.horizontal .ramka-image-container {
-  flex-direction: row;
-  justify-content: space-around;
-}
-
-/* Układ PIONOWY - sloty jeden pod drugim */
-.ramka-slots.vertical .ramka-image-container {
-  flex-direction: column;
-  align-items: center;
-  border: solid 1px;
-  border-radius: 50px;
-  width: 180px;
-    padding-top: 30px;
-    padding-bottom: 30px;
-}
-
-/* Style dla pojedynczego slotu */
-.slot {
-  cursor: pointer;
-  padding: 15px;
-  transition: transform 0.2s ease;
-}
-
-.slot:hover {
-  transform: scale(1.05);
-}
-
-.slot img {
-  max-width: 100px;
-  max-height: 80px;
-  display: block;
-  margin: 0 auto;
-}
-
-/* Kontener podsumowań */
-.ramka-slots-summary {
-  background: #ffffff;
-  padding: 15px;
-  border-radius: 5px;
-  margin-top: 0px;
-}
-
+/* Kontener na podsumowania w układzie poziomym */
 .ramka-slots-summary.horizontal {
-  flex: 1;
-  min-width: 200px;
+  width: 100%;
+  display: flex; /* Wyświetlamy jako flex container */
+  flex-wrap: wrap; /* Żeby elementy mogły się zawijać */
+  justify-content: space-around; /* Równomierne rozmieszczenie poziome */
+  margin-top: 20px;
 }
 
-.ramka-slots-summary.vertical {
-  width: 48%; /* Podobna szerokość jak dla ramki-slots */
-  align-self: flex-start; /* Wyrównanie do góry */
-}
-
-/* Podsumowanie slotu */
-.slot-summary {
-  border: 1px solid #eee;
-  border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: white;
-  display: none; /* Domyślnie ukryte */
+/* Style dla poszczególnych podsumowań w układzie poziomym */
+.ramka-slots-summary.horizontal .slot-summary {
+  flex-basis: 45%; /* Szerokość około połowy kontenera (z marginesami) */
+  margin: 10px;
+  max-width: 300px; /* Maksymalna szerokość */
 }
 
 /* Pokazuje podsumowanie, gdy ma klasę filled */
 .slot-summary.filled {
   display: block;
-  margin-top: 50px;
+  margin-top: 10px; /* Zmniejszone z 50px */
 }
 
-/* W układzie vertical wyrównujemy podsumowania z odpowiadającymi slotami */
-.ramka-slots-summary.horizontal .slot-summary {
-  margin-bottom: 15px;
-}
-
-/* Responsywne style */
+/* Responsywne style - na małych ekranach */
 @media (max-width: 768px) {
-  .konfigurator-layout.horizontal {
-    flex-direction: column;
+  .ramka-slots-summary.horizontal .slot-summary {
+    flex-basis: 100%; /* Na małych ekranach pełna szerokość */
+    max-width: none;
   }
 }
