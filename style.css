@@ -542,7 +542,9 @@ select#kolor-mechanizmu-selector {
 
 /* Pionowy układ - podsumowania pod slotami */
 .konfigurator-layout.vertical {
-  flex-direction: column;
+  flex-direction: row; /* Zmieniono z column na row aby elementy wyświetlały się obok siebie */
+  align-items: flex-start; /* Wyrównanie elementów do góry */
+  justify-content: space-between; /* Równomierne rozłożenie elementów */
 }
 
 /* Styl dla ramki-slots - kontener główny */
@@ -559,7 +561,9 @@ select#kolor-mechanizmu-selector {
 }
 
 .ramka-slots.vertical {
-  width: 100%;
+  width: 48%; /* Zmniejszono szerokość, aby było miejsce na podsumowania */
+  margin-right: 2%;
+  align-self: flex-start; /* Wyrównanie do góry */
 }
 
 /* Kontener obrazu ramki */
@@ -567,6 +571,12 @@ select#kolor-mechanizmu-selector {
   display: flex;
   position: relative;
   margin: 0 auto;
+}
+
+.ramka-slots.vertical .ramka-image-container {
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Pełna szerokość kontenera rodzica */
 }
 
 /* Układ POZIOMY - sloty obok siebie */
@@ -612,7 +622,8 @@ select#kolor-mechanizmu-selector {
 }
 
 .ramka-slots-summary.vertical {
-  width: 100%;
+  width: 48%; /* Podobna szerokość jak dla ramki-slots */
+  align-self: flex-start; /* Wyrównanie do góry */
 }
 
 /* Podsumowanie slotu */
