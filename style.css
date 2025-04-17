@@ -518,6 +518,7 @@ select#kolor-mechanizmu-selector {
 /* Dodajemy klasę dla pokazanego podsumowania - dla OBU orientacji */
 .ramka-slots .slot-summary.filled {
   display: block;
+  margin-top: 25px;
 }
 
 /* Kontener dla całego układu - sloty + podsumowanie */
