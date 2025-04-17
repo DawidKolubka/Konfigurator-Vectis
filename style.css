@@ -573,11 +573,7 @@ select#kolor-mechanizmu-selector {
   margin: 0 auto;
 }
 
-.ramka-slots.vertical .ramka-image-container {
-  flex-direction: column;
-  align-items: center;
-  width: 100%; /* Pełna szerokość kontenera rodzica */
-}
+
 
 /* Układ POZIOMY - sloty obok siebie */
 .ramka-slots.horizontal .ramka-image-container {
@@ -589,6 +585,11 @@ select#kolor-mechanizmu-selector {
 .ramka-slots.vertical .ramka-image-container {
   flex-direction: column;
   align-items: center;
+  border: solid 1px;
+  border-radius: 50px;
+  width: 180px;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 /* Style dla pojedynczego slotu */
