@@ -566,7 +566,97 @@ position: relative;
 margin: 0 auto;
 }
 
+/* Układ POZIOMY - kontener z obramowaniem */
+.ramka-slots.horizontal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  border: solid 1px;
+  border-radius: 50px;
+  margin-bottom: 30px;
+}
 
+/* Układ POZIOMY - sloty obok siebie na środku */
+.ramka-slots.horizontal .ramka-image-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  padding: 20px 0;
+}
+
+/* Sloty w układzie poziomym - dopasuj szerokość w zależności od ilości */
+.ramka-slots.horizontal .slot {
+  width: 120px;
+  margin: 0 10px;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Podsumowania w układzie poziomym - analogicznie do slotów */
+.ramka-slots-summary.horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+/* Style dla podsumowań w układzie poziomym */
+.ramka-slots-summary.horizontal .slot-summary {
+  width: 180px;
+  margin: 0 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  display: none; /* Domyślnie ukryte */
+}
+
+/* Podsumowanie jest widoczne, gdy ma klasę filled */
+.ramka-slots-summary.horizontal .slot-summary.filled {
+  display: block;
+}
+
+/* Dynamiczna szerokość obramowania w zależności od ilości slotów */
+.ramka-slots.horizontal[data-slots="1"] {
+  max-width: 200px;
+}
+
+.ramka-slots.horizontal[data-slots="2"] {
+  max-width: 400px;
+}
+
+.ramka-slots.horizontal[data-slots="3"] {
+  max-width: 600px;
+}
+
+.ramka-slots.horizontal[data-slots="4"] {
+  max-width: 800px;
+}
+
+/* Dostosuj wysokość obramowania w układzie vertical w zależności od ilości slotów */
+.ramka-slots.vertical .ramka-image-container {
+  min-height: 100px; /* Minimalna wysokość */
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.ramka-slots.vertical[data-slots="1"] .ramka-image-container {
+  min-height: 150px;
+}
+
+.ramka-slots.vertical[data-slots="2"] .ramka-image-container {
+  min-height: 300px;
+}
+
+.ramka-slots.vertical[data-slots="3"] .ramka-image-container {
+  min-height: 450px;
+}
 
 /* Układ POZIOMY - sloty obok siebie */
 .ramka-slots.horizontal .ramka-image-container {

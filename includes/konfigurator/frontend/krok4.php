@@ -190,60 +190,58 @@ foreach ($technologia_options as $tech_index => $tech) {
     </div>
 
     <!-- (B) Ramka z interaktywnymi slotami -->
-    <div class="konfigurator-layout <?php echo esc_attr($orientation_class); ?>">
-        <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>">
-            <?php if ($uklad_image): ?>
-                <div class="ramka-image-container">
-                    <?php
-                    // Generowanie slotów (bez podsumowań)
-                    for ($i = 0; $i < $ileSlotow; $i++):
-                        $mechID = $slotData[$i]['mechanizm'];
-                        $slotImg = $empty_slot_img;
-                        if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
-                            $slotImg = $mechanizm_options[$mechID]['frame_image'];
-                        }
+    <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
+        <?php if ($uklad_image): ?>
+            <div class="ramka-image-container">
+                <?php for ($i = 0; $i < $ileSlotow; $i++): 
+                    $mechID = $slotData[$i]['mechanizm'];
+                    $slotImg = $empty_slot_img;
+                    if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
+                        $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                    }
+                ?>
+                    <div class="slot" data-slot="<?php echo $i; ?>">
+                        <img id="slot-img-<?php echo $i; ?>" src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo ($i+1); ?>">
+                        
+                        <!-- Ukryte pola formularza -->
+                        <input type="hidden" name="mechanizm_<?php echo $i; ?>" id="mechanizm_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['mechanizm']); ?>">
+                        <input type="hidden" name="technologia_<?php echo $i; ?>" id="technologia_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['technologia']); ?>">
+                        <input type="hidden" name="kolor_mechanizmu_<?php echo $i; ?>" id="kolor_mechanizmu_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['kolor_mechanizmu']); ?>">
+                    </div>
+                <?php endfor; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Sekcja podsumowań obok slotów -->
+    <div class="ramka-slots-summary <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
+        <?php for ($i = 0; $i < $ileSlotow; $i++): 
+            $mechID = $slotData[$i]['mechanizm'];
+            $techID = $slotData[$i]['technologia'];
+            $colorVal = $slotData[$i]['kolor_mechanizmu'];
+        ?>
+            <div class="slot-summary" data-slot="<?php echo $i; ?>">
+                <div><b>Mechanizm:</b> <span id="slot-mech-name-<?php echo $i; ?>">
+                    <?php 
+                    $mechName = (!empty($mechID) && isset($mechanizm_options[$mechID]['name'])) 
+                        ? esc_html($mechanizm_options[$mechID]['name']) 
+                        : '—';
+                    echo $mechName;
                     ?>
-                        <div class="slot" data-slot="<?php echo $i; ?>">
-                            <img id="slot-img-<?php echo $i; ?>" src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo ($i+1); ?>">
-                            
-                            <!-- Ukryte pola formularza -->
-                            <input type="hidden" name="mechanizm_<?php echo $i; ?>" id="mechanizm_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['mechanizm']); ?>">
-                            <input type="hidden" name="technologia_<?php echo $i; ?>" id="technologia_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['technologia']); ?>">
-                            <input type="hidden" name="kolor_mechanizmu_<?php echo $i; ?>" id="kolor_mechanizmu_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['kolor_mechanizmu']); ?>">
-                        </div>
-                    <?php endfor; ?>
-                </div>
-            <?php else: ?>
-                <div>Brak grafiki układu</div>
-            <?php endif; ?>
-        </div>
-        
-        <!-- Sekcja podsumowań obok slotów -->
-        <div class="ramka-slots-summary <?php echo esc_attr($orientation_class); ?>">
-            <?php for ($i = 0; $i < $ileSlotow; $i++): ?>
-                <div class="slot-summary" data-slot="<?php echo $i; ?>">
-                    <div><b>Mechanizm:</b> <span id="slot-mech-name-<?php echo $i; ?>">
-                        <?php 
-                        $mechID = $slotData[$i]['mechanizm'];
-                        echo (!empty($mechID) && isset($mechanizm_options[$mechID]['name'])) ? esc_html($mechanizm_options[$mechID]['name']) : 'Brak'; 
-                        ?>
-                    </span></div>
-                    <div><b>Technologia:</b> <span id="slot-tech-summary-<?php echo $i; ?>">
-                        <?php 
-                        $techID = $slotData[$i]['technologia'];
-                        $techName = '—';
-                        if (!empty($techID) && isset($technologia_options[$techID])) {
-                            $techName = $technologia_options[$techID]['technology'] ?? '—';
-                        }
-                        echo esc_html($techName);
-                        ?>
-                    </span></div>
-                    <div><b>Kolor:</b> <span id="slot-color-summary-<?php echo $i; ?>">
-                        <?php echo ($slotData[$i]['kolor_mechanizmu']) ? esc_html($slotData[$i]['kolor_mechanizmu']) : '—'; ?>
-                    </span></div>
-                </div>
-            <?php endfor; ?>
-        </div>
+                </span></div>
+                <div><b>Technologia:</b> <span id="slot-tech-summary-<?php echo $i; ?>">
+                    <?php 
+                    $techName = (!empty($techID) && isset($technologia_options[$techID]['technology'])) 
+                        ? esc_html($technologia_options[$techID]['technology']) 
+                        : '—';
+                    echo $techName;
+                    ?>
+                </span></div>
+                <div><b>Kolor:</b> <span id="slot-color-summary-<?php echo $i; ?>">
+                    <?php echo !empty($colorVal) ? esc_html($colorVal) : '—'; ?>
+                </span></div>
+            </div>
+        <?php endfor; ?>
     </div>
 
     <!-- (C) Panel edycji ustawień dla aktywnego slotu (dynamiczny, wstawiany pod klikniętym slotem) -->
@@ -341,20 +339,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const techVal = document.getElementById(`technologia_${i}`).value; 
             const colorVal = document.getElementById(`kolor_mechanizmu_${i}`).value;
             
-            // Znajdujemy podsumowanie dla danego slotu (teraz w oddzielnym kontenerze)
-            const summary = document.querySelector(`.ramka-slots-summary .slot-summary[data-slot="${i}"]`);
+            // Znajdujemy podsumowanie dla danego slotu
+            const summary = document.querySelector(`.slot-summary[data-slot="${i}"]`);
             if (!summary) continue;
             
-            // W układzie horizontal sprawdzamy kompletność slotu
-            if (document.querySelector('.konfigurator-layout').classList.contains('horizontal')) {
-                // Dla horizontal - pokaż tylko jeśli wszystkie pola są wypełnione
+            // Sprawdzamy orientację (horizontal/vertical)
+            const isHorizontal = document.querySelector('.ramka-slots').classList.contains('horizontal');
+            
+            if (isHorizontal) {
+                // W układzie poziomym pokazujemy podsumowanie gdy wszystkie pola są wypełnione
                 if (mechVal && techVal && colorVal) {
                     summary.classList.add('filled');
                 } else {
                     summary.classList.remove('filled');
                 }
             } else {
-                // Dla vertical - pokaż jeśli jest wybrany mechanizm
+                // W układzie pionowym pokazujemy podsumowanie gdy jest wybrany mechanizm
                 if (mechVal) {
                     summary.classList.add('filled');
                 } else {
