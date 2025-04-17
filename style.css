@@ -518,7 +518,7 @@ display: none;
 /* Dodajemy klasę dla pokazanego podsumowania - dla OBU orientacji */
 .ramka-slots .slot-summary.filled {
 display: block;
-margin-top: 44px;
+margin-top: 25px;
 }
 
 /* Kontener dla całego układu - sloty + podsumowanie */
