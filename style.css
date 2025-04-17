@@ -390,13 +390,6 @@ select#kolor-mechanizmu-selector {
   min-height: 120px;
 }
 
-/* Układ PIONOWY - sloty jeden pod drugim */
-.ramka-slots.vertical .slot {
-  display: block;
-  width: 90%;
-  margin: 15px auto;
-  min-height: 100px;
-}
 
 /* Style dla pojedynczego slotu */
 .slot {
@@ -490,7 +483,7 @@ select#kolor-mechanizmu-selector {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  width: 90%;
+  width: 120px;
   margin: 15px auto;
   min-height: 100px;
   padding: 15px;
@@ -612,9 +605,10 @@ select#kolor-mechanizmu-selector {
 
 /* Kontener podsumowań */
 .ramka-slots-summary {
-  background: #f9f9f9;
+  background: #ffffff;
   padding: 15px;
   border-radius: 5px;
+  margin-top: 50px;
 }
 
 .ramka-slots-summary.horizontal {
