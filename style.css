@@ -574,8 +574,6 @@ margin: 0 auto;
   align-items: center;
   width: 100%;
   padding: 20px;
-  border: solid 1px;
-  border-radius: 50px;
   margin-bottom: 30px;
 }
 
@@ -661,8 +659,13 @@ margin: 0 auto;
 
 /* Układ POZIOMY - sloty obok siebie */
 .ramka-slots.horizontal .ramka-image-container {
-flex-direction: row;
-justify-content: unset;
+  flex-direction: row;
+  justify-content: center;
+  border: 1px solid;
+  padding-left: 50px;
+  padding-right: 50px;
+  width: auto;
+  border-radius: 50px;
 }
 
 /* Układ PIONOWY - sloty jeden pod drugim */
