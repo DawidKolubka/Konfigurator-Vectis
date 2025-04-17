@@ -550,7 +550,7 @@ background: #f9f9f9;
 
 .ramka-slots.horizontal {
 flex: 2;
-min-width: 300px;
+min-width: 100%;
 }
 
 .ramka-slots.vertical {
@@ -571,7 +571,7 @@ margin: 0 auto;
 /* Układ POZIOMY - sloty obok siebie */
 .ramka-slots.horizontal .ramka-image-container {
 flex-direction: row;
-justify-content: space-around;
+justify-content: unset;
 }
 
 /* Układ PIONOWY - sloty jeden pod drugim */
