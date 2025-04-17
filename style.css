@@ -557,6 +557,7 @@ min-width: 100%;
 width: 48%; /* Zmniejszono szerokość, aby było miejsce na podsumowania */
 margin-right: 2%;
 align-self: flex-start; /* Wyrównanie do góry */
+float: left;
 }
 
 /* Kontener obrazu ramki */
@@ -709,7 +710,7 @@ min-width: 200px;
 .ramka-slots-summary.vertical {
 width: 48%; /* Podobna szerokość jak dla ramki-slots */
 align-self: flex-start; /* Wyrównanie do góry */
-}
+float: left}
 
 /* Podsumowanie slotu */
 .slot-summary {
