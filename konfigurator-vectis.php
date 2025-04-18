@@ -125,7 +125,12 @@ function kv_repair_mechanizm_data() {
     foreach ($mechanizm_options as $id => &$mech) {
         // Upewnij się, że wszystkie wymagane pola istnieją
         if (!isset($mech['frame_image']) || empty($mech['frame_image'])) {
-            $mech['frame_image'] = plugin_dir_url(__FILE__) . 'assets/default-mechanism.svg';
+            // Jeśli brak frame_image ale mamy image, użyj image jako zamiennika
+            if (isset($mech['image']) && !empty($mech['image'])) {
+                $mech['frame_image'] = $mech['image'];
+            } else {
+                $mech['frame_image'] = plugin_dir_url(__FILE__) . 'assets/default-mechanism.svg';
+            }
             $changed = true;
             error_log("Naprawiono frame_image dla mechanizmu #{$id}");
         }

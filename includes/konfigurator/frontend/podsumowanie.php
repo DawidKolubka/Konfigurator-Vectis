@@ -125,13 +125,12 @@ $slots = [];
 $mech_code = '';
 
 for ($i = 0; $i < $ileSlotow; $i++) {
-    // odczyt z sesji
     $mechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
-
-    // Debug - wypisz ID mechanizmu dla każdego slotu
-    error_log("PODSUMOWANIE (poprawione): Slot {$i} - mechanizm ID: " . $mechID);
     
-    // dodatkowe dane o mechanizmie
+    // Debug - wypisz ID mechanizmu dla każdego slotu
+    error_log("PODSUMOWANIE: Slot {$i} - mechanizm ID: " . $mechID);
+    
+    // Dodatkowe dane o mechanizmie
     $mech_name = 'Brak nazwy';
     $mech_img = '';
     $tech_name = '';
@@ -142,45 +141,32 @@ for ($i = 0; $i < $ileSlotow; $i++) {
     if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
         // Pobieramy dane mechanizmu
         $mech_name = isset($mechanizm_options[$mechID]['name']) ? maybe_stripslashes($mechanizm_options[$mechID]['name']) : 'Brak nazwy';
-        $mech_img = isset($mechanizm_options[$mechID]['frame_image']) ? $mechanizm_options[$mechID]['frame_image'] : '';
         
-        // Debug - wypisz znalezione dane
-        error_log("Mechanizm #{$mechID} name: " . $mech_name);
-        error_log("Mechanizm #{$mechID} frame_image: " . ($mech_img ?: 'BRAK'));
+        // KLUCZOWA ZMIANA: użyj odpowiedniego pola frame_image
+        if (isset($mechanizm_options[$mechID]['frame_image']) && !empty($mechanizm_options[$mechID]['frame_image'])) {
+            $mech_img = $mechanizm_options[$mechID]['frame_image'];
+            error_log("PODSUMOWANIE: Slot {$i} - znaleziono frame_image: " . $mech_img);
+        } else if (isset($mechanizm_options[$mechID]['image']) && !empty($mechanizm_options[$mechID]['image'])) {
+            $mech_img = $mechanizm_options[$mechID]['image'];
+            error_log("PODSUMOWANIE: Slot {$i} - używam image zamiast frame_image: " . $mech_img);
+        }
         
-        // Dodaj kod mechanizmu
+        // KLUCZOWA ZMIANA: budowanie kodu mechanizmu (mech_code)
         if (isset($mechanizm_options[$mechID]['snippet']) && !empty($mechanizm_options[$mechID]['snippet'])) {
             if (!empty($mech_code)) {
                 $mech_code .= '-';
             }
             $mech_code .= $mechanizm_options[$mechID]['snippet'];
-            error_log("Dodano snippet do mech_code: " . $mechanizm_options[$mechID]['snippet']);
-        } else {
-            error_log("Mechanizm #{$mechID} nie ma ustawionego snippetu!");
+            error_log("PODSUMOWANIE: Dodano do mech_code: " . $mechanizm_options[$mechID]['snippet']);
         }
-    } else {
-        error_log("Mechanizm o ID {$mechID} nie znaleziony w bazie lub ID jest pusty");
     }
     
-    // Pobieramy dane technologii, jeśli istnieje
-    if (!empty($techID) && isset($technologia_options[$techID])) {
-        $tech_name = isset($technologia_options[$techID]['technology']) ? maybe_stripslashes($technologia_options[$techID]['technology']) : '';
-        $tech_price = isset($technologia_options[$techID]['price']) ? floatval($technologia_options[$techID]['price']) : 0;
-    }
-    
-    // Dodajemy slot do tablicy slotów
-    $slots[] = [
-        'mechanizm_id'   => $mechID,
-        'mechanizm_name' => $mech_name,
-        'mechanizm_img'  => $mech_img,
-        'technologia_id' => $techID,
-        'technologia'    => $tech_name,
-        'kolor_mech'     => $colorVal,
-        'cena'           => $tech_price
+    // Zapisz dane do tablicy $slotData używanej przy wyświetlaniu ramek
+    $slotData[$i] = [
+        'mechanizm' => $mechID, 
+        'technologia' => $techID,
+        'kolor_mechanizmu' => $colorVal
     ];
-    
-    // Debug - wypisz zapisane dane dla slotu
-    error_log("Zapisano slot {$i}: " . print_r($slots[count($slots)-1], true));
 }
 
 // Inicjalizacja tablicy $slotData dla bieżącej konfiguracji (używana w wyświetlaniu ramki)
@@ -367,23 +353,42 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         
         <!-- RAMKA -->
         <td>
-            <!-- Odtwarzamy strukturę ramki z kroku 4 -->
+            <!-- (B) Ramka z interaktywnymi slotami -->
             <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
                 <div class="ramka-image-container">
-                    <?php for ($i = 0; $i < $ileSlotow; $i++): 
-                        // Pobieramy ID mechanizmu z sesji
-                        $mechID = isset($_SESSION['kv_configurator']['mechanizm_'.$i]) 
-                            ? maybe_stripslashes($_SESSION['kv_configurator']['mechanizm_'.$i]) 
-                            : '';
+                    <?php 
+                    // 1. Dodaj dodatkową warstwę debugowania przed wyświetleniem ramki
+                    for ($i = 0; $i < $ileSlotow; $i++) {
+                        $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
+                        error_log("RAMKA DEBUG: Slot {$i}, mechID={$mechID}");
                         
-                        // Debug - wypisz wartości do sprawdzenia
-                        error_log('PODSUMOWANIE SLOT '.$i.': mechID='.$mechID);
-                        
-                        // Ustaw URL obrazka mechanizmu
+                        if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                            error_log("RAMKA DEBUG: frame_image=" . ($mechanizm_options[$mechID]['frame_image'] ?? 'BRAK'));
+                            error_log("RAMKA DEBUG: image=" . ($mechanizm_options[$mechID]['image'] ?? 'BRAK'));
+                            error_log("RAMKA DEBUG: name=" . ($mechanizm_options[$mechID]['name'] ?? 'BRAK'));
+                        }
+                    }
+                    
+                    // 2. Zmodyfikuj kod wyświetlający ramkę - dodaj dodatkowe sprawdzenia
+                    for ($i = 0; $i < $ileSlotow; $i++): 
+                        $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
                         $slotImg = $empty_slot_img; // Domyślny obrazek
-                        if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
-                            $slotImg = $mechanizm_options[$mechID]['frame_image'];
-                            error_log('SLOT '.$i.' OBRAZEK: '.$slotImg);
+                        
+                        // Dodatkowe debugowanie
+                        error_log("SLOT {$i}: mechID={$mechID}");
+                        
+                        // Naprawione sprawdzanie obrazka mechanizmu
+                        if (!empty($mechID) && is_string($mechID) && isset($mechanizm_options[$mechID])) {
+                            if (!empty($mechanizm_options[$mechID]['frame_image'])) {
+                                $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                                error_log("SLOT {$i}: Używam frame_image: " . $slotImg);
+                            } else if (!empty($mechanizm_options[$mechID]['image'])) {
+                                // Alternatywnie używamy pola 'image'
+                                $slotImg = $mechanizm_options[$mechID]['image'];
+                                error_log("SLOT {$i}: Używam image zamiast frame_image: " . $slotImg);
+                            }
+                        } else {
+                            error_log("SLOT {$i}: Nie znaleziono mechanizmu o ID {$mechID} lub ID jest puste.");
                         }
                     ?>
                         <div class="slot" data-slot="<?php echo $i; ?>">
@@ -412,14 +417,8 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         
         <!-- MECHANIZMY -->
         <td>
-            <?php 
-            // Dodaj debug informacji o slotach
-            error_log("PODSUMOWANIE HTML: Liczba slotów: " . count($slots));
-            ?>
-            
             <?php if (!empty($slots)): ?>
                 <?php foreach ($slots as $index => $slot): ?>
-                    <?php error_log("Renderowanie slotu {$index}: " . print_r($slot, true)); ?>
                     <div style="margin-bottom:10px;border-bottom:1px dotted #ccc;padding-bottom:5px;">
                         <!-- Ikona mechanizmu -->
                         <?php 
@@ -462,19 +461,14 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
 
                         <!-- Kolor mechanizmu -->
                         <?php if (!empty($slot['kolor_mech'])): ?>
-                            Kolor: <?php echo esc_html($slot['kolor_mech']); ?>
+                            Kolor: <?php echo esc_html($slot['kolor_mech']); ?><br>
                         <?php endif; ?>
 
-                        <!-- Kod mechanizmu - pobieramy ze snippetu mechanizmu -->
+                        <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy ze snippetu mechanizmu -->
                         <?php 
-                        $mechID = $slot['mechanizm_id'];
-                        $hasMechID = !empty($mechID);
-                        $mechExists = $hasMechID && isset($mechanizm_options[$mechID]);
-                        $hasMechCode = $mechExists && isset($mechanizm_options[$mechID]['snippet']);
-                        
-                        if ($hasMechID && $mechExists && $hasMechCode): 
+                        if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])): 
                         ?>
-                            <div class="mechanizm-code" style="margin-top:5px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
+                            <div style="margin-top:5px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
                                 <strong>Kod mechanizmu:</strong><br>
                                 <?php echo esc_html($mechanizm_options[$mechID]['snippet']); ?>
                             </div>
@@ -482,7 +476,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div style="color:red;">Brak mechanizmów (sprawdź debugi w logu)</div>
+                <p>Brak mechanizmów.</p>
             <?php endif; ?>
         </td>
         
@@ -543,7 +537,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 <?php 
                                 // 1. Dodaj dodatkową warstwę debugowania przed wyświetleniem ramki
                                 for ($i = 0; $i < $ileSlotow; $i++) {
-                                    $mechID = $slotData[$i]['mechanizm'];
+                                    $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
                                     error_log("RAMKA DEBUG: Slot {$i}, mechID={$mechID}");
                                     
                                     if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
@@ -555,7 +549,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 
                                 // 2. Zmodyfikuj kod wyświetlający ramkę - dodaj dodatkowe sprawdzenia
                                 for ($i = 0; $i < $ileSlotow; $i++): 
-                                    $mechID = $slotData[$i]['mechanizm'];
+                                    $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
                                     $slotImg = $empty_slot_img; // Domyślny obrazek
                                     
                                     // Dodatkowe debugowanie
@@ -601,14 +595,8 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
 
                     <!-- MECHANIZMY -->
                     <td>
-                        <?php 
-                        // Dodaj debug informacji o slotach
-                        error_log("PODSUMOWANIE HTML: Liczba slotów: " . count($slots));
-                        ?>
-                        
                         <?php if (!empty($slots)): ?>
                             <?php foreach ($slots as $index => $slot): ?>
-                                <?php error_log("Renderowanie slotu {$index}: " . print_r($slot, true)); ?>
                                 <div style="margin-bottom:10px;border-bottom:1px dotted #ccc;padding-bottom:5px;">
                                     <!-- Ikona mechanizmu -->
                                     <?php 
@@ -651,19 +639,14 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
 
                                     <!-- Kolor mechanizmu -->
                                     <?php if (!empty($slot['kolor_mech'])): ?>
-                                        Kolor: <?php echo esc_html($slot['kolor_mech']); ?>
+                                        Kolor: <?php echo esc_html($slot['kolor_mech']); ?><br>
                                     <?php endif; ?>
 
-                                    <!-- Kod mechanizmu - pobieramy ze snippetu mechanizmu -->
+                                    <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy ze snippetu mechanizmu -->
                                     <?php 
-                                    $mechID = $slot['mechanizm_id'];
-                                    $hasMechID = !empty($mechID);
-                                    $mechExists = $hasMechID && isset($mechanizm_options[$mechID]);
-                                    $hasMechCode = $mechExists && isset($mechanizm_options[$mechID]['snippet']);
-                                    
-                                    if ($hasMechID && $mechExists && $hasMechCode): 
+                                    if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])): 
                                     ?>
-                                        <div class="mechanizm-code" style="margin-top:5px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
+                                        <div style="margin-top:5px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
                                             <strong>Kod mechanizmu:</strong><br>
                                             <?php echo esc_html($mechanizm_options[$mechID]['snippet']); ?>
                                         </div>
@@ -671,7 +654,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <div style="color:red;">Brak mechanizmów (sprawdź debugi w logu)</div>
+                            <p>Brak mechanizmów.</p>
                         <?php endif; ?>
                     </td>
 
