@@ -462,48 +462,6 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         </td>
         
         <!-- MECHANIZMY -->
-        <td>
-            <?php foreach ($slots as $slot): ?>
-                <?php $mechIcon = $slot['mechanizm_img']; ?>
-                <?php if ($mechIcon): ?>
-                    <img src="<?php echo esc_url($mechIcon); ?>" alt="" style="max-width:30px;">
-                <?php endif; ?>
-                <div style="margin-bottom:10px;border-bottom:1px dotted #ccc;padding-bottom:5px;">
-                    <!-- Nazwa mechanizmu -->
-                    <strong><?php echo esc_html($slot['mechanizm_name']); ?></strong><br>
-
-                    <!-- Technologia -->
-                    <?php if (!empty($slot['technologia'])): ?>
-                        Technologia: <?php echo esc_html($slot['technologia']); ?><br>
-                    <?php endif; ?>
-                    
-                    <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy z technologii -->
-                    <?php
-                    // Pobierz ID mechanizmu dla tego slotu
-                    $mechID = $slot['mechanizm_id'];
-                    $tech_code = ''; // Domyślnie pusty kod
-
-                    // Pobierz wszystkie technologie
-                    $technologie = kv_get_items('kv_technologia_options');
-
-                    // Znajdź technologię powiązaną z tym mechanizmem
-                    if (isset($mechID) && $mechID !== '' && !empty($technologie)) {
-                        foreach ($technologie as $tech) {
-                            if (isset($tech['group']) && $tech['group'] == $mechID && isset($tech['code'])) {
-                                $tech_code = $tech['code'];
-                                break; // Znaleziono pasującą technologię, przerywamy pętlę
-                            }
-                        }
-                    }
-
-                    // Wyświetl kod mechanizmu, jeśli istnieje
-                    if (!empty($tech_code)):
-                    ?>
-                        <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">Kod mechanizmu:<?php echo esc_html($tech_code); ?></div>
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
-        </td>
         
         <!-- ILOŚĆ -->
         <td><?php echo $quantity; ?></td>
@@ -642,7 +600,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 // Wyświetl kod mechanizmu, jeśli istnieje
                                 if (!empty($tech_code)):
                                 ?>
-                                    Kod mechanizmu (konkretny kod produktu): <?php echo esc_html($tech_code); ?><br>
+                                   <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">Kod mechanizmu:<?php echo esc_html($tech_code); ?></div>
                                 <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
