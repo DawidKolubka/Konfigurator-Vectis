@@ -165,9 +165,19 @@ for ($i = 0; $i < $ileSlotow; $i++) {
 // Inicjalizacja tablicy $slotData dla bieżącej konfiguracji (używana w wyświetlaniu ramki)
 $slotData = [];
 for ($i = 0; $i < $ileSlotow; $i++) {
-    $mechID = isset($cfg['mechanizm_' . $i]) ? maybe_stripslashes($cfg['mechanizm_' . $i]) : '';
-    $techID = isset($cfg['technologia_' . $i]) ? maybe_stripslashes($cfg['technologia_' . $i]) : '';
-    $colorVal = isset($cfg['kolor_mechanizmu_' . $i]) ? maybe_stripslashes($cfg['kolor_mechanizmu_' . $i]) : '';
+    $mechID = isset($_SESSION['kv_configurator']['mechanizm_' . $i]) 
+        ? maybe_stripslashes($_SESSION['kv_configurator']['mechanizm_' . $i]) 
+        : '';
+    
+    // Dodaj debug
+    error_log('SLOTDATA INIT ['.$i.']: mechID='.$mechID);
+    
+    $techID = isset($_SESSION['kv_configurator']['technologia_' . $i]) 
+        ? maybe_stripslashes($_SESSION['kv_configurator']['technologia_' . $i]) 
+        : '';
+    $colorVal = isset($_SESSION['kv_configurator']['kolor_mechanizmu_' . $i]) 
+        ? maybe_stripslashes($_SESSION['kv_configurator']['kolor_mechanizmu_' . $i]) 
+        : '';
     
     $slotData[$i] = [
         'mechanizm' => $mechID,
