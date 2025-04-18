@@ -145,7 +145,7 @@
 }
 
 .summary-ilosc {
-  width: 60px; /* Stała, mała szerokość */
+  width: 130px; /* Stała, mała szerokość */
 }
 
 .summary-cena-jedn {
@@ -219,6 +219,46 @@
   transform: none;
   border-color: #ccc;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Poprawione wyświetlanie ramki w tabeli podsumowania */
+.summary-table td.summary-ramka {
+  position: relative;
+  overflow: hidden; /* Ukryj zawartość wykraczającą poza kolumnę */
+}
+
+.summary-table .ramka-image-container {
+  transform: scale(0.5);
+  transform-origin: center top;
+  margin: 0 auto;
+  position: relative;
+  left: 50%;
+  translate: -50% 0; /* Nowoczesny sposób centrowania */
+  width: auto; /* Usuń stałą szerokość */
+  max-width: 100%; /* Ograniczenie do szerokości kolumny */
+}
+
+/* Usunięcie niepotrzebnych obramowań w podsumowaniu */
+.summary-table .ramka-slots {
+  border: none;
+  width: auto;
+  max-width: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+/* Poprawka dla układu poziomego w tabeli podsumowania */
+.summary-table .ramka-slots.horizontal .ramka-image-container {
+  width: auto;
+  border: none;
+  padding: 0;
+}
+
+/* Poprawka dla układu pionowego w tabeli podsumowania */
+.summary-table .ramka-slots.vertical .ramka-image-container {
+  width: auto;
+  border: none;
+  padding: 0;
 }
 
 /* Przyciski nawigacji i podsumowania */
