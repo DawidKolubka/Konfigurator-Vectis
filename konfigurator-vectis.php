@@ -117,37 +117,38 @@ function save_configurator_step() {
 add_action('wp_ajax_save_configurator_step', 'save_configurator_step');
 add_action('wp_ajax_nopriv_save_configurator_step', 'save_configurator_step');
 
-// Napraw strukturę danych mechanizmów, gdy jakieś pola są uszkodzone
+// Napraw strukturę danych mechanizmów
 function kv_repair_mechanizm_data() {
     $mechanizm_options = get_option('kv_mechanizm_options', []);
     $changed = false;
     
     foreach ($mechanizm_options as $id => &$mech) {
         // Upewnij się, że wszystkie wymagane pola istnieją
-        if (!isset($mech['frame_image'])) {
-            $mech['frame_image'] = '';
+        if (!isset($mech['frame_image']) || empty($mech['frame_image'])) {
+            $mech['frame_image'] = plugin_dir_url(__FILE__) . 'assets/default-mechanism.svg';
             $changed = true;
+            error_log("Naprawiono frame_image dla mechanizmu #{$id}");
         }
         
-        if (!isset($mech['snippet'])) {
-            $mech['snippet'] = 'MECH' . $id; // Domyślny kod
+        if (!isset($mech['snippet']) || empty($mech['snippet'])) {
+            $mech['snippet'] = 'M' . $id;  // Domyślny kod mechanizmu
             $changed = true;
+            error_log("Naprawiono snippet dla mechanizmu #{$id}");
         }
         
         if (!isset($mech['selected_colors']) || !is_array($mech['selected_colors'])) {
             $mech['selected_colors'] = [];
             $changed = true;
+            error_log("Naprawiono selected_colors dla mechanizmu #{$id}");
         }
     }
     
     if ($changed) {
         update_option('kv_mechanizm_options', $mechanizm_options);
-        error_log('Naprawiono uszkodzone dane mechanizmów');
+        error_log('Naprawiono uszkodzone dane mechanizmów w bazie');
     }
 }
 
-// Uruchom naprawę podczas aktywacji pluginu
+// Uruchom naprawę podczas aktywacji pluginu i przy ładowaniu
 register_activation_hook(__FILE__, 'kv_repair_mechanizm_data');
-
-// Uruchom również teraz, w przypadku aktualizacji pluginu
 add_action('plugins_loaded', 'kv_repair_mechanizm_data');
