@@ -61,6 +61,9 @@ $kolor_mechanizmu_options = get_option('kv_kolor_mechanizmu_options', []);
 $ksztalt_options          = get_option('kv_ksztalt_options', []);
 $seria_options            = get_option('kv_seria_options', []);
 
+// Definicja domyślnego obrazka dla pustego slotu
+$empty_slot_img = 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg';
+
 // (B) Zapisujemy zmienne z sesji do $cfg – i ewentualnie usuwamy slashe
 $cfg = isset($_SESSION['kv_configurator']) ? $_SESSION['kv_configurator'] : [];
 
@@ -231,6 +234,9 @@ if (isset($_POST['update_quantity']) && isset($_POST['quantity'])) {
 
 // Funkcja pomocnicza do renderowania wiersza pozycji w tabeli
 function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_options, $mechanizm_options, $technologia_options) {
+    // Zdefiniuj zmienną $empty_slot_img
+    $empty_slot_img = 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg';
+    
     // Pobranie danych z zapisanej konfiguracji
     $uklad_index = isset($item_data['uklad']) ? $item_data['uklad'] : 0;
     $layoutName = isset($uklad_options[$uklad_index]['name']) ? $uklad_options[$uklad_index]['name'] : '';
@@ -252,12 +258,22 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         $ileSlotow = 2;
     }
     
+    // Inicjalizuj $slotData jako tablicę przed pierwszym użyciem
+    $slotData = [];
+    
     // Pobieranie danych slotów
     $slots = [];
     for ($i = 0; $i < $ileSlotow; $i++) {
         $mechID = isset($item_data['mechanizm_'.$i]) ? $item_data['mechanizm_'.$i] : '';
         $techID = isset($item_data['technologia_'.$i]) ? $item_data['technologia_'.$i] : '';
         $colorVal = isset($item_data['kolor_mechanizmu_'.$i]) ? $item_data['kolor_mechanizmu_'.$i] : '';
+        
+        // Zapisz do $slotData, która jest używana w sekcji wyświetlania ramki
+        $slotData[$i] = [
+            'mechanizm' => $mechID,
+            'technologia' => $techID,
+            'kolor_mechanizmu' => $colorVal
+        ];
         
         // Dane mechanizmu
         $mech_name = 'Brak nazwy';
@@ -325,7 +341,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                 <div class="ramka-image-container">
                     <?php for ($i = 0; $i < $ileSlotow; $i++): 
                         $mechID = isset($item_data['mechanizm_'.$i]) ? $item_data['mechanizm_'.$i] : '';
-                        $slotImg = 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg'; // Domyślny obrazek
+                        $slotImg = $empty_slot_img; // Domyślny obrazek
                         if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
                             $slotImg = $mechanizm_options[$mechID]['frame_image'];
                         }
