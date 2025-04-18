@@ -324,7 +324,7 @@ window.kolor_mechanizmu_options = <?php echo json_encode($kolor_mechanizmu_optio
     <div id="mechanism-list" class="mechanism-list">
         <?php foreach ($mechanizm_options as $m_index => $mech): 
             $mName  = $mech['name'] ?? 'Bez nazwy';
-            $mIkona = $mech['frame_image'] ?? $empty_slot_img;
+            $mIkona = $mech['image'] ?? $empty_slot_img;
         ?>
             <div class="mechanizm-item" data-mech-id="<?php echo esc_attr($m_index); ?>">
                 <img src="<?php echo esc_url($mIkona); ?>" alt="">
