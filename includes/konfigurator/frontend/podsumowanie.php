@@ -165,19 +165,9 @@ for ($i = 0; $i < $ileSlotow; $i++) {
 // Inicjalizacja tablicy $slotData dla bieżącej konfiguracji (używana w wyświetlaniu ramki)
 $slotData = [];
 for ($i = 0; $i < $ileSlotow; $i++) {
-    $mechID = isset($_SESSION['kv_configurator']['mechanizm_' . $i]) 
-        ? maybe_stripslashes($_SESSION['kv_configurator']['mechanizm_' . $i]) 
-        : '';
-    
-    // Dodaj debug
-    error_log('SLOTDATA INIT ['.$i.']: mechID='.$mechID);
-    
-    $techID = isset($_SESSION['kv_configurator']['technologia_' . $i]) 
-        ? maybe_stripslashes($_SESSION['kv_configurator']['technologia_' . $i]) 
-        : '';
-    $colorVal = isset($_SESSION['kv_configurator']['kolor_mechanizmu_' . $i]) 
-        ? maybe_stripslashes($_SESSION['kv_configurator']['kolor_mechanizmu_' . $i]) 
-        : '';
+    $mechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
+    $techID = isset($cfg['technologia_'.$i]) ? maybe_stripslashes($cfg['technologia_'.$i]) : '';
+    $colorVal = isset($cfg['kolor_mechanizmu_'.$i]) ? maybe_stripslashes($cfg['kolor_mechanizmu_'.$i]) : '';
     
     $slotData[$i] = [
         'mechanizm' => $mechID,
@@ -207,11 +197,25 @@ $ksztalt_code = isset($ksztalt_options[$ksztalt_index]['snippet']) && !empty($ks
     ? $ksztalt_options[$ksztalt_index]['snippet'] 
     : '?'; // Domyślna wartość, jeśli snippet nie istnieje
 
-// Kod mechanizmu - pobieramy z pola 'snippet' w bazie danych mechanizmu
-$mech_code = !empty($mechanizm_options[$mechID]['snippet'])
-    ? $mechanizm_options[$mechID]['snippet']
-    : 'wartość domyślna';
-// Nie przypisujemy wartości domyślnej - jeśli snippet jest pusty, $mech_code pozostaje pusty
+// Kod mechanizmu - napraw formę trójargumentowego operatora warunkowego
+$mech_code = '';
+// Przejrzyj wszystkie sloty i połącz ich kody mechanizmów
+for ($i = 0; $i < $ileSlotow; $i++) {
+    $slotMechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
+    
+    if (!empty($slotMechID) && isset($mechanizm_options[$slotMechID]['snippet'])) {
+        // Dodaj separator między kodami, jeżeli już coś mamy
+        if (!empty($mech_code)) {
+            $mech_code .= '-';
+        }
+        $mech_code .= $mechanizm_options[$slotMechID]['snippet'];
+    }
+}
+
+// Jeśli nie mamy żadnego kodu, użyj wartości domyślnej
+if (empty($mech_code)) {
+    $mech_code = 'DEFMECH';
+}
 
 // Kod układu - np. 11
 // Jeśli nie ma kodu układu, wygeneruj z nazwy
@@ -349,18 +353,6 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         <!-- RAMKA -->
         <td>
             <!-- Odtwarzamy strukturę ramki z kroku 4 -->
-            <?php
-            // Określamy orientację na podstawie nazwy układu
-            $orientation_class = 'vertical'; // Domyślnie pionowy
-            if (preg_match('/X\d+/i', $layoutName)) {
-                $orientation_class = 'horizontal';
-            }
-            if (stripos($layoutName, 'PIONOWY') !== false) {
-                $orientation_class = 'vertical';
-            } elseif (stripos($layoutName, 'POZIOMY') !== false) {
-                $orientation_class = 'horizontal';
-            }
-            ?>
             <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
                 <div class="ramka-image-container">
                     <?php for ($i = 0; $i < $ileSlotow; $i++): 
@@ -494,7 +486,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
 
                     <!-- RAMKA -->
                     <td>
-                        <!-- Odtwarzamy strukturę ramki z kroku 4 -->
+                        <!-- (B) Ramka z interaktywnymi slotami -->
                         <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
                             <div class="ramka-image-container">
                                 <?php for ($i = 0; $i < $ileSlotow; $i++): 
@@ -505,7 +497,9 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                     }
                                 ?>
                                     <div class="slot" data-slot="<?php echo $i; ?>">
-                                        <img id="podsumowanie-slot-img-<?php echo $i; ?>" src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo ($i+1); ?>">
+                                        <img id="podsumowanie-slot-img-<?php echo $i; ?>" 
+                                             src="<?php echo esc_url($slotImg); ?>" 
+                                             alt="Slot <?php echo ($i+1); ?>">
                                     </div>
                                 <?php endfor; ?>
                             </div>

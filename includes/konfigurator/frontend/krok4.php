@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const colorVal = document.getElementById(`kolor_mechanizmu_${i}`).value;
             
             // Znajdujemy podsumowanie dla danego slotu
-            const summary = document.querySelector(`.slot-summary[data-slot="${i}"]`);
+            const summary = document.querySelector(`.ramka-slots-summary .slot-summary[data-slot="${i}"]`);
             if (!summary) continue;
             
             // Sprawdzamy orientację (horizontal/vertical)
