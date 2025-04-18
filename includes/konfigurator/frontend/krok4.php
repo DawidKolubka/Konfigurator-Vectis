@@ -620,5 +620,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Wykonaj na końcu, aby upewnić się, że podsumowania są prawidłowo widoczne/ukryte
     updateSlotSummaryVisibility();
+
+    // Funkcja wypełniająca istniejące obrazy slotów
+    function fillExistingSlotImages() {
+        for (let i = 0; i < <?php echo $ileSlotow; ?>; i++) {
+            const mechVal = document.getElementById(`mechanizm_${i}`).value;
+            if (!mechVal) continue;
+            const img = document.getElementById(`slot-img-${i}`);
+            const mechData = mechanizmyData.find(m => m.ID == mechVal);
+            if (img && mechData && mechData.ikona) {
+                img.src = mechData.ikona;
+            }
+        }
+    }
+    fillExistingSlotImages();
 });
 </script>
