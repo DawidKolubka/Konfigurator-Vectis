@@ -108,6 +108,12 @@
   border-collapse: collapse;
   margin-bottom: 15px;
 }
+
+.summary-table .ramka-slots.horizontal .ramka-image-container {
+ scale: 0.5;
+}
+
+
 .summary-table th, .summary-table td {
   border: 1px solid #ddd;
   padding: 8px;
