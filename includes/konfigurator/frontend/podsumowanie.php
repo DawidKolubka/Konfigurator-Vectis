@@ -476,27 +476,28 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                     <?php if (!empty($slot['technologia'])): ?>
                         Technologia: <?php echo esc_html($slot['technologia']); ?><br>
                     <?php endif; ?>
-
-                    <!-- Kolor mechanizmu -->
-                    <?php if (!empty($slot['kolor_mech'])): ?>
-                        Kolor: <?php echo esc_html($slot['kolor_mech']); ?><br>
-                    <?php endif; ?>
-
-                    <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy ze snippetu mechanizmu -->
+                    
+                    <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy z pola code grupy mechanizmów -->
                     <?php
                     // Pobierz ID mechanizmu dla tego slotu
                     $mechID = $slot['mechanizm_id'];
-                    $mech_snippet = ''; // Domyślnie pusty
+                    $mech_code = ''; // Domyślnie pusty kod
 
-                    // Sprawdź, czy mechanizm istnieje i ma zdefiniowany snippet
-                    if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID]['snippet'])) {
-                        $mech_snippet = $mechanizm_options[$mechID]['snippet'];
+                    // Sprawdź, czy mechanizm istnieje i ma przypisaną grupę
+                    if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID])) {
+                        // Pobierz ID grupy mechanizmu
+                        $group_id = isset($mechanizm_options[$mechID]['group']) ? $mechanizm_options[$mechID]['group'] : '';
+                        
+                        // Sprawdź, czy grupa istnieje i ma zdefiniowany kod
+                        if ($group_id !== '' && isset($mechanizm_options[$group_id]['code'])) {
+                            $mech_code = $mechanizm_options[$group_id]['code'];
+                        }
                     }
 
                     // Wyświetl kod mechanizmu, jeśli istnieje
-                    if (!empty($mech_snippet)):
+                    if (!empty($mech_code)):
                     ?>
-                        Kod: <?php echo esc_html($mech_snippet); ?><br>
+                        Kod: <?php echo esc_html($mech_code); ?><br>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
@@ -617,21 +618,27 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                     Kolor: <?php echo esc_html($slot['kolor_mech']); ?><br>
                                 <?php endif; ?>
 
-                                <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy ze snippetu mechanizmu -->
+                                <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy z pola code grupy mechanizmów -->
                                 <?php
                                 // Pobierz ID mechanizmu dla tego slotu
                                 $mechID = $slot['mechanizm_id'];
-                                $mech_snippet = ''; // Domyślnie pusty
+                                $mech_code = ''; // Domyślnie pusty kod
 
-                                // Sprawdź, czy mechanizm istnieje i ma zdefiniowany snippet
-                                if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID]['snippet'])) {
-                                    $mech_snippet = $mechanizm_options[$mechID]['snippet'];
+                                // Sprawdź, czy mechanizm istnieje i ma przypisaną grupę
+                                if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID])) {
+                                    // Pobierz ID grupy mechanizmu
+                                    $group_id = isset($mechanizm_options[$mechID]['group']) ? $mechanizm_options[$mechID]['group'] : '';
+                                    
+                                    // Sprawdź, czy grupa istnieje i ma zdefiniowany kod
+                                    if ($group_id !== '' && isset($mechanizm_options[$group_id]['code'])) {
+                                        $mech_code = $mechanizm_options[$group_id]['code'];
+                                    }
                                 }
 
                                 // Wyświetl kod mechanizmu, jeśli istnieje
-                                if (!empty($mech_snippet)):
+                                if (!empty($mech_code)):
                                 ?>
-                                    Kod: <?php echo esc_html($mech_snippet); ?><br>
+                                    Kod: <?php echo esc_html($mech_code); ?><br>
                                 <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
