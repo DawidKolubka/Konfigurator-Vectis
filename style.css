@@ -109,11 +109,6 @@
   margin-bottom: 15px;
 }
 
-.summary-table .ramka-slots.horizontal .ramka-image-container {
- scale: 0.5;
-}
-
-
 .summary-table th, .summary-table td {
   border: 1px solid #ddd;
   padding: 8px;
@@ -132,6 +127,14 @@
   border: 0; /* Usuń obramowanie, które może być w kroku 4 */
   background: transparent;
   padding: 0;
+}
+
+/* Dodane skalowanie dla kontenera obrazów w podsumowaniu */
+.summary-table .ramka-image-container {
+  transform: scale(0.5);
+  transform-origin: top center;
+  margin: 0 auto;
+  display: block;
 }
 
 /* Dostosowanie szerokości slotów w podsumowaniu */
