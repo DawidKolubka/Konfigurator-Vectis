@@ -354,14 +354,25 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
             <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
                 <div class="ramka-image-container">
                     <?php for ($i = 0; $i < $ileSlotow; $i++): 
-                        $mechID = isset($item_data['mechanizm_'.$i]) ? $item_data['mechanizm_'.$i] : '';
+                        // Pobieramy ID mechanizmu z sesji
+                        $mechID = isset($_SESSION['kv_configurator']['mechanizm_'.$i]) 
+                            ? maybe_stripslashes($_SESSION['kv_configurator']['mechanizm_'.$i]) 
+                            : '';
+                        
+                        // Debug - wypisz wartości do sprawdzenia
+                        error_log('PODSUMOWANIE SLOT '.$i.': mechID='.$mechID);
+                        
+                        // Ustaw URL obrazka mechanizmu
                         $slotImg = $empty_slot_img; // Domyślny obrazek
                         if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
                             $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                            error_log('SLOT '.$i.' OBRAZEK: '.$slotImg);
                         }
                     ?>
                         <div class="slot" data-slot="<?php echo $i; ?>">
-                            <img src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo ($i+1); ?>">
+                            <img id="podsumowanie-slot-img-<?php echo $i; ?>" 
+                                 src="<?php echo esc_url($slotImg); ?>" 
+                                 alt="Slot <?php echo ($i+1); ?>">
                         </div>
                     <?php endfor; ?>
                 </div>

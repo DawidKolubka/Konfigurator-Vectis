@@ -292,7 +292,7 @@ select#kolor-mechanizmu-selector {
 .slot-settings-panel h4 { margin-bottom: 10px; }
 .edit-panel-content { display: flex; gap: 20px; margin-bottom: 10px; }
 .mechanism-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
-.mechanizm-item { width: 80px; text-align: center; border: 1px solid #ccc; padding: 5px; cursor: pointer; }
+.mechanizm-item { width: 110px; text-align: center; border: 2px solid #ccc; padding: 15px; cursor: pointer; }
 .mechanizm-item img { max-width: 60px; }
 
 /* Style dla wyboru kolorów mechanizmu */
