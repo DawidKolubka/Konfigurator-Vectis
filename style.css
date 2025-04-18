@@ -167,7 +167,7 @@
 }
 
 .summary-table .ramka-image-container {
-  transform: scale(0.5);
+  transform: scale(0.7);
   transform-origin: top center;
   margin: 0 auto;
   display: block;
@@ -241,6 +241,7 @@
 /* Obramowanie do podsumowania */
 .summary-table .ramka-slots {
   border: 1px solid;
+  border-radius: 50px;
   width: auto;
   max-width: none;
   padding: 0;
