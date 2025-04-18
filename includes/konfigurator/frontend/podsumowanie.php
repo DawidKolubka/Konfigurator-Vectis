@@ -150,13 +150,11 @@ for ($i = 0; $i < $ileSlotow; $i++) {
         $mech_data = $mechanizm_options[$mechID];
         $mech_name = $mech_data['name'] ?? 'Brak nazwy';
 
-        // Poprawione pobieranie obrazka - priorytet dla frame_image
-        $slotImg = $mechanizm_options[$mechID]['frame_image'];
-
-        if (!empty($mech_data['frame_image'])) {
-            $mech_img = $mech_data['frame_image'];
-        } elseif (!empty($mech_data['image'])) {
-            $mech_img = $mech_data['image'];
+        // Priorytet dla frame_image, fallback do image
+        if (!empty($mechanizm_options[$mechID]['frame_image'])) {
+            $mech_img = $mechanizm_options[$mechID]['frame_image'];
+        } elseif (!empty($mechanizm_options[$mechID]['image'])) {
+            $mech_img = $mechanizm_options[$mechID]['image'];
         }
         // Jeśli oba są puste, $mech_img pozostanie pusty
 
@@ -340,7 +338,12 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         $mech_img = '';
         if ($mechID !== '' && isset($mechanizm_options[$mechID])) {
             $mech_name = $mechanizm_options[$mechID]['name'] ?? 'Brak nazwy';
-            $mech_img = $mechanizm_options[$mechID]['frame_image']; // Pobierz obraz mechanizmu
+            // Priorytet dla frame_image, fallback do image
+            if (!empty($mechanizm_options[$mechID]['frame_image'])) {
+                $mech_img = $mechanizm_options[$mechID]['frame_image'];
+            } elseif (!empty($mechanizm_options[$mechID]['image'])) {
+                $mech_img = $mechanizm_options[$mechID]['image'];
+            }
         }
         
         $techID = isset($item_data['technologia_'.$i]) ? $item_data['technologia_'.$i] : '';
