@@ -145,7 +145,7 @@
 }
 
 .summary-ilosc {
-  width: 130px; /* Stała, mała szerokość */
+  width: 120px; /* Stała, mała szerokość */
 }
 
 .summary-cena-jedn {
@@ -238,9 +238,9 @@
   max-width: 100%; /* Ograniczenie do szerokości kolumny */
 }
 
-/* Usunięcie niepotrzebnych obramowań w podsumowaniu */
+/* Obramowanie do podsumowania */
 .summary-table .ramka-slots {
-  border: none;
+  border: 1px solid;
   width: auto;
   max-width: none;
   padding: 0;

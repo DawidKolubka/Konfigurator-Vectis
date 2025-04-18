@@ -238,22 +238,29 @@ $ksztalt_code = isset($ksztalt_options[$ksztalt_index]['snippet']) && !empty($ks
     ? $ksztalt_options[$ksztalt_index]['snippet'] 
     : '?'; // Domyślna wartość, jeśli snippet nie istnieje
 
-// Kod mechanizmu - napraw formę trójargumentowego operatora warunkowego
+// Pobieramy tylko JEDEN kod mechanizmu - z pierwszego slotu lub łączymy inaczej
 $mech_code = '';
-// Przejrzyj wszystkie sloty i połącz ich kody mechanizmów
-for ($i = 0; $i < $ileSlotow; $i++) {
-    $slotMechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
-    
-    if (isset($slotMechID) && $slotMechID !== '' && isset($mechanizm_options[$slotMechID]['snippet'])) {
-        // Dodaj separator między kodami, jeżeli już coś mamy
-        if (!empty($mech_code)) {
-            $mech_code .= '-';
+
+// Wersja 1: Weź kod tylko z pierwszego slotu (najprostsze rozwiązanie)
+$slotMechID = isset($cfg['mechanizm_0']) ? maybe_stripslashes($cfg['mechanizm_0']) : '';
+if (isset($slotMechID) && $slotMechID !== '' && isset($mechanizm_options[$slotMechID]['snippet'])) {
+    $mech_code = $mechanizm_options[$slotMechID]['snippet'];
+}
+
+// Jeśli nie ma kodu z pierwszego slotu, możemy wykorzystać alternatywne rozwiązanie
+if (empty($mech_code)) {
+    // Alternatywa: Połącz kody bez myślników lub użyj najważniejszego mechanizmu
+    for ($i = 0; $i < $ileSlotow; $i++) {
+        $slotMechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
+        
+        if (isset($slotMechID) && $slotMechID !== '' && isset($mechanizm_options[$slotMechID]['snippet'])) {
+            $mech_code = $mechanizm_options[$slotMechID]['snippet'];
+            break; // Weź pierwszy znaleziony kod i przerwij pętlę
         }
-        $mech_code .= $mechanizm_options[$slotMechID]['snippet'];
     }
 }
 
-// Jeśli nie mamy żadnego kodu, użyj wartości domyślnej
+// Jeśli nadal nie mamy kodu, użyj wartości domyślnej
 if (empty($mech_code)) {
     $mech_code = 'DEFMECH';
 }
