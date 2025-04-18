@@ -117,6 +117,35 @@
   max-width: 80px;
 }
 
+/* Styl dla ramki w podsumowaniu */
+.summary-table .ramka-slots {
+  transform: scale(0.8);
+  transform-origin: top center;
+  margin: 0 auto;
+  max-width: 200px;
+  border: 0; /* Usuń obramowanie, które może być w kroku 4 */
+  background: transparent;
+  padding: 0;
+}
+
+/* Dostosowanie szerokości slotów w podsumowaniu */
+.summary-table .ramka-slots .slot img {
+  max-width: 60px;
+  max-height: 60px;
+}
+
+/* Ukryjmy interakcje z ramką w podsumowaniu */
+.summary-table .ramka-slots .slot {
+  cursor: default;
+  transform: none !important; /* Wyłącz efekt hover */
+}
+
+.summary-table .ramka-slots .slot:hover {
+  transform: none;
+  border-color: #ccc;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
 /* Przyciski nawigacji i podsumowania */
 .navigation-buttons, .summary-buttons {
   margin-top: 20px;

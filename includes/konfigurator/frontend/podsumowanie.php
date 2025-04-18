@@ -308,20 +308,47 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         
         <!-- RAMKA -->
         <td>
-            <strong><?php echo esc_html($layoutName); ?></strong><br>
-            <?php if ($uklad_img): ?>
-                <img src="<?php echo esc_url($uklad_img); ?>" alt="<?php echo esc_attr($layoutName); ?>" style="max-width:80px; display:block;margin-bottom:5px;">
-            <?php endif; ?>
+            <!-- Odtwarzamy strukturę ramki z kroku 4 -->
+            <?php
+            // Określamy orientację na podstawie nazwy układu
+            $orientation_class = 'vertical'; // Domyślnie pionowy
+            if (preg_match('/X\d+/i', $layoutName)) {
+                $orientation_class = 'horizontal';
+            }
+            if (stripos($layoutName, 'PIONOWY') !== false) {
+                $orientation_class = 'vertical';
+            } elseif (stripos($layoutName, 'POZIOMY') !== false) {
+                $orientation_class = 'horizontal';
+            }
+            ?>
+            <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
+                <div class="ramka-image-container">
+                    <?php for ($i = 0; $i < $ileSlotow; $i++): 
+                        $mechID = isset($item_data['mechanizm_'.$i]) ? $item_data['mechanizm_'.$i] : '';
+                        $slotImg = 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg'; // Domyślny obrazek
+                        if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
+                            $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                        }
+                    ?>
+                        <div class="slot" data-slot="<?php echo $i; ?>">
+                            <img src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo ($i+1); ?>">
+                        </div>
+                    <?php endfor; ?>
+                </div>
+            </div>
             
-            <?php if ($frame_color_img): ?>
-                <img src="<?php echo esc_url($frame_color_img); ?>" alt="<?php echo esc_attr($frame_color_name); ?>" style="max-width:40px; vertical-align:middle;">
-            <?php endif; ?>
-            <?php echo esc_html($frame_color_name); ?>
-            
-            <!-- Kod produktu -->
-            <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
-                <strong>Kod produktu:</strong><br>
-                <?php echo esc_html($product_code); ?>
+            <!-- Informacje o ramce i kodzie produktu pod obrazkiem -->
+            <div style="margin-top:10px;">
+                <strong><?php echo esc_html($layoutName); ?></strong><br>
+                <?php if ($frame_color_name): ?>
+                    <span>Kolor ramki: <?php echo esc_html($frame_color_name); ?></span>
+                <?php endif; ?>
+                
+                <!-- Kod produktu -->
+                <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
+                    <strong>Kod produktu:</strong><br>
+                    <?php echo esc_html($product_code); ?>
+                </div>
             </div>
         </td>
         
@@ -416,20 +443,35 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
 
                     <!-- RAMKA -->
                     <td>
-                        <strong><?php echo esc_html($layoutName); ?></strong><br>
-                        <?php if ($uklad_img): ?>
-                            <img src="<?php echo esc_url($uklad_img); ?>" alt="<?php echo esc_attr($layoutName); ?>" style="max-width:80px; display:block;margin-bottom:5px;">
-                        <?php endif; ?>
-
-                        <?php if ($frame_color_img): ?>
-                            <img src="<?php echo esc_url($frame_color_img); ?>" alt="<?php echo esc_attr($frame_color_name); ?>" style="max-width:40px; vertical-align:middle;">
-                        <?php endif; ?>
-                        <?php echo esc_html($frame_color_name); ?>
+                        <!-- Odtwarzamy strukturę ramki z kroku 4 -->
+                        <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
+                            <div class="ramka-image-container">
+                                <?php for ($i = 0; $i < $ileSlotow; $i++): 
+                                    $mechID = $slotData[$i]['mechanizm'];
+                                    $slotImg = $empty_slot_img;
+                                    if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
+                                        $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                                    }
+                                ?>
+                                    <div class="slot" data-slot="<?php echo $i; ?>">
+                                        <img id="podsumowanie-slot-img-<?php echo $i; ?>" src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo ($i+1); ?>">
+                                    </div>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
                         
-                        <!-- Kod produktu -->
-                        <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
-                            <strong>Kod produktu:</strong><br>
-                            <?php echo esc_html($product_code); ?>
+                        <!-- Informacje o ramce i kodzie produktu pod obrazkiem -->
+                        <div style="margin-top:10px;">
+                            <strong><?php echo esc_html($layoutName); ?></strong><br>
+                            <?php if ($frame_color_name): ?>
+                                <span>Kolor ramki: <?php echo esc_html($frame_color_name); ?></span>
+                            <?php endif; ?>
+                            
+                            <!-- Kod produktu -->
+                            <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
+                                <strong>Kod produktu:</strong><br>
+                                <?php echo esc_html($product_code); ?>
+                            </div>
                         </div>
                     </td>
 
