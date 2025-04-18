@@ -379,45 +379,20 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
             <!-- (B) Ramka z interaktywnymi slotami -->
             <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
                 <div class="ramka-image-container">
-                    <?php 
-                    // 1. Dodaj dodatkową warstwę debugowania przed wyświetleniem ramki
-                    for ($i = 0; $i < $ileSlotow; $i++) {
+                    <?php for ($i = 0; $i < $ileSlotow; $i++):
                         $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
-                        error_log("RAMKA DEBUG: Slot {$i}, mechID={$mechID}");
-                        
+                        $slotImg = $empty_slot_img; // domyślny
                         if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
-                            error_log("RAMKA DEBUG: frame_image=" . ($mechanizm_options[$mechID]['frame_image'] ?? 'BRAK'));
-                            error_log("RAMKA DEBUG: image=" . ($mechanizm_options[$mechID]['image'] ?? 'BRAK'));
-                            error_log("RAMKA DEBUG: name=" . ($mechanizm_options[$mechID]['name'] ?? 'BRAK'));
-                        }
-                    }
-                    
-                    // 2. Zmodyfikuj kod wyświetlający ramkę - dodaj dodatkowe sprawdzenia
-                    for ($i = 0; $i < $ileSlotow; $i++): 
-                        $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
-                        $slotImg = $empty_slot_img; // Domyślny obrazek
-                        
-                        // Dodatkowe debugowanie
-                        error_log("SLOT {$i}: mechID={$mechID}");
-                        
-                        // Naprawione sprawdzanie obrazka mechanizmu
-                        if (!empty($mechID) && is_string($mechID) && isset($mechanizm_options[$mechID])) {
+                            // priorytet dla frame_image
                             if (!empty($mechanizm_options[$mechID]['frame_image'])) {
                                 $slotImg = $mechanizm_options[$mechID]['frame_image'];
-                                error_log("SLOT {$i}: Używam frame_image: " . $slotImg);
-                            } else if (!empty($mechanizm_options[$mechID]['image'])) {
-                                // Alternatywnie używamy pola 'image'
+                            } elseif (!empty($mechanizm_options[$mechID]['image'])) {
                                 $slotImg = $mechanizm_options[$mechID]['image'];
-                                error_log("SLOT {$i}: Używam image zamiast frame_image: " . $slotImg);
                             }
-                        } else {
-                            error_log("SLOT {$i}: Nie znaleziono mechanizmu o ID {$mechID} lub ID jest puste.");
                         }
                     ?>
-                        <div class="slot" data-slot="<?php echo $i; ?>">
-                            <img id="podsumowanie-slot-img-<?php echo $i; ?>" 
-                                 src="<?php echo esc_url($slotImg); ?>" 
-                                 alt="Slot <?php echo ($i+1); ?>">
+                        <div class="slot">
+                            <img src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo $i+1; ?>">
                         </div>
                     <?php endfor; ?>
                 </div>
@@ -569,45 +544,20 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                         <!-- (B) Ramka z interaktywnymi slotami -->
                         <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
                             <div class="ramka-image-container">
-                                <?php 
-                                // 1. Dodaj dodatkową warstwę debugowania przed wyświetleniem ramki
-                                for ($i = 0; $i < $ileSlotow; $i++) {
+                                <?php for ($i = 0; $i < $ileSlotow; $i++):
                                     $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
-                                    error_log("RAMKA DEBUG: Slot {$i}, mechID={$mechID}");
-                                    
+                                    $slotImg = $empty_slot_img; // domyślny
                                     if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
-                                        error_log("RAMKA DEBUG: frame_image=" . ($mechanizm_options[$mechID]['frame_image'] ?? 'BRAK'));
-                                        error_log("RAMKA DEBUG: image=" . ($mechanizm_options[$mechID]['image'] ?? 'BRAK'));
-                                        error_log("RAMKA DEBUG: name=" . ($mechanizm_options[$mechID]['name'] ?? 'BRAK'));
-                                    }
-                                }
-                                
-                                // 2. Zmodyfikuj kod wyświetlający ramkę - dodaj dodatkowe sprawdzenia
-                                for ($i = 0; $i < $ileSlotow; $i++): 
-                                    $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
-                                    $slotImg = $empty_slot_img; // Domyślny obrazek
-                                    
-                                    // Dodatkowe debugowanie
-                                    error_log("SLOT {$i}: mechID={$mechID}");
-                                    
-                                    // Naprawione sprawdzanie obrazka mechanizmu
-                                    if (!empty($mechID) && is_string($mechID) && isset($mechanizm_options[$mechID])) {
+                                        // priorytet dla frame_image
                                         if (!empty($mechanizm_options[$mechID]['frame_image'])) {
                                             $slotImg = $mechanizm_options[$mechID]['frame_image'];
-                                            error_log("SLOT {$i}: Używam frame_image: " . $slotImg);
-                                        } else if (!empty($mechanizm_options[$mechID]['image'])) {
-                                            // Alternatywnie używamy pola 'image'
+                                        } elseif (!empty($mechanizm_options[$mechID]['image'])) {
                                             $slotImg = $mechanizm_options[$mechID]['image'];
-                                            error_log("SLOT {$i}: Używam image zamiast frame_image: " . $slotImg);
                                         }
-                                    } else {
-                                        error_log("SLOT {$i}: Nie znaleziono mechanizmu o ID {$mechID} lub ID jest puste.");
                                     }
                                 ?>
-                                    <div class="slot" data-slot="<?php echo $i; ?>">
-                                        <img id="podsumowanie-slot-img-<?php echo $i; ?>" 
-                                             src="<?php echo esc_url($slotImg); ?>" 
-                                             alt="Slot <?php echo ($i+1); ?>">
+                                    <div class="slot">
+                                        <img src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo $i+1; ?>">
                                     </div>
                                 <?php endfor; ?>
                             </div>
