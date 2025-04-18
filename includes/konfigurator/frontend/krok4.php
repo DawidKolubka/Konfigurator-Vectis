@@ -243,16 +243,32 @@ window.kolor_mechanizmu_options = <?php echo json_encode($kolor_mechanizmu_optio
                     }
                 }
             ?>
-                <div class="slot" data-slot-index="<?php echo $i; ?>">
-                    <img src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo $i + 1; ?>">
+                <div class="slot" data-slot="<?php echo $i; ?>">
+                    <img
+                        id="slot-img-<?php echo $i; ?>"
+                        src="<?php echo esc_url($slotImg); ?>"
+                        alt="Slot <?php echo $i + 1; ?>"
+                    >
 
-                    <?php // --- POCZĄTEK ZMIANY --- ?>
-                    <?php // Dodaj ukryte pola do formularza dla tego slotu ?>
-                    <input type="hidden" name="mechanizm_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['mechanizm']); ?>">
-                    <input type="hidden" name="technologia_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['technologia']); ?>">
-                    <input type="hidden" name="kolor_mechanizmu_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['kolor_mechanizmu']); ?>">
-                    <?php // --- KONIEC ZMIANY --- ?>
-
+                    <!-- ukryte pola muszą mieć też id, bo JS używa getElementById -->
+                    <input
+                        type="hidden"
+                        id="mechanizm_<?php echo $i; ?>"
+                        name="mechanizm_<?php echo $i; ?>"
+                        value="<?php echo esc_attr($slotData[$i]['mechanizm']); ?>"
+                    >
+                    <input
+                        type="hidden"
+                        id="technologia_<?php echo $i; ?>"
+                        name="technologia_<?php echo $i; ?>"
+                        value="<?php echo esc_attr($slotData[$i]['technologia']); ?>"
+                    >
+                    <input
+                        type="hidden"
+                        id="kolor_mechanizmu_<?php echo $i; ?>"
+                        name="kolor_mechanizmu_<?php echo $i; ?>"
+                        value="<?php echo esc_attr($slotData[$i]['kolor_mechanizmu']); ?>"
+                    >
                 </div>
             <?php endfor; ?>
         </div>
