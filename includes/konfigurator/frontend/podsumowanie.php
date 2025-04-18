@@ -422,15 +422,36 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                     <?php error_log("Renderowanie slotu {$index}: " . print_r($slot, true)); ?>
                     <div style="margin-bottom:10px;border-bottom:1px dotted #ccc;padding-bottom:5px;">
                         <!-- Ikona mechanizmu -->
-                        <?php if (!empty($slot['mechanizm_img'])): ?>
-                            <img src="<?php echo esc_url($slot['mechanizm_img']); ?>" 
+                        <?php 
+                        $mechID = $slot['mechanizm_id'];
+                        $mechIcon = '';
+                        
+                        // Dodatkowe debugowanie
+                        error_log("MECH {$index}: mechID={$mechID}");
+                        
+                        // Sprawdź wszystkie możliwe źródła obrazka
+                        if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                            if (!empty($slot['mechanizm_img'])) {
+                                $mechIcon = $slot['mechanizm_img'];
+                            } else if (!empty($mechanizm_options[$mechID]['frame_image'])) {
+                                $mechIcon = $mechanizm_options[$mechID]['frame_image'];
+                            } else if (!empty($mechanizm_options[$mechID]['image'])) {
+                                $mechIcon = $mechanizm_options[$mechID]['image'];
+                            }
+                            
+                            error_log("MECH {$index}: Ikona = " . ($mechIcon ?: 'BRAK'));
+                        }
+                        
+                        if (!empty($mechIcon)): 
+                        ?>
+                            <img src="<?php echo esc_url($mechIcon); ?>" 
                                  alt="<?php echo esc_attr($slot['mechanizm_name']); ?>" 
                                  style="max-width:30px;vertical-align:middle;margin-right:5px;">
                         <?php else: ?>
                             <!-- Brak ikony mechanizmu -->
                             <span style="color:#999;">[Brak ikony]</span>
                         <?php endif; ?>
-
+                        
                         <!-- Nazwa mechanizmu -->
                         <strong><?php echo esc_html($slot['mechanizm_name']); ?></strong><br>
 
@@ -519,11 +540,39 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                         <!-- (B) Ramka z interaktywnymi slotami -->
                         <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
                             <div class="ramka-image-container">
-                                <?php for ($i = 0; $i < $ileSlotow; $i++): 
+                                <?php 
+                                // 1. Dodaj dodatkową warstwę debugowania przed wyświetleniem ramki
+                                for ($i = 0; $i < $ileSlotow; $i++) {
                                     $mechID = $slotData[$i]['mechanizm'];
-                                    $slotImg = $empty_slot_img;
-                                    if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
-                                        $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                                    error_log("RAMKA DEBUG: Slot {$i}, mechID={$mechID}");
+                                    
+                                    if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                                        error_log("RAMKA DEBUG: frame_image=" . ($mechanizm_options[$mechID]['frame_image'] ?? 'BRAK'));
+                                        error_log("RAMKA DEBUG: image=" . ($mechanizm_options[$mechID]['image'] ?? 'BRAK'));
+                                        error_log("RAMKA DEBUG: name=" . ($mechanizm_options[$mechID]['name'] ?? 'BRAK'));
+                                    }
+                                }
+                                
+                                // 2. Zmodyfikuj kod wyświetlający ramkę - dodaj dodatkowe sprawdzenia
+                                for ($i = 0; $i < $ileSlotow; $i++): 
+                                    $mechID = $slotData[$i]['mechanizm'];
+                                    $slotImg = $empty_slot_img; // Domyślny obrazek
+                                    
+                                    // Dodatkowe debugowanie
+                                    error_log("SLOT {$i}: mechID={$mechID}");
+                                    
+                                    // Naprawione sprawdzanie obrazka mechanizmu
+                                    if (!empty($mechID) && is_string($mechID) && isset($mechanizm_options[$mechID])) {
+                                        if (!empty($mechanizm_options[$mechID]['frame_image'])) {
+                                            $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                                            error_log("SLOT {$i}: Używam frame_image: " . $slotImg);
+                                        } else if (!empty($mechanizm_options[$mechID]['image'])) {
+                                            // Alternatywnie używamy pola 'image'
+                                            $slotImg = $mechanizm_options[$mechID]['image'];
+                                            error_log("SLOT {$i}: Używam image zamiast frame_image: " . $slotImg);
+                                        }
+                                    } else {
+                                        error_log("SLOT {$i}: Nie znaleziono mechanizmu o ID {$mechID} lub ID jest puste.");
                                     }
                                 ?>
                                     <div class="slot" data-slot="<?php echo $i; ?>">
@@ -562,15 +611,36 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 <?php error_log("Renderowanie slotu {$index}: " . print_r($slot, true)); ?>
                                 <div style="margin-bottom:10px;border-bottom:1px dotted #ccc;padding-bottom:5px;">
                                     <!-- Ikona mechanizmu -->
-                                    <?php if (!empty($slot['mechanizm_img'])): ?>
-                                        <img src="<?php echo esc_url($slot['mechanizm_img']); ?>" 
+                                    <?php 
+                                    $mechID = $slot['mechanizm_id'];
+                                    $mechIcon = '';
+                                    
+                                    // Dodatkowe debugowanie
+                                    error_log("MECH {$index}: mechID={$mechID}");
+                                    
+                                    // Sprawdź wszystkie możliwe źródła obrazka
+                                    if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                                        if (!empty($slot['mechanizm_img'])) {
+                                            $mechIcon = $slot['mechanizm_img'];
+                                        } else if (!empty($mechanizm_options[$mechID]['frame_image'])) {
+                                            $mechIcon = $mechanizm_options[$mechID]['frame_image'];
+                                        } else if (!empty($mechanizm_options[$mechID]['image'])) {
+                                            $mechIcon = $mechanizm_options[$mechID]['image'];
+                                        }
+                                        
+                                        error_log("MECH {$index}: Ikona = " . ($mechIcon ?: 'BRAK'));
+                                    }
+                                    
+                                    if (!empty($mechIcon)): 
+                                    ?>
+                                        <img src="<?php echo esc_url($mechIcon); ?>" 
                                              alt="<?php echo esc_attr($slot['mechanizm_name']); ?>" 
                                              style="max-width:30px;vertical-align:middle;margin-right:5px;">
                                     <?php else: ?>
                                         <!-- Brak ikony mechanizmu -->
                                         <span style="color:#999;">[Brak ikony]</span>
                                     <?php endif; ?>
-
+                                    
                                     <!-- Nazwa mechanizmu -->
                                     <strong><?php echo esc_html($slot['mechanizm_name']); ?></strong><br>
 
