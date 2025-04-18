@@ -106,6 +106,15 @@ if (preg_match('/X(\\d+)/i', $layoutName, $matches)) {
     $ileSlotow = 2;
 }
 
+// (D‑1) Określenie klasy CSS orientacji ramki (poziomo/pionowo)
+if (stripos($layoutName, 'poziomy') !== false) {
+    $orientation_class = 'horizontal';
+} elseif (stripos($layoutName, 'pionowy') !== false) {
+    $orientation_class = 'vertical';
+} else {
+    $orientation_class = '';
+}
+
 // (E) Kolor ramki
 $frame_color_index = isset($cfg['kolor_ramki']) ? maybe_stripslashes($cfg['kolor_ramki']) : '';
 $frame_color_name  = '';
@@ -379,7 +388,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         <!-- RAMKA -->
         <td>
             <!-- dla zapisanych wcześniej pozycji -->
-            <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
+                         <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
                 <div class="ramka-image-container">
                     <?php for ($i = 0; $i < $ileSlotow; $i++):
                         $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
