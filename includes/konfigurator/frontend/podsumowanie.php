@@ -477,27 +477,29 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                         Technologia: <?php echo esc_html($slot['technologia']); ?><br>
                     <?php endif; ?>
                     
-                    <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy z pola code grupy mechanizmów -->
+                    <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy z technologii -->
                     <?php
                     // Pobierz ID mechanizmu dla tego slotu
                     $mechID = $slot['mechanizm_id'];
-                    $mech_code = ''; // Domyślnie pusty kod
+                    $tech_code = ''; // Domyślnie pusty kod
 
-                    // Sprawdź, czy mechanizm istnieje i ma przypisaną grupę
-                    if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID])) {
-                        // Pobierz ID grupy mechanizmu
-                        $group_id = isset($mechanizm_options[$mechID]['group']) ? $mechanizm_options[$mechID]['group'] : '';
-                        
-                        // Sprawdź, czy grupa istnieje i ma zdefiniowany kod
-                        if ($group_id !== '' && isset($mechanizm_options[$group_id]['code'])) {
-                            $mech_code = $mechanizm_options[$group_id]['code'];
+                    // Pobierz wszystkie technologie
+                    $technologie = kv_get_items('kv_technologia_options');
+
+                    // Znajdź technologię powiązaną z tym mechanizmem
+                    if (isset($mechID) && $mechID !== '' && !empty($technologie)) {
+                        foreach ($technologie as $tech) {
+                            if (isset($tech['group']) && $tech['group'] == $mechID && isset($tech['code'])) {
+                                $tech_code = $tech['code'];
+                                break; // Znaleziono pasującą technologię, przerywamy pętlę
+                            }
                         }
                     }
 
                     // Wyświetl kod mechanizmu, jeśli istnieje
-                    if (!empty($mech_code)):
+                    if (!empty($tech_code)):
                     ?>
-                        Kod: <?php echo esc_html($mech_code); ?><br>
+                        Kod mechanizmu (konkretny kod produktu): <?php echo esc_html($tech_code); ?><br>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>
@@ -618,27 +620,29 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                     Kolor: <?php echo esc_html($slot['kolor_mech']); ?><br>
                                 <?php endif; ?>
 
-                                <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy z pola code grupy mechanizmów -->
+                                <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy z technologii -->
                                 <?php
                                 // Pobierz ID mechanizmu dla tego slotu
                                 $mechID = $slot['mechanizm_id'];
-                                $mech_code = ''; // Domyślnie pusty kod
+                                $tech_code = ''; // Domyślnie pusty kod
 
-                                // Sprawdź, czy mechanizm istnieje i ma przypisaną grupę
-                                if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID])) {
-                                    // Pobierz ID grupy mechanizmu
-                                    $group_id = isset($mechanizm_options[$mechID]['group']) ? $mechanizm_options[$mechID]['group'] : '';
-                                    
-                                    // Sprawdź, czy grupa istnieje i ma zdefiniowany kod
-                                    if ($group_id !== '' && isset($mechanizm_options[$group_id]['code'])) {
-                                        $mech_code = $mechanizm_options[$group_id]['code'];
+                                // Pobierz wszystkie technologie
+                                $technologie = kv_get_items('kv_technologia_options');
+
+                                // Znajdź technologię powiązaną z tym mechanizmem
+                                if (isset($mechID) && $mechID !== '' && !empty($technologie)) {
+                                    foreach ($technologie as $tech) {
+                                        if (isset($tech['group']) && $tech['group'] == $mechID && isset($tech['code'])) {
+                                            $tech_code = $tech['code'];
+                                            break; // Znaleziono pasującą technologię, przerywamy pętlę
+                                        }
                                     }
                                 }
 
                                 // Wyświetl kod mechanizmu, jeśli istnieje
-                                if (!empty($mech_code)):
+                                if (!empty($tech_code)):
                                 ?>
-                                    Kod: <?php echo esc_html($mech_code); ?><br>
+                                    Kod mechanizmu (konkretny kod produktu): <?php echo esc_html($tech_code); ?><br>
                                 <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
