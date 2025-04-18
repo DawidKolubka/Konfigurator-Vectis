@@ -107,15 +107,81 @@
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 15px;
+  table-layout: fixed; /* Zapewnia respektowanie szerokości kolumn */
 }
 
 .summary-table th, .summary-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
+  vertical-align: top;
 }
-.summary-frame-color, .summary-uklad {
-  max-width: 80px;
+
+/* Klasy dla poszczególnych kolumn */
+.summary-lp {
+  width: 30px; /* Lp. - bardzo wąska */
+}
+
+.summary-ramka {
+  width: auto; /* Dynamiczna szerokość dla ramki */
+  min-width: 180px; /* Minimalna szerokość */
+}
+
+.summary-ramka[data-slots="1"] {
+  width: 120px; /* Dla jednego slotu */
+}
+
+.summary-ramka[data-slots="2"] {
+  width: 240px; /* Dla dwóch slotów */
+}
+
+.summary-ramka[data-slots="3"] {
+  width: 360px; /* Dla trzech slotów */
+}
+
+.summary-mechanizmy {
+  width: 30%; /* Szeroka kolumna dla mechanizmów */
+  min-width: 200px;
+}
+
+.summary-ilosc {
+  width: 60px; /* Stała, mała szerokość */
+}
+
+.summary-cena-jedn {
+  width: 100px; /* Stała szerokość */
+}
+
+.summary-cena-calosc {
+  width: 100px; /* Stała szerokość */
+}
+
+/* Dla ramki ze skalowaniem */
+.summary-table .ramka-slots {
+  transform: scale(0.8);
+  transform-origin: top center;
+  margin: 0 auto;
+  border: 0; /* Usuń obramowanie, które może być w kroku 4 */
+  background: transparent;
+  padding: 0;
+}
+
+.summary-table .ramka-image-container {
+  transform: scale(0.5);
+  transform-origin: top center;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Responsywne zachowanie tabeli */
+@media (max-width: 768px) {
+  .summary-table {
+    table-layout: auto; /* Na małych ekranach pozwól na dynamiczne dopasowanie */
+  }
+  
+  .summary-ramka, .summary-mechanizmy {
+    min-width: 120px; /* Mniejsza minimalna szerokość na małych ekranach */
+  }
 }
 
 /* Styl dla ramki w podsumowaniu */

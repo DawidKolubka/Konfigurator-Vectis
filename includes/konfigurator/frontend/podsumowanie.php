@@ -517,12 +517,12 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         <table class="summary-table">
             <thead>
                 <tr>
-                    <th>L.P.</th>
-                    <th>Ramka</th>
-                    <th>Mechanizmy</th>
-                    <th>Ilość</th>
-                    <th>Cena jednostkowa</th>
-                    <th>Cena całość</th>
+                    <th class="summary-lp">Lp.</th>
+                    <th class="summary-ramka" data-slots="<?php echo $ileSlotow; ?>">Ramka</th>
+                    <th class="summary-mechanizmy">Mechanizmy</th>
+                    <th class="summary-ilosc">Ilość</th>
+                    <th class="summary-cena-jedn">Cena jedn.</th>
+                    <th class="summary-cena-calosc">Cena całość</th>
                 </tr>
             </thead>
             <tbody>
