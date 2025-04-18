@@ -413,11 +413,12 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                     <?php for ($i = 0; $i < $ileSlotow; $i++):
                         $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
                         $slotImg = '';
-                        if (!empty($mechID)
-                            && isset($mechanizm_options[$mechID]['frame_image'])
-                            && !empty($mechanizm_options[$mechID]['frame_image'])
-                        ) {
-                            $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                        if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                            if (!empty($mechanizm_options[$mechID]['frame_image'])) {
+                                $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                            } elseif (!empty($mechanizm_options[$mechID]['image'])) {
+                                $slotImg = $mechanizm_options[$mechID]['image']; // Fallback
+                            }
                         }
                     ?>
                         <div class="slot">
@@ -547,11 +548,12 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 <?php for ($i = 0; $i < $ileSlotow; $i++):
                                     $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
                                     $slotImg = '';
-                                    if (!empty($mechID)
-                                        && isset($mechanizm_options[$mechID]['frame_image'])
-                                        && !empty($mechanizm_options[$mechID]['frame_image'])
-                                    ) {
-                                        $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                                    if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                                        if (!empty($mechanizm_options[$mechID]['frame_image'])) {
+                                            $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                                        } elseif (!empty($mechanizm_options[$mechID]['image'])) {
+                                            $slotImg = $mechanizm_options[$mechID]['image']; // Fallback
+                                        }
                                     }
                                 ?>
                                     <div class="slot">
