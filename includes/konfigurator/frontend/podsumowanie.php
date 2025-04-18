@@ -187,20 +187,11 @@ for ($i = 0; $i < $ileSlotow; $i++) {
         $colorName = $kolor_mechanizmu_options[$colorVal]['name'];
     }
 
-    // Kod mechanizmu - pobieramy z pola 'code' w tablicy mechanizmów
-    $mech_code = '';
-    if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID]['code'])) {
-        $mech_code = $mechanizm_options[$mechID]['code'];
-    } else {
-        $mech_code = ''; // Brak kodu lub nieprawidłowy mechanizm
-    }
-
     // Zapisz dane do tablicy $slots używanej w kolumnie "Mechanizmy"
     $slots[] = [
         'mechanizm_id'   => $mechID, // Dodaj ID dla łatwiejszego dostępu później
         'mechanizm_name' => $mech_name,
         'mechanizm_img'  => $mech_img, // Użyj poprawionej zmiennej $mech_img
-        'mechanizm_code' => $mech_code, // Dodajemy kod mechanizmu
         'technologia'    => $tech_name,
         'kolor_mech'     => $colorName,
         'cena'           => $tech_price
@@ -398,7 +389,6 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
             'mechanizm_id' => $mechID,
             'mechanizm_name' => $mech_name,
             'mechanizm_img' => $mech_img, // Dodaj obraz mechanizmu
-            'mechanizm_code' => isset($mechanizm_options[$mechID]['code']) ? $mechanizm_options[$mechID]['code'] : '',
             'technologia_id' => $techID,
             'technologia' => $tech_name,
             'kolor_mech' => $colorVal,
@@ -472,42 +462,44 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         </td>
         
         <!-- MECHANIZMY -->
-        <td class="summary-mechanizmy">
-            <?php if (!empty($slots)): ?>
-            <ul style="list-style-type: none; padding-left: 0;">
-                <?php foreach ($slots as $slot): ?>
-                    <li style="margin-bottom: 15px; display: flex; align-items: flex-start;">
-                        <?php
-                        // Dodaj ikonę grupy mechanizmu (obraz)
-                        if (!empty($slot['mechanizm_img'])): ?>
-                            <div style="margin-right: 10px; width: 50px; min-width: 50px;">
-                                <img src="<?php echo esc_url($slot['mechanizm_img']); ?>" alt="" style="max-width: 100%; height: auto;">
-                            </div>
-                        <?php endif; ?>
-                        
-                        <div>
-                            <?php
-                            // Wyświetl nazwę mechanizmu
-                            if (!empty($slot['mechanizm_name'])) {
-                                echo '<div><strong>' . esc_html($slot['mechanizm_name']) . '</strong></div>';
-                            }
-                            
-                            // Dodaj technologię
-                            if (!empty($slot['technologia'])) {
-                                echo '<div>Technologia: ' . esc_html($slot['technologia']) . '</div>';
-                            }
-                            
-                            // Dodaj kod mechanizmu
-                            if (!empty($slot['mechanizm_code'])) {
-                                echo '<div>Kod: ' . esc_html($slot['mechanizm_code']) . '</div>';
-                            }
-                        
-                            ?>
-                        </div>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-            <?php endif; ?>
+        <td>
+            <?php foreach ($slots as $slot): ?>
+                <?php $mechIcon = $slot['mechanizm_img']; ?>
+                <?php if ($mechIcon): ?>
+                    <img src="<?php echo esc_url($mechIcon); ?>" alt="" style="max-width:30px;">
+                <?php endif; ?>
+                <div style="margin-bottom:10px;border-bottom:1px dotted #ccc;padding-bottom:5px;">
+                    <!-- Nazwa mechanizmu -->
+                    <strong><?php echo esc_html($slot['mechanizm_name']); ?></strong><br>
+
+                    <!-- Technologia -->
+                    <?php if (!empty($slot['technologia'])): ?>
+                        Technologia: <?php echo esc_html($slot['technologia']); ?><br>
+                    <?php endif; ?>
+
+                    <!-- Kolor mechanizmu -->
+                    <?php if (!empty($slot['kolor_mech'])): ?>
+                        Kolor: <?php echo esc_html($slot['kolor_mech']); ?><br>
+                    <?php endif; ?>
+
+                    <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy ze snippetu mechanizmu -->
+                    <?php
+                    // Pobierz ID mechanizmu dla tego slotu
+                    $mechID = $slot['mechanizm_id'];
+                    $mech_snippet = ''; // Domyślnie pusty
+
+                    // Sprawdź, czy mechanizm istnieje i ma zdefiniowany snippet
+                    if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID]['snippet'])) {
+                        $mech_snippet = $mechanizm_options[$mechID]['snippet'];
+                    }
+
+                    // Wyświetl kod mechanizmu, jeśli istnieje
+                    if (!empty($mech_snippet)):
+                    ?>
+                        Kod: <?php echo esc_html($mech_snippet); ?><br>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
         </td>
         
         <!-- ILOŚĆ -->
@@ -605,46 +597,44 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                     </td>
 
                     <!-- MECHANIZMY -->
-                    <td class="summary-mechanizmy">
-                        <?php if (!empty($slots)): ?>
-                        <ul style="list-style-type: none; padding-left: 0;">
-                            <?php foreach ($slots as $slot): ?>
-                                <li style="margin-bottom: 15px; display: flex; align-items: flex-start;">
-                                    <?php
-                                    // Dodaj ikonę grupy mechanizmu (obraz)
-                                    if (!empty($slot['mechanizm_img'])): ?>
-                                        <div style="margin-right: 10px; width: 50px; min-width: 50px;">
-                                            <img src="<?php echo esc_url($slot['mechanizm_img']); ?>" alt="" style="max-width: 100%; height: auto;">
-                                        </div>
-                                    <?php endif; ?>
-                                    
-                                    <div>
-                                        <?php
-                                        // Wyświetl nazwę mechanizmu
-                                        if (!empty($slot['mechanizm_name'])) {
-                                            echo '<div><strong>' . esc_html($slot['mechanizm_name']) . '</strong></div>';
-                                        }
-                                        
-                                        // Dodaj technologię
-                                        if (!empty($slot['technologia'])) {
-                                            echo '<div>Technologia: ' . esc_html($slot['technologia']) . '</div>';
-                                        }
-                                        
-                                        // Dodaj kod mechanizmu
-                                        if (!empty($slot['mechanizm_code'])) {
-                                            echo '<div>Kod: ' . esc_html($slot['mechanizm_code']) . '</div>';
-                                        }
-                                        
-                                        // Dodaj kolor mechanizmu
-                                        if (!empty($slot['kolor_mech'])) {
-                                            echo '<div>Kolor: ' . esc_html($slot['kolor_mech']) . '</div>';
-                                        }
-                                        ?>
-                                    </div>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                        <?php endif; ?>
+                    <td>
+                        <?php foreach ($slots as $slot): ?>
+                            <?php $mechIcon = $slot['mechanizm_img']; ?>
+                            <?php if ($mechIcon): ?>
+                                <img src="<?php echo esc_url($mechIcon); ?>" alt="" style="max-width:30px;">
+                            <?php endif; ?>
+                            <div style="margin-bottom:10px;border-bottom:1px dotted #ccc;padding-bottom:5px;">
+                                <!-- Nazwa mechanizmu -->
+                                <strong><?php echo esc_html($slot['mechanizm_name']); ?></strong><br>
+
+                                <!-- Technologia -->
+                                <?php if (!empty($slot['technologia'])): ?>
+                                    Technologia: <?php echo esc_html($slot['technologia']); ?><br>
+                                <?php endif; ?>
+
+                                <!-- Kolor mechanizmu -->
+                                <?php if (!empty($slot['kolor_mech'])): ?>
+                                    Kolor: <?php echo esc_html($slot['kolor_mech']); ?><br>
+                                <?php endif; ?>
+
+                                <!-- WAŻNA ZMIANA: Kod mechanizmu - pobieramy ze snippetu mechanizmu -->
+                                <?php
+                                // Pobierz ID mechanizmu dla tego slotu
+                                $mechID = $slot['mechanizm_id'];
+                                $mech_snippet = ''; // Domyślnie pusty
+
+                                // Sprawdź, czy mechanizm istnieje i ma zdefiniowany snippet
+                                if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID]['snippet'])) {
+                                    $mech_snippet = $mechanizm_options[$mechID]['snippet'];
+                                }
+
+                                // Wyświetl kod mechanizmu, jeśli istnieje
+                                if (!empty($mech_snippet)):
+                                ?>
+                                    Kod: <?php echo esc_html($mech_snippet); ?><br>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
                     </td>
 
                     <!-- ILOŚĆ -->
