@@ -48,7 +48,6 @@ function kv_enqueue_media_uploader() {
 }
 add_action('admin_enqueue_scripts', 'kv_enqueue_media_uploader');
 
-
 // dodanie konfigurator.js
 function kv_enqueue_configurator_assets() {
     wp_enqueue_style(
@@ -117,3 +116,38 @@ function save_configurator_step() {
 }
 add_action('wp_ajax_save_configurator_step', 'save_configurator_step');
 add_action('wp_ajax_nopriv_save_configurator_step', 'save_configurator_step');
+
+// Napraw strukturę danych mechanizmów, gdy jakieś pola są uszkodzone
+function kv_repair_mechanizm_data() {
+    $mechanizm_options = get_option('kv_mechanizm_options', []);
+    $changed = false;
+    
+    foreach ($mechanizm_options as $id => &$mech) {
+        // Upewnij się, że wszystkie wymagane pola istnieją
+        if (!isset($mech['frame_image'])) {
+            $mech['frame_image'] = '';
+            $changed = true;
+        }
+        
+        if (!isset($mech['snippet'])) {
+            $mech['snippet'] = 'MECH' . $id; // Domyślny kod
+            $changed = true;
+        }
+        
+        if (!isset($mech['selected_colors']) || !is_array($mech['selected_colors'])) {
+            $mech['selected_colors'] = [];
+            $changed = true;
+        }
+    }
+    
+    if ($changed) {
+        update_option('kv_mechanizm_options', $mechanizm_options);
+        error_log('Naprawiono uszkodzone dane mechanizmów');
+    }
+}
+
+// Uruchom naprawę podczas aktywacji pluginu
+register_activation_hook(__FILE__, 'kv_repair_mechanizm_data');
+
+// Uruchom również teraz, w przypadku aktualizacji pluginu
+add_action('plugins_loaded', 'kv_repair_mechanizm_data');

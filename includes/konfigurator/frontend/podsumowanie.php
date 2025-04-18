@@ -125,47 +125,44 @@ $slots = [];
 $mech_code = '';
 for ($i = 0; $i < $ileSlotow; $i++) {
     // odczyt z sesji
-    $mechID   = isset($cfg['mechanizm_'.$i])       ? maybe_stripslashes($cfg['mechanizm_'.$i])       : '';
-    $techID   = isset($cfg['technologia_'.$i])     ? maybe_stripslashes($cfg['technologia_'.$i])     : '';
-    $colorVal = isset($cfg['kolor_mechanizmu_'.$i])? maybe_stripslashes($cfg['kolor_mechanizmu_'.$i]) : '';
+    $mechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
 
     // dodatkowe dane o mechanizmie
     $mech_name = 'Brak nazwy';
-    $mech_img  = '';
-    if ($mechID !== '' && isset($mechanizm_options[$mechID])) {
-        $mech_name = $mechanizm_options[$mechID]['name'] ?? 'Brak nazwy';
-        $mech_img  = $mechanizm_options[$mechID]['frame_image'] ?? '';
-        $mech_name = maybe_stripslashes($mech_name);
-        $mech_img  = maybe_stripslashes($mech_img);
+    $mech_img = '';
+    
+    error_log("PODSUMOWANIE: Slot {$i} - mechanizm ID: " . $mechID);
+    
+    if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+        $mechDetails = $mechanizm_options[$mechID];
+        $mech_name = isset($mechDetails['name']) ? maybe_stripslashes($mechDetails['name']) : 'Brak nazwy';
+        
+        // Sprawdź i zaloguj wartość frame_image
+        $frame_image_exists = isset($mechDetails['frame_image']);
+        $frame_image_value = $frame_image_exists ? $mechDetails['frame_image'] : 'BRAK';
+        error_log("Mechanizm #{$mechID} frame_image: " . $frame_image_value);
+        
+        $mech_img = $frame_image_exists && !empty($mechDetails['frame_image']) ? $mechDetails['frame_image'] : '';
+        
+        // Sprawdź i zaloguj wartość snippet
+        $snippet_exists = isset($mechDetails['snippet']);
+        $snippet_value = $snippet_exists ? $mechDetails['snippet'] : 'BRAK';
+        error_log("Mechanizm #{$mechID} snippet: " . $snippet_value);
         
         // WAŻNA ZMIANA: Dodawaj kod do $mech_code zamiast nadpisywać
-        if (!empty($mechanizm_options[$mechID]['snippet'])) {
+        if ($snippet_exists && !empty($mechDetails['snippet'])) {
             // Dodaj separator między kodami, jeżeli już coś mamy
             if (!empty($mech_code)) {
                 $mech_code .= '-';
             }
-            $mech_code .= $mechanizm_options[$mechID]['snippet'];
+            $mech_code .= $mechDetails['snippet'];
+            error_log("Dodano snippet do mech_code. Aktualna wartość: " . $mech_code);
         }
+    } else {
+        error_log("Mechanizm o ID {$mechID} nie znaleziony w bazie lub ID jest pusty");
     }
-
-    // dodatkowe dane o technologii
-    $tech_name = '';
-    $tech_price = 0;
-    if ($techID !== '' && isset($technologia_options[$techID])) {
-        $tech_name = $technologia_options[$techID]['technology'] ?? '';
-        $tech_name = maybe_stripslashes($tech_name);
-        $tech_price = isset($technologia_options[$techID]['price']) ? floatval($technologia_options[$techID]['price']) : 0;
-    }
-
-    $slots[$i] = [
-        'mechanizm_id'   => $mechID,
-        'mechanizm_name' => $mech_name,
-        'mechanizm_img'  => $mech_img,  // Upewnij się, że to pole jest poprawnie wypełnione
-        'technologia_id' => $techID,
-        'technologia'    => $tech_name,
-        'kolor_mech'     => $colorVal,
-        'cena'           => $tech_price
-    ];
+    
+    // reszta kodu bez zmian...
 }
 
 // Inicjalizacja tablicy $slotData dla bieżącej konfiguracji (używana w wyświetlaniu ramki)

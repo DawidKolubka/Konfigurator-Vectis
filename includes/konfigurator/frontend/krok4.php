@@ -5,6 +5,24 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+// Dodaj tę funkcję tuż przed początkiem głównego kodu
+function debug_mechanizm_options() {
+    $mechanizm_options = get_option('kv_mechanizm_options', []);
+    error_log('DEBUGOWANIE MECHANIZMÓW:');
+    
+    foreach ($mechanizm_options as $id => $mech) {
+        error_log("Mechanizm #{$id}: " . print_r([
+            'name' => $mech['name'] ?? 'BRAK',
+            'frame_image' => $mech['frame_image'] ?? 'BRAK',
+            'snippet' => $mech['snippet'] ?? 'BRAK',
+            'selected_colors' => !empty($mech['selected_colors']) ? count($mech['selected_colors']) : 0,
+        ], true));
+    }
+}
+
+// Wywołaj funkcję diagnostyczną
+debug_mechanizm_options();
+
 // Helper do bezpiecznego pozbycia się slashes
 if (!function_exists('kv_strip_and_sanitize')) {
     function kv_strip_and_sanitize($value) {
