@@ -328,6 +328,14 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
     // Inicjalizuj $slotData jako tablicę przed pierwszym użyciem
     $slotData = [];
     
+    // Wypełnij $slotData danymi z $item_data
+    for ($i = 0; $i < $ileSlotow; $i++) {
+        $mechID = isset($item_data['mechanizm_'.$i]) ? $item_data['mechanizm_'.$i] : '';
+        $slotData[$i] = [
+            'mechanizm' => $mechID
+        ];
+    }
+    
     // Pobieranie danych slotów
     $slots = [];
     for ($i = 0; $i < $ileSlotow; $i++) {
