@@ -162,6 +162,20 @@ for ($i = 0; $i < $ileSlotow; $i++) {
     ];
 }
 
+// Inicjalizacja tablicy $slotData dla bieżącej konfiguracji (używana w wyświetlaniu ramki)
+$slotData = [];
+for ($i = 0; $i < $ileSlotow; $i++) {
+    $mechID = isset($cfg['mechanizm_' . $i]) ? maybe_stripslashes($cfg['mechanizm_' . $i]) : '';
+    $techID = isset($cfg['technologia_' . $i]) ? maybe_stripslashes($cfg['technologia_' . $i]) : '';
+    $colorVal = isset($cfg['kolor_mechanizmu_' . $i]) ? maybe_stripslashes($cfg['kolor_mechanizmu_' . $i]) : '';
+    
+    $slotData[$i] = [
+        'mechanizm' => $mechID,
+        'technologia' => $techID,
+        'kolor_mechanizmu' => $colorVal
+    ];
+}
+
 // Generowanie kodu produktu
 // Format: Wybrana seria (kod) + Wybrany kształt (kod) + 0 (liczba kontrolna) - wybrany mechanizm (kod) - wybrany układ (kod) - kolor ramki (kod)
 // Przykład: ISDR0-12345-11P2
