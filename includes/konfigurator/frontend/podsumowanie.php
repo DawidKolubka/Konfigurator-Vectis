@@ -146,7 +146,7 @@ for ($i = 0; $i < $ileSlotow; $i++) {
     $colorVal = isset($cfg['kolor_mechanizmu_'.$i]) ? maybe_stripslashes($cfg['kolor_mechanizmu_'.$i]) : '';
     $techID = isset($cfg['technologia_'.$i]) ? maybe_stripslashes($cfg['technologia_'.$i]) : '';
 
-    if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+    if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID])) {
         $mech_data = $mechanizm_options[$mechID];
         $mech_name = $mech_data['name'] ?? 'Brak nazwy';
 
@@ -242,7 +242,7 @@ $mech_code = '';
 for ($i = 0; $i < $ileSlotow; $i++) {
     $slotMechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
     
-    if (!empty($slotMechID) && isset($mechanizm_options[$slotMechID]['snippet'])) {
+    if (isset($slotMechID) && $slotMechID !== '' && isset($mechanizm_options[$slotMechID]['snippet'])) {
         // Dodaj separator między kodami, jeżeli już coś mamy
         if (!empty($mech_code)) {
             $mech_code .= '-';
@@ -353,7 +353,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         // Dane mechanizmu
         $mech_name = 'Brak nazwy';
         $mech_img = '';
-        if ($mechID !== '' && isset($mechanizm_options[$mechID])) {
+        if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID])) {
             $mech_name = $mechanizm_options[$mechID]['name'] ?? 'Brak nazwy';
             // Priorytet dla frame_image, fallback do image
             if (!empty($mechanizm_options[$mechID]['frame_image'])) {
@@ -413,7 +413,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                     <?php for ($i = 0; $i < $ileSlotow; $i++):
                         $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
                         $slotImg = '';
-                        if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                        if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID])) {
                             if (!empty($mechanizm_options[$mechID]['frame_image'])) {
                                 $slotImg = $mechanizm_options[$mechID]['frame_image'];
                             } elseif (!empty($mechanizm_options[$mechID]['image'])) {
@@ -478,7 +478,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                     $mech_snippet = ''; // Domyślnie pusty
 
                     // Sprawdź, czy mechanizm istnieje i ma zdefiniowany snippet
-                    if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
+                    if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID]['snippet'])) {
                         $mech_snippet = $mechanizm_options[$mechID]['snippet'];
                     }
 
@@ -548,7 +548,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 <?php for ($i = 0; $i < $ileSlotow; $i++):
                                     $mechID = isset($slotData[$i]['mechanizm']) ? $slotData[$i]['mechanizm'] : '';
                                     $slotImg = '';
-                                    if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                                    if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID])) {
                                         if (!empty($mechanizm_options[$mechID]['frame_image'])) {
                                             $slotImg = $mechanizm_options[$mechID]['frame_image'];
                                         } elseif (!empty($mechanizm_options[$mechID]['image'])) {
@@ -613,7 +613,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 $mech_snippet = ''; // Domyślnie pusty
 
                                 // Sprawdź, czy mechanizm istnieje i ma zdefiniowany snippet
-                                if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
+                                if (isset($mechID) && $mechID !== '' && isset($mechanizm_options[$mechID]['snippet'])) {
                                     $mech_snippet = $mechanizm_options[$mechID]['snippet'];
                                 }
 
