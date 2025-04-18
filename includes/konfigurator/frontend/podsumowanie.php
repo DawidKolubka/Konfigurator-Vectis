@@ -325,6 +325,15 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         $ileSlotow = 2;
     }
     
+    // Dodaj tę linię po określeniu ileSlotow:
+    if (stripos($layoutName, 'poziomy') !== false) {
+        $orientation_class = 'horizontal';
+    } elseif (stripos($layoutName, 'pionowy') !== false) {
+        $orientation_class = 'vertical';
+    } else {
+        $orientation_class = '';
+    }
+    
     // Inicjalizuj $slotData jako tablicę przed pierwszym użyciem
     $slotData = [];
     
@@ -350,7 +359,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
             if (!empty($mechanizm_options[$mechID]['frame_image'])) {
                 $mech_img = $mechanizm_options[$mechID]['frame_image'];
             } elseif (!empty($mechanizm_options[$mechID]['image'])) {
-                $mech_img = $mechanizm_options[$mechID]['image'];
+                $mech_img = $mechanizm_options[$mechID]['image']; // Fallback
             }
         }
         
