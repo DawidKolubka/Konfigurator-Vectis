@@ -155,7 +155,25 @@ foreach ($technologia_options as $tech_index => $tech) {
         'colorName' => $colorName
     ];
 }
+
+// Przygotowanie danych o przypisanych kolorach do mechanizmów
+$mechanizm_kolor_map = [];
+foreach ($mechanizm_options as $mech_id => $mech) {
+    // Pobierz przypisane kolory mechanizmu (pole selected_colors)
+    $selected_colors = isset($mech['selected_colors']) && is_array($mech['selected_colors']) ? $mech['selected_colors'] : [];
+    
+    // Zapisz mapowanie mechanizm => dostępne kolory
+    $mechanizm_kolor_map[$mech_id] = $selected_colors;
+}
+
+// Przekaż mapę do JavaScript
+$js_mechanizm_kolor_map = json_encode($mechanizm_kolor_map);
 ?>
+
+<script>
+// Globalny obiekt z kolorami mechanizmów
+window.kolor_mechanizmu_options = <?php echo json_encode($kolor_mechanizmu_options); ?>;
+</script>
 
 <div class="step-content">
     <h2>Krok 4: Wybierz mechanizmy i kolor ramki</h2>
@@ -277,6 +295,7 @@ foreach ($technologia_options as $tech_index => $tech) {
 // Dane z PHP
 const mechanizmyData = <?php echo json_encode($mechanizmy_json); ?>;
 const technologieData = <?php echo json_encode($technologie_json); ?>;
+const mechanizmKolorMap = <?php echo $js_mechanizm_kolor_map; ?>;
 let activeSlot = null;
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -401,10 +420,47 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentTech) {
             techSelect.value = currentTech;
         }
+
+        // Pobierz dostępne kolory dla wybranego mechanizmu
+        const availableColors = mechanizmKolorMap[mechVal] || [];
         
+        // Utwórz select dla kolorów mechanizmu
         const colorSelect = document.getElementById('edit-color-select');
         colorSelect.innerHTML = '';
-        colorSelect.disabled = true; // Na początku wyłączony
+        colorSelect.disabled = availableColors.length === 0; // Wyłącz, jeśli brak dostępnych kolorów
+        
+        if (availableColors.length > 0) {
+            // Dodaj opcję domyślną
+            const defaultColorOpt = document.createElement('option');
+            defaultColorOpt.value = '';
+            defaultColorOpt.text = 'Wybierz kolor mechanizmu';
+            colorSelect.appendChild(defaultColorOpt);
+            
+            // Dodaj dostępne kolory
+            availableColors.forEach(colorId => {
+                if (colorId && window.kolor_mechanizmu_options && window.kolor_mechanizmu_options[colorId]) {
+                    const colorData = window.kolor_mechanizmu_options[colorId];
+                    const opt = document.createElement('option');
+                    opt.value = colorData.name || '';
+                    opt.text = colorData.name || 'Bez nazwy';
+                    colorSelect.appendChild(opt);
+                }
+            });
+            
+            // Ustaw aktualnie wybrany kolor
+            const currentColor = document.getElementById(`kolor_mechanizmu_${slotIndex}`).value;
+            if (currentColor) {
+                colorSelect.value = currentColor;
+            }
+        }
+        
+        // Obsługa zmiany koloru mechanizmu
+        colorSelect.onchange = function() {
+            const chosenColor = this.value;
+            document.getElementById(`kolor_mechanizmu_${slotIndex}`).value = chosenColor;
+            document.getElementById(`slot-color-summary-${slotIndex}`).textContent = chosenColor || '—';
+            updateSlotState();
+        };
         
         // Obsługa zmiany technologii
         techSelect.onchange = function() {
@@ -412,22 +468,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const techInput = document.getElementById(`technologia_${slotIndex}`);
             techInput.value = chosenTechID;
             
-            // Debug - wypisujemy wartość wybranej technologii
-            console.log(`Zmieniono technologię dla slotu ${slotIndex}: ID=${chosenTechID}`);
-            
             const chosenTech = relTech.find(t => t.ID == chosenTechID);
-            const newColor = chosenTech ? chosenTech.colorName : '';
-            document.getElementById(`kolor_mechanizmu_${slotIndex}`).value = newColor;
             
             // Aktualizacja podsumowania w bloku slotu
             document.getElementById(`slot-tech-summary-${slotIndex}`).textContent = chosenTech ? chosenTech.nazwa : '—';
-            document.getElementById(`slot-color-summary-${slotIndex}`).textContent = newColor ? newColor : '—';
-            updateSlotState(); // Zaktualizowano z updateSlotBorders()
+            updateSlotState();
         };
         
         panel.style.display = 'block';
         slotElement.parentNode.insertBefore(panel, slotElement.nextSibling);
-        updateSlotState(); // Zaktualizowano z updateSlotBorders()
+        updateSlotState();
     }
 
     // Zamknięcie panelu edycji
@@ -450,13 +500,13 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(`kolor_mechanizmu_${activeSlot}`).value = '';
             const slotImg = document.getElementById(`slot-img-${activeSlot}`);
             const newMech = mechanizmyData.find(m => m.ID == newMechID);
-            slotImg.src = newMech ? (newMech.ikona || 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg') : 'https://www.isdvectis.pl/wp-content/uploads/2025/04/wybor.svg';
+            slotImg.src = newMech ? (newMech.ikona || '<?php echo esc_url($empty_slot_img); ?>') : '<?php echo esc_url($empty_slot_img); ?>';
             document.getElementById(`slot-mech-name-${activeSlot}`).textContent = newMech ? newMech.nazwa : 'Brak';
             document.getElementById(`slot-tech-summary-${activeSlot}`).textContent = '—';
             document.getElementById(`slot-color-summary-${activeSlot}`).textContent = '—';
             const slotEl = document.querySelector(`.slot[data-slot="${activeSlot}"]`);
             showSlotSettings(activeSlot, slotEl);
-            updateSlotState(); // Zaktualizowano z updateSlotBorders()
+            updateSlotState();
         });
     });
 
