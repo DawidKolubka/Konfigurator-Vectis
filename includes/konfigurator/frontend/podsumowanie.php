@@ -111,6 +111,8 @@ if (stripos($layoutName, 'poziomy') !== false) {
     $orientation_class = 'horizontal';
 } elseif (stripos($layoutName, 'pionowy') !== false) {
     $orientation_class = 'vertical';
+} elseif ($ileSlotow == 1) {
+    $orientation_class = 'horizontal'; // Dla pojedynczego slotu domyślnie poziomo
 } else {
     $orientation_class = '';
 }
@@ -330,6 +332,8 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         $orientation_class = 'horizontal';
     } elseif (stripos($layoutName, 'pionowy') !== false) {
         $orientation_class = 'vertical';
+    } elseif ($ileSlotow == 1) {
+        $orientation_class = 'horizontal'; // Dla pojedynczego slotu domyślnie poziomo
     } else {
         $orientation_class = '';
     }
