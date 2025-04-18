@@ -227,26 +227,35 @@ window.kolor_mechanizmu_options = <?php echo json_encode($kolor_mechanizmu_optio
 
     <!-- (B) Ramka z interaktywnymi slotami -->
     <div class="ramka-slots <?php echo esc_attr($orientation_class); ?>" data-slots="<?php echo esc_attr($ileSlotow); ?>">
-        <?php if ($uklad_image): ?>
-            <div class="ramka-image-container">
-                <?php for ($i = 0; $i < $ileSlotow; $i++): 
-                    $mechID = $slotData[$i]['mechanizm'];
-                    $slotImg = $empty_slot_img;
-                    if (!empty($mechID) && isset($mechanizm_options[$mechID]['frame_image'])) {
+        <div class="ramka-image-container">
+            <?php
+            // Pętla generująca sloty
+            for ($i = 0; $i < $ileSlotow; $i++):
+                $mechID = $slotData[$i]['mechanizm'] ?? '';
+                $slotImg = $empty_slot_img; // Domyślny obrazek
+
+                // Sprawdzenie obrazka mechanizmu (tak jak w podsumowaniu)
+                if (!empty($mechID) && isset($mechanizm_options[$mechID])) {
+                    if (!empty($mechanizm_options[$mechID]['frame_image'])) {
                         $slotImg = $mechanizm_options[$mechID]['frame_image'];
+                    } elseif (!empty($mechanizm_options[$mechID]['image'])) {
+                        $slotImg = $mechanizm_options[$mechID]['image']; // Fallback
                     }
-                ?>
-                    <div class="slot" data-slot="<?php echo $i; ?>">
-                        <img id="slot-img-<?php echo $i; ?>" src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo ($i+1); ?>">
-                        
-                        <!-- Ukryte pola formularza -->
-                        <input type="hidden" name="mechanizm_<?php echo $i; ?>" id="mechanizm_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['mechanizm']); ?>">
-                        <input type="hidden" name="technologia_<?php echo $i; ?>" id="technologia_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['technologia']); ?>">
-                        <input type="hidden" name="kolor_mechanizmu_<?php echo $i; ?>" id="kolor_mechanizmu_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['kolor_mechanizmu']); ?>">
-                    </div>
-                <?php endfor; ?>
-            </div>
-        <?php endif; ?>
+                }
+            ?>
+                <div class="slot" data-slot-index="<?php echo $i; ?>">
+                    <img src="<?php echo esc_url($slotImg); ?>" alt="Slot <?php echo $i + 1; ?>">
+
+                    <?php // --- POCZĄTEK ZMIANY --- ?>
+                    <?php // Dodaj ukryte pola do formularza dla tego slotu ?>
+                    <input type="hidden" name="mechanizm_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['mechanizm']); ?>">
+                    <input type="hidden" name="technologia_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['technologia']); ?>">
+                    <input type="hidden" name="kolor_mechanizmu_<?php echo $i; ?>" value="<?php echo esc_attr($slotData[$i]['kolor_mechanizmu']); ?>">
+                    <?php // --- KONIEC ZMIANY --- ?>
+
+                </div>
+            <?php endfor; ?>
+        </div>
     </div>
 
     <!-- Sekcja podsumowań obok slotów -->
