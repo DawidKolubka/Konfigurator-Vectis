@@ -524,7 +524,16 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
             
             <!-- Informacje o ramce i kodzie produktu pod obrazkiem -->
             <div style="margin-top:10px;">
-                <strong><?php echo esc_html($layoutName); ?></strong><br>
+                <strong>
+                    <?php
+                    // Wyświetl "Nazwa w podsumowaniu" jeśli istnieje, w przeciwnym razie zwykłą nazwę układu
+                    if (isset($uklad_options[$uklad_index]['summary_name']) && !empty($uklad_options[$uklad_index]['summary_name'])) {
+                        echo esc_html($uklad_options[$uklad_index]['summary_name']);
+                    } else {
+                        echo esc_html($layoutName);
+                    }
+                    ?>
+                </strong><br>
                 <?php if ($frame_color_name): ?>
                     <span>Kolor ramki: <?php echo esc_html($frame_color_name); ?></span>
                     <?php if ($frame_color_img): ?>
@@ -620,7 +629,16 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                         
                         <!-- Informacje o ramce i kodzie produktu pod obrazkiem -->
                         <div style="margin-top:10px;">
-                            <strong><?php echo esc_html($layoutName); ?></strong><br>
+                            <strong>
+                                <?php
+                                // Wyświetl "Nazwa w podsumowaniu" jeśli istnieje, w przeciwnym razie zwykłą nazwę układu
+                                if (isset($uklad_options[$uklad_index]['summary_name']) && !empty($uklad_options[$uklad_index]['summary_name'])) {
+                                    echo esc_html($uklad_options[$uklad_index]['summary_name']);
+                                } else {
+                                    echo esc_html($layoutName);
+                                }
+                                ?>
+                            </strong><br>
                             <?php if ($frame_color_name): ?>
                                 <span>Kolor ramki: <?php echo esc_html($frame_color_name); ?></span>
                                 <?php if ($frame_color_img): ?>
