@@ -42,14 +42,35 @@
   margin-top: 5px;
 }
 
-
 /* Kolor ramki */
+.kolor-ramki-section {
+  margin-bottom: 20px;
+}
+
+.kolor-ramki-section select {
+  padding: 6px;
+  margin-top: 5px;
+}
+
 .kolor-ramki-selection {
   margin: 20px 0;
 }
 
-.kolor-ramki-selection img{
+.kolor-ramki-selection img {
   width: 15%;
+}
+
+/* Kontener obrazka koloru ramki */
+#ramka-image-container {
+  margin-top: 10px;
+}
+
+#ramka-image-container img {
+  max-width: 150px;
+  height: auto;
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 4px;
 }
 
 /* Mechanizm-tile */
@@ -73,117 +94,6 @@
   border: 1px solid #ddd;
   padding: 10px;
   margin-top: 120px;
-}
-
-/* Przyciski nawigacji */
-.navigation-buttons {
-  margin-top: 20px;
-  text-align: right;
-}
-.navigation-buttons button {
-  margin-left: 5px;
-}
-.btn-prev, .btn-next, .btn-submit {
-  padding: 8px 15px;
-}
-
-/* Wybrany mechanizm */
-.selected-mech-image
-{
-  margin-top: 20px;
-}
-
-/* Podsumowanie */
-.summary-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 15px;
-  table-layout: fixed; /* Zapewnia respektowanie szerokości kolumn */
-}
-
-.summary-table th, .summary-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-  vertical-align: top;
-}
-
-/* Klasy dla poszczególnych kolumn */
-.summary-lp {
-  width: 30px; /* Lp. - bardzo wąska */
-}
-
-.summary-ramka {
-  width: auto; /* Dynamiczna szerokość dla ramki */
-  min-width: 180px; /* Minimalna szerokość */
-}
-
-
-
-.summary-mechanizmy {
-  width: 30%; /* Szeroka kolumna dla mechanizmów */
-  min-width: 200px;
-}
-
-.summary-ilosc {
-  width: 120px; /* Stała, mała szerokość */
-}
-
-.summary-cena-jedn {
-  width: 100px; /* Stała szerokość */
-}
-
-.summary-cena-calosc {
-  width: 100px; /* Stała szerokość */
-}
-
-
-
-
-
-
-/* Poprawione wyświetlanie ramki w tabeli podsumowania */
-.summary-table td.summary-ramka {
-  position: relative;
-  overflow: hidden; /* Ukryj zawartość wykraczającą poza kolumnę */
-}
-
-
-
-
-
-/* Przyciski nawigacji i podsumowania */
-.navigation-buttons, .summary-buttons {
-  margin-top: 20px;
-  text-align: right;
-}
-.navigation-buttons button, .summary-buttons button {
-  margin-left: 5px;
-  padding: 8px 15px;
-}
-
-
-/* Kontener wyboru koloru ramki */
-.kolor-ramki-section {
-  margin-bottom: 20px;
-}
-
-.kolor-ramki-section select {
-  padding: 6px;
-  margin-top: 5px;
-}
-
-/* Kontener obrazka koloru ramki */
-#ramka-image-container {
-  margin-top: 10px;
-}
-
-#ramka-image-container img {
-  max-width: 150px;
-  height: auto;
-  border: 1px solid #ddd;
-  padding: 5px;
-  border-radius: 4px;
 }
 
 /* Opcje mechanizmów i technologii */
@@ -223,42 +133,65 @@
   border-color: #aaa;
 }
 
-select#technologia-selector,
-select#kolor-mechanizmu-selector {
+/* Przyciski nawigacji */
+.navigation-buttons, .summary-buttons {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.navigation-buttons button, .summary-buttons button {
+  margin-left: 5px;
+  padding: 8px 15px;
+}
+
+.btn-prev, .btn-next, .btn-submit {
+  padding: 8px 15px;
+}
+
+/* Wybrany mechanizm */
+.selected-mech-image {
+  margin-top: 20px;
+}
+
+/* Podsumowanie */
+.summary-table {
   width: 100%;
-  max-width: 250px;
-  padding: 6px;
-  margin-top: 5px;
-}
-.tile:hover {
-  background: #f2f2f2;
-}
-.tile-detail-panel select {
-  margin-top: 10px;
-}
-.layout-wrapper {
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
-}
-.layout-left, .layout-right {
-  flex: 1;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  table-layout: fixed; /* Zapewnia respektowanie szerokości kolumn */
 }
 
-.tile-grid.poziomy-layout {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
+.summary-table th, .summary-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+  vertical-align: top;
 }
 
-.tile-grid.pionowy-layout {
-  display: block;
-  margin-bottom: 20px;
+/* Klasy dla poszczególnych kolumn */
+.summary-lp {
+  width: 30px; /* Lp. - bardzo wąska */
 }
 
+.summary-ramka {
+  width: auto; /* Dynamiczna szerokość dla ramki */
+  min-width: 180px; /* Minimalna szerokość */
+  position: relative;
+  overflow: hidden; /* Ukryj zawartość wykraczającą poza kolumnę */
+}
 
+.summary-mechanizmy {
+  width: 30%; /* Szeroka kolumna dla mechanizmów */
+  min-width: 200px;
+}
 
+.summary-ilosc {
+  width: 120px; /* Stała, mała szerokość */
+}
 
+.summary-cena-jedn, .summary-cena-calosc {
+  width: 100px; /* Stała szerokość */
+}
 
 /* Style dla wyboru kolorów mechanizmu */
 .kv-color-options {
@@ -296,454 +229,6 @@ select#kolor-mechanizmu-selector {
   display: inline-block;
 }
 
-/* Style dla układu poziomego slotów */
-.slots-container.horizontal {
-display: flex;
-flex-direction: row;
-flex-wrap: wrap;
-gap: 20px;
-}
-
-.slots-container.horizontal .slot {
-flex: 1 1 300px; /* elastyczna szerokość, min 300px */
-max-width: 48%; /* maksymalnie około połowy szerokości */
-}
-
-/* Style dla układu pionowego slotów */
-.slots-container.vertical {
-display: flex;
-flex-direction: column;
-gap: 20px;
-}
-
-.slots-container.vertical .slot {
-width: 100%;
-}
-
-/* Upewnij się, że te style są zdefiniowane dla układów */
-
-/* Układ poziomy - sloty obok siebie */
-.slots-container.horizontal {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: flex-start;
-}
-
-.slots-container.horizontal .slot {
-  flex: 1 1 300px;
-  min-width: 250px;
-  max-width: 48%;
-  margin-bottom: 15px;
-}
-
-/* Układ pionowy - sloty jeden pod drugim */
-.slots-container.vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.slots-container.vertical .slot {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-/* Style dla slotów ogólnie */
-.slot {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 15px;
-}
-
-.slot-header {
-  margin-bottom: 10px;
-}
-
-/* Styl dla ramki-slots - kontener główny */
-.ramka-slots {
-margin: 20px 0;
-position: relative;
-}
-
-/* Kontener obrazu ramki */
-.ramka-image-container {
-position: relative;
-display: inline-block;
-margin: 0 auto;
-width: 800px;
-}
-
-/* Układ POZIOMY - sloty obok siebie */
-.ramka-slots.horizontal .slot {
-display: inline-block;
-width: 120px;
-margin: 10px 2%;
-vertical-align: top;
-}
-
-
-/* Style dla pojedynczego slotu */
-.slot {
-border: 1px solid #ccc;
-border-radius: 5px;
-padding: 15px;
-box-shadow: none;
-transition: border 0.3s ease, box-shadow 0.3s ease;
-background: #ffffff;
-position: relative;
-}
-
-.slot:hover {
-border-color: #999;
-box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-
-/* Poprawa wyświetlania obrazka w slocie */
-.slot img {
-max-width: 100px;
-max-height: 80px;
-display: block;
-margin: 0 auto 15px;
-}
-
-/* Podsumowanie slotu */
-.slot-summary {
-font-size: 14px;
-line-height: 1.4;
-margin-top: 15px;
-text-align: left;
-}
-
-.slot-summary div {
-margin-bottom: 5px;
-}
-
-/* Panel ustawień slotu */
-.slot-settings-panel {
-background-color: #f5f5f5;
-border: 1px solid #ddd;
-border-radius: 5px;
-padding: 20px;
-margin: 15px 0;
-box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.edit-panel-content {
-display: flex;
-flex-wrap: wrap;
-gap: 20px;
-}
-
-.edit-panel-content p {
-margin: 10px 0 5px;
-font-weight: bold;
-}
-
-.edit-panel-content select {
-width: 100%;
-padding: 8px;
-border: 1px solid #ccc;
-border-radius: 4px;
-}
-
-#close-slot-settings {
-margin-top: 15px;
-padding: 8px 15px;
-background: #eee;
-border: 1px solid #ccc;
-border-radius: 4px;
-cursor: pointer;
-}
-
-#close-slot-settings:hover {
-background: #ddd;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-/* Na małych ekranach nawet w układzie poziomym wyświetlamy jeden pod drugim */
-.ramka-slots.horizontal .slot {
-  width: 90%;
-  margin: 10px auto;
-  display: block;
-}
-}
-
-/* Układ PIONOWY - sloty z podsumowaniem obok */
-.ramka-slots.vertical .slot {
-display: flex;
-flex-direction: row;
-align-items: flex-start;
-width: 120px;
-margin: 15px auto;
-min-height: 100px;
-padding: 15px;
-}
-
-/* W układzie pionowym - obrazek po lewej stronie */
-.ramka-slots.vertical .slot img {
-max-width: 100px;
-max-height: 80px;
-margin: 0 20px 0 0;
-align-self: center;
-}
-
-/* W układzie pionowym - podsumowanie po prawej stronie */
-.ramka-slots.vertical .slot-summary {
-flex: 1;
-margin-top: 0;
-text-align: left;
-padding-left: 10px;
-/* Domyślnie ukryte - klasa filled pokaże je w JavaScript */
-display: none;
-}
-
-/* W układzie poziomym - podsumowanie również domyślnie ukryte */
-.ramka-slots.horizontal .slot-summary {
-margin-top: 15px;
-text-align: center;
-/* Domyślnie ukryte - klasa filled pokaże je w JavaScript */
-display: none;
-}
-
-/* Dodajemy klasę dla pokazanego podsumowania - dla OBU orientacji */
-.ramka-slots .slot-summary.filled {
-display: block;
-}
-
-/* Kontener dla całego układu - sloty + podsumowanie */
-.konfigurator-layout {
-display: flex;
-flex-wrap: wrap;
-gap: 20px;
-margin: 20px 0;
-}
-
-/* Poziomy układ - podsumowania po prawej */
-.konfigurator-layout.horizontal {
-flex-direction: row;
-}
-
-/* Pionowy układ - podsumowania pod slotami */
-.konfigurator-layout.vertical {
-flex-direction: row; /* Zmieniono z column na row aby elementy wyświetlały się obok siebie */
-align-items: flex-start; /* Wyrównanie elementów do góry */
-justify-content: space-between; /* Równomierne rozłożenie elementów */
-}
-
-/* Styl dla ramki-slots - kontener główny */
-.ramka-slots {
-border: 2px solid #ddd;
-padding: 15px;
-border-radius: 5px;
-background: #f9f9f9;
-}
-
-.ramka-slots.horizontal {
-flex: 2;
-min-width: 100%;
-}
-
-.ramka-slots.vertical {
-width: 48%; /* Zmniejszono szerokość, aby było miejsce na podsumowania */
-margin-right: 2%;
-align-self: flex-start; /* Wyrównanie do góry */
-float: left;
-}
-
-/* Kontener obrazu ramki */
-.ramka-image-container {
-display: flex;
-position: relative;
-margin: 0 auto;
-}
-
-/* Układ POZIOMY - kontener z obramowaniem */
-.ramka-slots.horizontal {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 20px;
-  justify-content: center; /* Wyśrodkowanie w pionie */
-}
-
-/* Układ POZIOMY - sloty obok siebie na środku */
-.ramka-slots.horizontal .ramka-image-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;   /* Wyśrodkowanie w poziomie */
-  align-items: center;       /* Wyśrodkowanie w pionie */
-  gap: 30px;
-  width: 100%;
-  padding: 20px 0;
-  border: 1px solid;
-  border-radius: 100px;
-  margin: 0 auto;            /* Wyśrodkowanie kontenera */
-  min-height: 160px;         /* Zapewnia miejsce na wyśrodkowanie w pionie */
-}
-
-/* Sloty w układzie poziomym - dopasuj szerokość w zależności od ilości */
-.ramka-slots.horizontal .slot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;   /* Wyśrodkowanie zawartości slotu w pionie */
-  width: 120px;
-  margin: 0 10px;
-  text-align: center;
-}
-
-/* Podsumowania w układzie poziomym - analogicznie do slotów */
-.ramka-slots-summary.horizontal {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 100%;
-  gap: 30px;
-  margin-top: 20px;
-}
-
-/* Style dla podsumowań w układzie poziomym */
-.ramka-slots-summary.horizontal .slot-summary {
-  width: 180px;
-  margin: 0 10px;
-  padding: 10px;
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  display: none; /* Domyślnie ukryte */
-}
-
-/* Podsumowanie jest widoczne, gdy ma klasę filled */
-.ramka-slots-summary.horizontal .slot-summary.filled {
-  display: block;
-}
-
-/* Dynamiczna szerokość obramowania w zależności od ilości slotów */
-.ramka-slots.horizontal[data-slots="1"] {
-  max-width: 200px;
-}
-
-.ramka-slots.horizontal[data-slots="2"] {
-  max-width: 400px;
-}
-
-.ramka-slots.horizontal[data-slots="3"] {
-  max-width: 600px;
-}
-
-.ramka-slots.horizontal[data-slots="4"] {
-  max-width: 800px;
-}
-
-/* Dostosuj wysokość obramowania w układzie vertical w zależności od ilości slotów */
-.ramka-slots.vertical .ramka-image-container {
-  min-height: 100px; /* Minimalna wysokość */
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
-
-.ramka-slots.vertical[data-slots="1"] .ramka-image-container {
-  min-height: 150px;
-}
-
-.ramka-slots.vertical[data-slots="2"] .ramka-image-container {
-  min-height: 300px;
-}
-
-.ramka-slots.vertical[data-slots="3"] .ramka-image-container {
-  min-height: 450px;
-}
-
-/* Układ POZIOMY - sloty obok siebie */
-.ramka-slots.horizontal .ramka-image-container {
-  flex-direction: row;
-  justify-content: center;
-  border: 1px solid;
-  padding-left: 50px;
-  padding-right: 50px;
-  width: auto;
-  border-radius: 100px;
-}
-
-/* Układ PIONOWY - sloty jeden pod drugim */
-.ramka-slots.vertical .ramka-image-container {
-flex-direction: column;
-align-items: center;
-border: solid 1px;
-border-radius: 50px;
-width: 180px;
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
-
-/* Style dla pojedynczego slotu */
-.slot {
-cursor: pointer;
-padding: 15px;
-transition: transform 0.2s ease;
-}
-
-.slot:hover {
-transform: scale(1.05);
-}
-
-.slot img {
-max-width: 100px;
-max-height: 80px;
-display: block;
-margin: 0 auto;
-}
-
-/* Kontener podsumowań */
-.ramka-slots-summary {
-background: #ffffff;
-padding: 15px;
-border-radius: 5px;
-margin-top: 0px;
-}
-
-.ramka-slots-summary.horizontal {
-flex: 1;
-min-width: 200px;
-}
-
-.ramka-slots-summary.vertical {
-width: 48%; /* Podobna szerokość jak dla ramki-slots */
-align-self: flex-start; /* Wyrównanie do góry */
-float: left}
-
-/* Podsumowanie slotu */
-.slot-summary {
-border: 1px solid #eee;
-border-radius: 4px;
-padding: 10px;
-margin-bottom: 10px;
-background: white;
-display: none; /* Domyślnie ukryte */
-}
-
-/* Pokazuje podsumowanie, gdy ma klasę filled */
-.slot-summary.filled {
-display: block;
-margin-top: 50px;
-}
-
-/* W układzie vertical wyrównujemy podsumowania z odpowiadającymi slotami */
-.ramka-slots-summary.horizontal .slot-summary {
-margin-bottom: 15px;
-}
-
-/* Responsywne style */
-@media (max-width: 768px) {
-.konfigurator-layout.horizontal {
-  flex-direction: column;
-}
-}
-
 /* =========================
    SLOT - JEDNO MIEJSCE NA MECHANIZM
    ========================= */
@@ -752,25 +237,29 @@ margin-bottom: 15px;
   border-radius: 5px;
   padding: 15px;
   box-shadow: none;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
+  transition: border 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   background: #ffffff;
   position: relative;
   cursor: pointer;
   width: 100px;
   height: 60px;
-  /* Ustawienia domyślne, mogą być nadpisane przez układ */
+  margin: 0 10px;
+  text-align: center;
 }
+
 .slot:hover {
   border-color: #999;
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
   transform: scale(1.05);
 }
+
 .slot img {
   max-width: 100px;
   max-height: 80px;
   display: block;
   margin: 0 auto 15px;
 }
+
 .slot-header {
   margin-bottom: 10px;
 }
@@ -784,22 +273,26 @@ margin-bottom: 15px;
   gap: 20px;
   margin-top: 20px;
 }
+
 .slots-container.horizontal {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 15px;
   justify-content: flex-start;
 }
+
 .slots-container.horizontal .slot {
   flex: 1 1 300px;
   min-width: 250px;
   max-width: 48%;
   margin-bottom: 15px;
 }
+
 .slots-container.vertical {
   flex-direction: column;
   gap: 15px;
 }
+
 .slots-container.vertical .slot {
   width: 100%;
   margin-bottom: 10px;
@@ -816,6 +309,7 @@ margin-bottom: 15px;
   border-radius: 5px;
   background: #f9f9f9;
 }
+
 .ramka-slots.horizontal {
   display: flex;
   flex-direction: column;
@@ -825,12 +319,14 @@ margin-bottom: 15px;
   max-width: 800px;
   justify-content: center; /* Wyśrodkowanie w pionie */
 }
+
 .ramka-slots.vertical {
   width: 48%;
   margin-right: 2%;
   align-self: flex-start;
   float: left;
 }
+
 .ramka-slots.horizontal[data-slots="1"] { max-width: 200px; }
 .ramka-slots.horizontal[data-slots="2"] { max-width: 400px; }
 .ramka-slots.horizontal[data-slots="3"] { max-width: 600px; }
@@ -843,21 +339,21 @@ margin-bottom: 15px;
   position: relative;
   display: inline-block;
   margin: 0 auto;
-  width: 800px;
 }
+
 .ramka-slots.horizontal .ramka-image-container {
   display: flex;
   flex-direction: row;
-  justify-content: center;   /* Wyśrodkowanie w poziomie */
-  align-items: center;       /* Wyśrodkowanie w pionie */
+  justify-content: center;
+  align-items: center;
   gap: 30px;
   width: 100%;
   padding: 20px 0;
   border: 1px solid;
   border-radius: 100px;
-  margin: 0 auto;            /* Wyśrodkowanie kontenera */
-  min-height: 160px;         /* Zapewnia miejsce na wyśrodkowanie w pionie */
+  min-height: 160px;
 }
+
 .ramka-slots.vertical .ramka-image-container {
   flex-direction: column;
   align-items: center;
@@ -868,6 +364,7 @@ margin-bottom: 15px;
   padding-bottom: 30px;
   min-height: 100px;
 }
+
 .ramka-slots.vertical[data-slots="1"] .ramka-image-container { min-height: 150px; }
 .ramka-slots.vertical[data-slots="2"] .ramka-image-container { min-height: 300px; }
 .ramka-slots.vertical[data-slots="3"] .ramka-image-container { min-height: 450px; }
@@ -887,10 +384,12 @@ margin-bottom: 15px;
   background: white;
   display: none;
 }
+
 .slot-summary.filled {
   display: block;
   margin-top: 50px;
 }
+
 .slot-summary div {
   margin-bottom: 5px;
 }
@@ -904,6 +403,7 @@ margin-bottom: 15px;
   border-radius: 5px;
   margin-top: 0px;
 }
+
 .ramka-slots-summary.horizontal {
   display: flex;
   flex-direction: row;
@@ -914,6 +414,7 @@ margin-bottom: 15px;
   flex: 1;
   min-width: 200px;
 }
+
 .ramka-slots-summary.horizontal .slot-summary {
   width: 180px;
   margin: 0 10px 15px 10px;
@@ -923,24 +424,121 @@ margin-bottom: 15px;
   border-radius: 5px;
   display: none;
 }
+
 .ramka-slots-summary.horizontal .slot-summary.filled {
   display: block;
 }
+
 .ramka-slots-summary.vertical {
   width: 48%;
   align-self: flex-start;
   float: left;
 }
 
+/* Panel ustawień slotu */
+.slot-settings-panel {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.edit-panel-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.edit-panel-content p {
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+.edit-panel-content select, 
+select#technologia-selector,
+select#kolor-mechanizmu-selector {
+  width: 100%;
+  max-width: 250px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 5px;
+}
+
+#close-slot-settings {
+  margin-top: 15px;
+  padding: 8px 15px;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#close-slot-settings:hover {
+  background: #ddd;
+}
+
+/* Układ Layout */
+.layout-wrapper {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.layout-left, .layout-right {
+  flex: 1;
+}
+
+.tile-grid.poziomy-layout {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.tile-grid.pionowy-layout {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.tile:hover {
+  background: #f2f2f2;
+}
+
+.tile-detail-panel select {
+  margin-top: 10px;
+}
+
+/* Kontener dla całego układu - sloty + podsumowanie */
+.konfigurator-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.konfigurator-layout.horizontal {
+  flex-direction: row;
+}
+
+.konfigurator-layout.vertical {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
 /* =========================
    RESPONSYWNOŚĆ
    ========================= */
 @media (max-width: 768px) {
-  .slots-container.horizontal .slot {
+  .slots-container.horizontal .slot,
+  .ramka-slots.horizontal .slot {
     width: 90%;
     margin: 10px auto;
     display: block;
   }
+  
   .konfigurator-layout.horizontal {
     flex-direction: column;
   }
