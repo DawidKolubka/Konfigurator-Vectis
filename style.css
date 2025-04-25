@@ -651,7 +651,7 @@ margin: 0 auto;
   width: 100%;
   padding: 20px 0;
   border: 1px solid;
-  border-radius: 50px;
+  border-radius: 100px;
   margin: 0 auto;            /* Wyśrodkowanie kontenera */
   min-height: 160px;         /* Zapewnia miejsce na wyśrodkowanie w pionie */
 }
@@ -925,7 +925,7 @@ margin-bottom: 15px;
   width: 100%;
   padding: 20px 0;
   border: 1px solid;
-  border-radius: 50px;
+  border-radius: 100px;
   margin: 0 auto;            /* Wyśrodkowanie kontenera */
   min-height: 160px;         /* Zapewnia miejsce na wyśrodkowanie w pionie */
 }
