@@ -233,12 +233,9 @@
    SLOT - JEDNO MIEJSCE NA MECHANIZM
    ========================= */
 .slot {
-  border: 1px solid #ccc;
-  border-radius: 5px;
   padding: 15px;
   box-shadow: none;
   transition: border 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-  background: #ffffff;
   position: relative;
   cursor: pointer;
   width: 100px;
@@ -248,7 +245,6 @@
 }
 
 .slot:hover {
-  border-color: #999;
   box-shadow: 0 2px 5px rgba(0,0,0,0.15);
   transform: scale(1.05);
 }
