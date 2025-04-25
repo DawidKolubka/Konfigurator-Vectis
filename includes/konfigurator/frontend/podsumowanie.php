@@ -238,53 +238,26 @@ $ksztalt_code = isset($ksztalt_options[$ksztalt_index]['snippet']) && !empty($ks
     ? $ksztalt_options[$ksztalt_index]['snippet'] 
     : '?'; // Domyślna wartość, jeśli snippet nie istnieje
 
-// Pobieramy tylko JEDEN kod mechanizmu - z pierwszego slotu lub łączymy inaczej
-$mech_code = '';
-
-// Wersja 1: Weź kod tylko z pierwszego slotu (najprostsze rozwiązanie)
-$slotMechID = isset($cfg['mechanizm_0']) ? maybe_stripslashes($cfg['mechanizm_0']) : '';
-if (isset($slotMechID) && $slotMechID !== '' && isset($mechanizm_options[$slotMechID]['snippet'])) {
-    $mech_code = $mechanizm_options[$slotMechID]['snippet'];
-}
-
-// Jeśli nie ma kodu z pierwszego slotu, możemy wykorzystać alternatywne rozwiązanie
-if (empty($mech_code)) {
-    // Alternatywa: Połącz kody bez myślników lub użyj najważniejszego mechanizmu
-    for ($i = 0; $i < $ileSlotow; $i++) {
-        $slotMechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
-        
-        if (isset($slotMechID) && $slotMechID !== '' && isset($mechanizm_options[$slotMechID]['snippet'])) {
-            $mech_code = $mechanizm_options[$slotMechID]['snippet'];
-            break; // Weź pierwszy znaleziony kod i przerwij pętlę
-        }
-    }
-}
-
-// Jeśli nadal nie mamy kodu, użyj wartości domyślnej
-if (empty($mech_code)) {
-    $mech_code = 'DEFMECH';
-}
-
-// Pobieramy kody technologii ze wszystkich slotów i łączymy je
+// Pobieramy cząstki kodu (snippet) ze wszystkich mechanizmów w slotach i łączymy je
 $mech_code = '';
 for ($i = 0; $i < $ileSlotow; $i++) {
-    $techID = isset($cfg['technologia_'.$i]) ? maybe_stripslashes($cfg['technologia_'.$i]) : '';
+    $mechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
     
-    // Pobierz kod technologii
-    $slot_tech_code = '';
-    if (!empty($techID) && isset($technologia_options[$techID]['code'])) {
-        $slot_tech_code = $technologia_options[$techID]['code'];
+    // Pobierz cząstkę kodu mechanizmu (snippet)
+    $slot_mech_code = '';
+    if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
+        $slot_mech_code = $mechanizm_options[$mechID]['snippet'];
     }
     
-    // Dodaj kod technologii do łącznego kodu mechanizmu
-    $mech_code .= $slot_tech_code;
+    // Dodaj cząstkę kodu mechanizmu do łącznego kodu
+    $mech_code .= $slot_mech_code;
 }
 
 // Uzupełnij zerami do 5 znaków
 $mech_code = str_pad($mech_code, 5, '0');
 
 // Łączymy kody w określonym formacie: XXYR0-ZZZZZ-AABB
-// gdzie XX = kod serii, Y = kod kształtu, ZZZZZ = kod mechanizmu (teraz z technologii), AA = kod układu, BB = kod koloru ramki
+// gdzie XX = kod serii, Y = kod kształtu, ZZZZZ = kod mechanizmu (teraz ze snippetów), AA = kod układu, BB = kod koloru ramki
 $product_code = strtoupper($seria_code . $ksztalt_code . "0-" . $mech_code . "-" . $uklad_code . $frame_color_code);
 
 // (G) Ustalanie ilości, jeśli zapisana w sesji
