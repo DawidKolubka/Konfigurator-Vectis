@@ -265,26 +265,26 @@ if (empty($mech_code)) {
     $mech_code = 'DEFMECH';
 }
 
-// Kod układu - np. 11
-// Jeśli nie ma kodu układu, wygeneruj z nazwy
-$uklad_code = (
-    isset($uklad_options[$uklad_index]['snippet']) 
-    && !empty($uklad_options[$uklad_index]['snippet'])
-)
-    ? $uklad_options[$uklad_index]['snippet']
-    : 'Brak zdefiniowanego snippetu';
-
-// Kod koloru ramki - pobieramy z pola 'snippet' w tablicy kolorów ramki
-$frame_color_code = '';
-if ($frame_color_index !== '' && isset($kolor_ramki_options[$frame_color_index]['snippet'])) {
-    $frame_color_code = $kolor_ramki_options[$frame_color_index]['snippet'];
-} else {
-    // Jeśli snippet nie istnieje, użyj kodu z wcześniej przypisanej wartości
-    $frame_color_code = $frame_color_code ?: 'test';
+// Pobieramy kody technologii ze wszystkich slotów i łączymy je
+$mech_code = '';
+for ($i = 0; $i < $ileSlotow; $i++) {
+    $techID = isset($cfg['technologia_'.$i]) ? maybe_stripslashes($cfg['technologia_'.$i]) : '';
+    
+    // Pobierz kod technologii
+    $slot_tech_code = '';
+    if (!empty($techID) && isset($technologia_options[$techID]['code'])) {
+        $slot_tech_code = $technologia_options[$techID]['code'];
+    }
+    
+    // Dodaj kod technologii do łącznego kodu mechanizmu
+    $mech_code .= $slot_tech_code;
 }
 
+// Uzupełnij zerami do 5 znaków
+$mech_code = str_pad($mech_code, 5, '0');
+
 // Łączymy kody w określonym formacie: XXYR0-ZZZZZ-AABB
-// gdzie XX = kod serii, Y = kod kształtu, ZZZZZ = kod mechanizmu, AA = kod układu, BB = kod koloru ramki
+// gdzie XX = kod serii, Y = kod kształtu, ZZZZZ = kod mechanizmu (teraz z technologii), AA = kod układu, BB = kod koloru ramki
 $product_code = strtoupper($seria_code . $ksztalt_code . "0-" . $mech_code . "-" . $uklad_code . $frame_color_code);
 
 // (G) Ustalanie ilości, jeśli zapisana w sesji
