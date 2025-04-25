@@ -457,8 +457,26 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         
         // Pobierz cząstkę kodu mechanizmu (snippet)
         $slot_mech_code = '';
+        
+        // Próbuj różnych metod dostępu
         if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
             $slot_mech_code = $mechanizm_options[$mechID]['snippet'];
+        }
+        else if (!empty($mechID) && isset($mechanizm_options[(int)$mechID]['snippet'])) {
+            $slot_mech_code = $mechanizm_options[(int)$mechID]['snippet'];
+        }
+        else if (!empty($mechID) && isset($mechanizm_options[(string)$mechID]['snippet'])) {
+            $slot_mech_code = $mechanizm_options[(string)$mechID]['snippet'];
+        }
+        else if (!empty($mechID)) {
+            foreach ($mechanizm_options as $mech_key => $mech_value) {
+                if ((string)$mech_key === (string)$mechID || (int)$mech_key === (int)$mechID) {
+                    if (isset($mech_value['snippet'])) {
+                        $slot_mech_code = $mech_value['snippet'];
+                        break;
+                    }
+                }
+            }
         }
         
         // Dodaj cząstkę kodu mechanizmu do łącznego kodu
