@@ -156,22 +156,9 @@
   width: 100px; /* Stała szerokość */
 }
 
-/* Dla ramki ze skalowaniem */
-.summary-table .ramka-slots {
-  transform: scale(0.8);
-  transform-origin: top center;
-  margin: 0 auto;
-  border: 0; /* Usuń obramowanie, które może być w kroku 4 */
-  background: transparent;
-  padding: 0;
-}
 
-.summary-table .ramka-image-container {
-  transform: scale(0.7);
-  transform-origin: unset;
-  margin: 0 auto;
-  display: block;
-}
+
+
 
 /* Responsywne zachowanie tabeli */
 @media (max-width: 768px) {
@@ -184,42 +171,6 @@
   }
 }
 
-/* Styl dla ramki w podsumowaniu */
-.summary-table .ramka-slots {
-  transform: scale(0.8);
-  transform-origin: top center;
-  margin: 0 auto;
-  max-width: 200px;
-  border: 0; /* Usuń obramowanie, które może być w kroku 4 */
-  background: transparent;
-  padding: 0;
-}
-
-/* Dodane skalowanie dla kontenera obrazów w podsumowaniu */
-.summary-table .ramka-image-container {
-  transform: scale(0.5);
-  transform-origin: top center;
-  margin: 0 auto;
-  display: block;
-}
-
-/* Dostosowanie szerokości slotów w podsumowaniu */
-.summary-table .ramka-slots .slot img {
-  max-width: 60px;
-  max-height: 60px;
-}
-
-/* Ukryjmy interakcje z ramką w podsumowaniu */
-.summary-table .ramka-slots .slot {
-  cursor: default;
-  transform: none !important; /* Wyłącz efekt hover */
-}
-
-.summary-table .ramka-slots .slot:hover {
-  transform: none;
-  border-color: #ccc;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
 
 /* Poprawione wyświetlanie ramki w tabeli podsumowania */
 .summary-table td.summary-ramka {
@@ -228,29 +179,8 @@
 }
 
 
-/* Obramowanie do podsumowania */
-.summary-table .ramka-slots {
-  border: 1px solid;
-  border-radius: 50px;
-  width: auto;
-  max-width: none;
-  padding: 0;
-  margin: 0 auto;
-}
 
-/* Poprawka dla układu poziomego w tabeli podsumowania */
-.summary-table .ramka-slots.horizontal .ramka-image-container {
-  width: auto;
-  border: none;
-  padding: 0;
-}
 
-/* Poprawka dla układu pionowego w tabeli podsumowania */
-.summary-table .ramka-slots.vertical .ramka-image-container {
-  width: auto;
-  border: none;
-  padding: 0;
-}
 
 /* Przyciski nawigacji i podsumowania */
 .navigation-buttons, .summary-buttons {
