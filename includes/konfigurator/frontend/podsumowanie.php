@@ -551,7 +551,6 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                             
                             <!-- Kod produktu -->
                             <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">
-                                <strong>Kod produktu:</strong><br>
                                 <?php echo esc_html($product_code); ?>
                             </div>
                         </div>
@@ -600,7 +599,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                                 // Wyświetl kod mechanizmu, jeśli istnieje
                                 if (!empty($tech_code)):
                                 ?>
-                                   <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;">Kod mechanizmu:<?php echo esc_html($tech_code); ?></div>
+                                   <div class="product-code" style="margin-top:10px; padding:5px; background:#f8f8f8; border:1px solid #ddd;"><?php echo esc_html($tech_code); ?></div>
                                 <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
