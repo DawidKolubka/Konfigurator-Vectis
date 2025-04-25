@@ -243,18 +243,29 @@ $mech_code = '';
 for ($i = 0; $i < $ileSlotow; $i++) {
     $mechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
     
+    // Debug: Zapisz informację o przetwarzanym slocie
+    error_log("Slot {$i}: MechID = {$mechID}");
+    
     // Pobierz cząstkę kodu mechanizmu (snippet)
     $slot_mech_code = '';
     if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
         $slot_mech_code = $mechanizm_options[$mechID]['snippet'];
+        // Debug: Zapisz pobraną cząstkę kodu
+        error_log("Slot {$i}: Snippet = {$slot_mech_code}");
+    } else {
+        error_log("Slot {$i}: Brak snippetu dla mechanizmu {$mechID}");
     }
     
     // Dodaj cząstkę kodu mechanizmu do łącznego kodu
     $mech_code .= $slot_mech_code;
+    
+    // Debug: Pokaż aktualny stan kodu mechanizmu
+    error_log("Po slocie {$i}: mech_code = {$mech_code}");
 }
 
 // Uzupełnij zerami do 5 znaków
 $mech_code = str_pad($mech_code, 5, '0');
+error_log("Finalny kod mechanizmu: {$mech_code}");
 
 // Łączymy kody w określonym formacie: XXYR0-ZZZZZ-AABB
 // gdzie XX = kod serii, Y = kod kształtu, ZZZZZ = kod mechanizmu (teraz ze snippetów), AA = kod układu, BB = kod koloru ramki
@@ -383,6 +394,49 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
     // Kod produktu (pełny kod powinien być już zapisany w konfiguracji)
     $product_code = isset($item_data['product_code']) ? $item_data['product_code'] : 'Brak kodu';
     
+    // Generowanie kodu produktu
+    // Format: Wybrana seria (kod) + Wybrany kształt (kod) + 0 (liczba kontrolna) - wybrany mechanizm (kod) - wybrany układ (kod) - kolor ramki (kod)
+    // Przykład: ISDR0-12345-11P2
+
+    // Kod serii - pobieramy z pola 'fragment' w zapisanej serii
+    $seria_name = isset($item_data['seria']) ? $item_data['seria'] : '';
+    $seria_code = 'IS'; // Domyślna wartość
+
+    // Poszukaj serii w tablicy opcji i pobierz jej fragment
+    foreach ($seria_options as $seria_option) {
+        if ($seria_option['name'] === $seria_name && isset($seria_option['fragment'])) {
+            $seria_code = $seria_option['fragment'];
+            break;
+        }
+    }
+
+    // Kod kształtu - pobieramy z pola 'snippet' w bazie danych
+    $ksztalt_code = isset($ksztalt_options[$ksztalt_index]['snippet']) && !empty($ksztalt_options[$ksztalt_index]['snippet']) 
+        ? $ksztalt_options[$ksztalt_index]['snippet'] 
+        : '?'; // Domyślna wartość, jeśli snippet nie istnieje
+
+    // Pobieramy cząstki kodu (snippet) ze wszystkich mechanizmów w slotach i łączymy je
+    $mech_code = '';
+    for ($i = 0; $i < $ileSlotow; $i++) {
+        $mechID = isset($item_data['mechanizm_'.$i]) ? $item_data['mechanizm_'.$i] : '';
+        
+        // Pobierz cząstkę kodu mechanizmu (snippet)
+        $slot_mech_code = '';
+        if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
+            $slot_mech_code = $mechanizm_options[$mechID]['snippet'];
+        }
+        
+        // Dodaj cząstkę kodu mechanizmu do łącznego kodu
+        $mech_code .= $slot_mech_code;
+    }
+
+    // Uzupełnij zerami do 5 znaków
+    $mech_code = str_pad($mech_code, 5, '0');
+
+    // Łączymy kody w określonym formacie: XXYR0-ZZZZZ-AABB
+    // gdzie XX = kod serii, Y = kod kształtu, ZZZZZ = kod mechanizmu (teraz ze snippetów), AA = kod układu, BB = kod koloru ramki
+    $product_code = strtoupper($seria_code . $ksztalt_code . "0-" . $mech_code . "-" . $uklad_code . $frame_color_code);
+
     // Wyświetlenie wiersza
     ?>
     <tr>
