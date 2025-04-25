@@ -265,17 +265,18 @@ for ($i = 0; $i < $ileSlotow; $i++) {
     $mechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
     
     // Debug: Zapisz informację o przetwarzanym slocie
-    error_log("Przetwarzanie Slot {$i}: MechID = {$mechID}");
+    error_log("Przetwarzanie Slot {$i}: MechID = {$mechID}, Typ: " . gettype($mechID));
     
     // Pobierz cząstkę kodu mechanizmu (snippet)
     $slot_mech_code = '';
-    if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
+    
+    // POPRAWKA: zamiast !empty($mechID) używamy $mechID !== ''
+    if ($mechID !== '' && isset($mechanizm_options[$mechID]['snippet'])) {
         $slot_mech_code = $mechanizm_options[$mechID]['snippet'];
-        // Debug: Zapisz pobraną cząstkę kodu
         error_log("Slot {$i}: Znaleziono snippet = {$slot_mech_code}");
     } else {
-        // Rozszerzona diagnostyka 
-        if (empty($mechID)) {
+        // Rozszerzona diagnostyka
+        if ($mechID === '') {
             error_log("Slot {$i}: MechID jest pusty");
         } else if (!isset($mechanizm_options[$mechID])) {
             error_log("Slot {$i}: Nie znaleziono mechanizmu o ID: {$mechID}");
@@ -458,8 +459,8 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
         // Pobierz cząstkę kodu mechanizmu (snippet)
         $slot_mech_code = '';
         
-        // Próbuj różnych metod dostępu
-        if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
+        // POPRAWKA: zamiast !empty($mechID) używamy $mechID !== ''
+        if ($mechID !== '' && isset($mechanizm_options[$mechID]['snippet'])) {
             $slot_mech_code = $mechanizm_options[$mechID]['snippet'];
         }
         else if (!empty($mechID) && isset($mechanizm_options[(int)$mechID]['snippet'])) {
