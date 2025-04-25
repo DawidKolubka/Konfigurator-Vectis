@@ -304,10 +304,7 @@
 .ramka-slots {
   margin: 20px 0;
   position: relative;
-  border: 2px solid #ddd;
   padding: 15px;
-  border-radius: 5px;
-  background: #f9f9f9;
 }
 
 .ramka-slots.horizontal {
