@@ -708,23 +708,32 @@ margin: 0 auto;
   align-items: center;
   width: 100%;
   padding: 20px;
+  justify-content: center; /* Wyśrodkowanie w pionie */
 }
 
 /* Układ POZIOMY - sloty obok siebie na środku */
 .ramka-slots.horizontal .ramka-image-container {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: center;   /* Wyśrodkowanie w poziomie */
+  align-items: center;       /* Wyśrodkowanie w pionie */
   gap: 30px;
   width: 100%;
   padding: 20px 0;
+  border: 1px solid;
+  border-radius: 50px;
+  margin: 0 auto;            /* Wyśrodkowanie kontenera */
+  min-height: 160px;         /* Zapewnia miejsce na wyśrodkowanie w pionie */
 }
 
 /* Sloty w układzie poziomym - dopasuj szerokość w zależności od ilości */
 .ramka-slots.horizontal .slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;   /* Wyśrodkowanie zawartości slotu w pionie */
   width: 120px;
   margin: 0 10px;
-  display: inline-block;
   text-align: center;
 }
 
@@ -953,8 +962,9 @@ margin-bottom: 15px;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: 20px;
+  padding: 10px;
   max-width: 800px;
+  justify-content: center; /* Wyśrodkowanie w pionie */
 }
 .ramka-slots.vertical {
   width: 48%;
@@ -979,12 +989,15 @@ margin-bottom: 15px;
 .ramka-slots.horizontal .ramka-image-container {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: center;   /* Wyśrodkowanie w poziomie */
+  align-items: center;       /* Wyśrodkowanie w pionie */
   gap: 30px;
   width: 100%;
   padding: 20px 0;
   border: 1px solid;
   border-radius: 50px;
+  margin: 0 auto;            /* Wyśrodkowanie kontenera */
+  min-height: 160px;         /* Zapewnia miejsce na wyśrodkowanie w pionie */
 }
 .ramka-slots.vertical .ramka-image-container {
   flex-direction: column;
