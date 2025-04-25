@@ -253,6 +253,13 @@ for ($i = 0; $i < 5; $i++) {
     }
 }
 
+// Dodatkowa diagnostyka - sprawdź wszystkie mechanizmy i ich snippety
+error_log("==== DIAGNOSTYKA SNIPPETÓW MECHANIZMÓW ====");
+foreach ($mechanizm_options as $m_idx => $mech_opt) {
+    $snippet_val = isset($mech_opt['snippet']) ? $mech_opt['snippet'] : 'BRAK';
+    error_log("Mechanizm ID {$m_idx}: snippet = {$snippet_val}, nazwa = " . ($mech_opt['name'] ?? 'BRAK NAZWY'));
+}
+
 // Teraz poprawione generowanie kodu
 for ($i = 0; $i < $ileSlotow; $i++) {
     $mechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
@@ -267,10 +274,18 @@ for ($i = 0; $i < $ileSlotow; $i++) {
         // Debug: Zapisz pobraną cząstkę kodu
         error_log("Slot {$i}: Znaleziono snippet = {$slot_mech_code}");
     } else {
+        // Rozszerzona diagnostyka
         if (empty($mechID)) {
             error_log("Slot {$i}: MechID jest pusty");
         } else if (!isset($mechanizm_options[$mechID])) {
             error_log("Slot {$i}: Nie znaleziono mechanizmu o ID: {$mechID}");
+            // Spróbuj sprawdzić z numeryczną konwersją indeksu
+            $numeric_mechID = intval($mechID); 
+            if (isset($mechanizm_options[$numeric_mechID])) {
+                error_log("Slot {$i}: Znaleziono mechanizm pod numerycznym ID: {$numeric_mechID}");
+                $slot_mech_code = $mechanizm_options[$numeric_mechID]['snippet'] ?? '';
+                error_log("Slot {$i}: Użyto snippetu z numerycznego ID: {$slot_mech_code}");
+            }
         } else if (!isset($mechanizm_options[$mechID]['snippet'])) {
             error_log("Slot {$i}: Mechanizm {$mechID} nie ma ustawionego snippetu");
         }
