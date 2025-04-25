@@ -50,11 +50,13 @@ if ( ! function_exists('kv_admin_uklady_page') ) {
                 // Jeśli formularz edycji został przesłany
                 if ( isset($_POST['kv_edit_uklad_nonce']) && wp_verify_nonce($_POST['kv_edit_uklad_nonce'], 'kv_edit_uklad_' . $id) ) {
                     $edited_name    = sanitize_text_field( $_POST['edit_uklad'] );
+                    $edited_summary_name = sanitize_text_field( $_POST['edit_uklad_summary_name'] ); // Nowe pole
                     $edited_image   = esc_url_raw( $_POST['edit_uklad_image'] );
                     $edited_ksztalt = absint( $_POST['edit_ksztalt_id'] );
                     $edited_snippet = isset($_POST['edit_uklad_snippet']) ? sanitize_text_field($_POST['edit_uklad_snippet']) : '';
                     kv_update_item( $option_key, $id, array(
                         'name'       => $edited_name,
+                        'summary_name' => $edited_summary_name, // Nowe pole
                         'image'      => $edited_image,
                         'ksztalt_id' => $edited_ksztalt,
                         'snippet'    => $edited_snippet,
@@ -74,6 +76,12 @@ if ( ! function_exists('kv_admin_uklady_page') ) {
                                 <th scope="row"><label for="edit_uklad">Nazwa układu</label></th>
                                 <td>
                                     <input type="text" id="edit_uklad" name="edit_uklad" class="regular-text" value="<?php echo esc_attr( $current['name'] ); ?>" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="edit_uklad_summary_name">Nazwa w podsumowaniu</label></th>
+                                <td>
+                                    <input type="text" id="edit_uklad_summary_name" name="edit_uklad_summary_name" class="regular-text" value="<?php echo isset($current['summary_name']) ? esc_attr($current['summary_name']) : ''; ?>" placeholder="Opcjonalnie - wyświetlana w podsumowaniu" />
                                 </td>
                             </tr>
                             <tr>
@@ -129,18 +137,20 @@ if ( ! function_exists('kv_admin_uklady_page') ) {
         }
 
         // --- Obsługa dodawania nowego układu ---
-        if ( isset($_POST['kv_uklad_nonce']) && wp_verify_nonce($_POST['kv_uklad_nonce'], 'kv_save_uklad') ) {
-            $new_uklad   = sanitize_text_field( $_POST['new_uklad'] );
-            $uklad_image = esc_url_raw( $_POST['uklad_image'] );
-            $ksztalt_id  = absint( $_POST['ksztalt_id'] );
+        if (isset($_POST['kv_uklad_nonce']) && wp_verify_nonce($_POST['kv_uklad_nonce'], 'kv_save_uklad')) {
+            $new_uklad = sanitize_text_field($_POST['new_uklad']);
+            $uklad_summary_name = sanitize_text_field($_POST['uklad_summary_name']); // Nowe pole
+            $uklad_image = esc_url_raw($_POST['uklad_image']);
+            $ksztalt_id = absint($_POST['ksztalt_id']);
             $uklad_snippet = isset($_POST['uklad_snippet']) ? sanitize_text_field($_POST['uklad_snippet']) : '';
-            if ( ! empty( $new_uklad ) ) {
-                kv_add_item( $option_key, array(
-                    'name'       => $new_uklad,
-                    'image'      => $uklad_image,
+            if (!empty($new_uklad)) {
+                kv_add_item($option_key, array(
+                    'name' => $new_uklad,
+                    'summary_name' => $uklad_summary_name, // Nowe pole
+                    'image' => $uklad_image,
                     'ksztalt_id' => $ksztalt_id,
-                    'snippet'    => $uklad_snippet,
-                ) );
+                    'snippet' => $uklad_snippet,
+                ));
                 echo '<div class="notice notice-success is-dismissible"><p>Nowy układ został dodany.</p></div>';
             } else {
                 echo '<div class="notice notice-error is-dismissible"><p>Nazwa układu jest wymagana.</p></div>';
@@ -160,6 +170,12 @@ if ( ! function_exists('kv_admin_uklady_page') ) {
                         <th scope="row"><label for="new_uklad">Nazwa układu</label></th>
                         <td>
                             <input type="text" id="new_uklad" name="new_uklad" class="regular-text" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="uklad_summary_name">Nazwa w podsumowaniu</label></th>
+                        <td>
+                            <input type="text" id="uklad_summary_name" name="uklad_summary_name" class="regular-text" placeholder="Opcjonalnie - wyświetlana w podsumowaniu" />
                         </td>
                     </tr>
                     <tr>
@@ -199,6 +215,7 @@ if ( ! function_exists('kv_admin_uklady_page') ) {
                     <thead>
                         <tr>
                             <th>Nazwa</th>
+                            <th>Nazwa w podsumowaniu</th>
                             <th>Kształt</th>
                             <th>Obrazek</th>
                             <th>Cząstka kodu</th>
@@ -208,7 +225,8 @@ if ( ! function_exists('kv_admin_uklady_page') ) {
                     <tbody>
                         <?php foreach ( $uklad_options as $index => $uklad ) : ?>
                             <tr>
-                                <td><?php echo esc_html( $uklad['name'] ); ?></td>
+                                <td><?php echo esc_html($uklad['name']); ?></td>
+                                <td><?php echo isset($uklad['summary_name']) ? esc_html($uklad['summary_name']) : '—'; ?></td> <!-- Nowa kolumna -->
                                 <td>
                                     <?php
                                     if ( isset($uklad['ksztalt_id'], $ksztalt_options[$uklad['ksztalt_id']]) ) {
