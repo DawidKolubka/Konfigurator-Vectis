@@ -559,10 +559,7 @@ function render_item_row($item_index, $item_data, $uklad_options, $kolor_ramki_o
                     <!-- MECHANIZMY -->
                     <td>
                         <?php foreach ($slots as $slot): ?>
-                            <?php $mechIcon = $slot['mechanizm_img']; ?>
-                            <?php if ($mechIcon): ?>
-                                <img src="<?php echo esc_url($mechIcon); ?>" alt="" style="max-width:30px;">
-                            <?php endif; ?>
+                            
                             <div style="margin-bottom:10px;border-bottom:1px dotted #ccc;padding-bottom:5px;">
                                 <!-- Nazwa mechanizmu -->
                                 <strong><?php echo esc_html($slot['mechanizm_name']); ?></strong><br>
