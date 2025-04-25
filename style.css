@@ -522,7 +522,6 @@ display: inline-block;
 width: 120px;
 margin: 10px 2%;
 vertical-align: top;
-min-height: 120px;
 }
 
 
@@ -531,9 +530,9 @@ min-height: 120px;
 border: 1px solid #ccc;
 border-radius: 5px;
 padding: 15px;
-box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+box-shadow: none;
 transition: border 0.3s ease, box-shadow 0.3s ease;
-background: #f9f9f9;
+background: #ffffff;
 position: relative;
 }
 
@@ -875,4 +874,202 @@ margin-bottom: 15px;
 .konfigurator-layout.horizontal {
   flex-direction: column;
 }
+}
+
+/* =========================
+   SLOT - JEDNO MIEJSCE NA MECHANIZM
+   ========================= */
+.slot {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: none;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+  background: #ffffff;
+  position: relative;
+  cursor: pointer;
+  width: 100px;
+  height: 60px;
+  /* Ustawienia domyślne, mogą być nadpisane przez układ */
+}
+.slot:hover {
+  border-color: #999;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  transform: scale(1.05);
+}
+.slot img {
+  max-width: 100px;
+  max-height: 80px;
+  display: block;
+  margin: 0 auto 15px;
+}
+.slot-header {
+  margin-bottom: 10px;
+}
+
+/* =========================
+   SLOTS CONTAINER (UKŁAD SLOTÓW)
+   ========================= */
+.slots-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+.slots-container.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: flex-start;
+}
+.slots-container.horizontal .slot {
+  flex: 1 1 300px;
+  min-width: 250px;
+  max-width: 48%;
+  margin-bottom: 15px;
+}
+.slots-container.vertical {
+  flex-direction: column;
+  gap: 15px;
+}
+.slots-container.vertical .slot {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   RAMKA SLOTS (KONTENER GŁÓWNY)
+   ========================= */
+.ramka-slots {
+  margin: 20px 0;
+  position: relative;
+  border: 2px solid #ddd;
+  padding: 15px;
+  border-radius: 5px;
+  background: #f9f9f9;
+}
+.ramka-slots.horizontal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  max-width: 800px;
+}
+.ramka-slots.vertical {
+  width: 48%;
+  margin-right: 2%;
+  align-self: flex-start;
+  float: left;
+}
+.ramka-slots.horizontal[data-slots="1"] { max-width: 200px; }
+.ramka-slots.horizontal[data-slots="2"] { max-width: 400px; }
+.ramka-slots.horizontal[data-slots="3"] { max-width: 600px; }
+.ramka-slots.horizontal[data-slots="4"] { max-width: 800px; }
+
+/* =========================
+   RAMKA IMAGE CONTAINER
+   ========================= */
+.ramka-image-container {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto;
+  width: 800px;
+}
+.ramka-slots.horizontal .ramka-image-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  padding: 20px 0;
+  border: 1px solid;
+  border-radius: 50px;
+}
+.ramka-slots.vertical .ramka-image-container {
+  flex-direction: column;
+  align-items: center;
+  border: solid 1px;
+  border-radius: 50px;
+  width: 180px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  min-height: 100px;
+}
+.ramka-slots.vertical[data-slots="1"] .ramka-image-container { min-height: 150px; }
+.ramka-slots.vertical[data-slots="2"] .ramka-image-container { min-height: 300px; }
+.ramka-slots.vertical[data-slots="3"] .ramka-image-container { min-height: 450px; }
+
+/* =========================
+   SLOT SUMMARY (PODSUMOWANIE SLOTU)
+   ========================= */
+.slot-summary {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 15px;
+  text-align: left;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: white;
+  display: none;
+}
+.slot-summary.filled {
+  display: block;
+  margin-top: 50px;
+}
+.slot-summary div {
+  margin-bottom: 5px;
+}
+
+/* =========================
+   RAMKA SLOTS SUMMARY (PODSUMOWANIA SLOTÓW)
+   ========================= */
+.ramka-slots-summary {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 0px;
+}
+.ramka-slots-summary.horizontal {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  gap: 30px;
+  margin-top: 20px;
+  flex: 1;
+  min-width: 200px;
+}
+.ramka-slots-summary.horizontal .slot-summary {
+  width: 180px;
+  margin: 0 10px 15px 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  display: none;
+}
+.ramka-slots-summary.horizontal .slot-summary.filled {
+  display: block;
+}
+.ramka-slots-summary.vertical {
+  width: 48%;
+  align-self: flex-start;
+  float: left;
+}
+
+/* =========================
+   RESPONSYWNOŚĆ
+   ========================= */
+@media (max-width: 768px) {
+  .slots-container.horizontal .slot {
+    width: 90%;
+    margin: 10px auto;
+    display: block;
+  }
+  .konfigurator-layout.horizontal {
+    flex-direction: column;
+  }
 }
