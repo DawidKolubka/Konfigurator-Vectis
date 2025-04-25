@@ -466,8 +466,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Znajdź nazwę koloru
             if (colorSummarySpan && colorField && colorField.value) {
-                const colorData = window.kolor_mechanizmu_options[colorField.value];
-                colorSummarySpan.textContent = colorData ? colorData.name : "—";
+                // Zamiast szukać w obiekcie, użyj bezpośrednio wartości
+                colorSummarySpan.textContent = colorField.value;
             } else if (colorSummarySpan) {
                 colorSummarySpan.textContent = "—";
             }
