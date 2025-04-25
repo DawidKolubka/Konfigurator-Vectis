@@ -347,7 +347,7 @@
   justify-content: center;
   align-items: center;
   gap: 30px;
-  width: 100%;
+  width: auto;
   padding: 20px 0;
   border: 1px solid;
   border-radius: 100px;
