@@ -102,7 +102,6 @@
   border: 1px solid #ddd;
   padding: 15px;
   border-radius: 5px;
-  background-color: #f9f9f9;
 }
 
 .mechanizm-options label {
@@ -412,9 +411,6 @@
   width: 180px;
   margin: 0 10px 15px 10px;
   padding: 10px;
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  border-radius: 5px;
   display: none;
 }
 
