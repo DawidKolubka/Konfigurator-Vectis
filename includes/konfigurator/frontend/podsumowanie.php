@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Inicjalizacja tablicy pozycji w sesji, jeśli nie istnieje
+// Inicjalizacja tablicy pozycji w sesji, jeśli nie istnieje e
 if (!isset($_SESSION['kv_configurator']['items'])) {
     $_SESSION['kv_configurator']['items'] = [];
 }
@@ -274,7 +274,7 @@ for ($i = 0; $i < $ileSlotow; $i++) {
         // Debug: Zapisz pobraną cząstkę kodu
         error_log("Slot {$i}: Znaleziono snippet = {$slot_mech_code}");
     } else {
-        // Rozszerzona diagnostyka
+        // Rozszerzona diagnostyka 
         if (empty($mechID)) {
             error_log("Slot {$i}: MechID jest pusty");
         } else if (!isset($mechanizm_options[$mechID])) {
