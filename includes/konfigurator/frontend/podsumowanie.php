@@ -240,20 +240,40 @@ $ksztalt_code = isset($ksztalt_options[$ksztalt_index]['snippet']) && !empty($ks
 
 // Pobieramy cząstki kodu (snippet) ze wszystkich mechanizmów w slotach i łączymy je
 $mech_code = '';
+
+// Dodatkowe debugowanie - sprawdzmy co faktycznie jest w tablicy $cfg
+error_log("Liczba slotów: " . $ileSlotow);
+error_log("Zawartość tablicy cfg związana ze slotami:");
+for ($i = 0; $i < 5; $i++) {
+    $key = 'mechanizm_' . $i;
+    if (isset($cfg[$key])) {
+        error_log("$key: " . $cfg[$key]);
+    } else {
+        error_log("$key: nie istnieje");
+    }
+}
+
+// Teraz poprawione generowanie kodu
 for ($i = 0; $i < $ileSlotow; $i++) {
     $mechID = isset($cfg['mechanizm_'.$i]) ? maybe_stripslashes($cfg['mechanizm_'.$i]) : '';
     
     // Debug: Zapisz informację o przetwarzanym slocie
-    error_log("Slot {$i}: MechID = {$mechID}");
+    error_log("Przetwarzanie Slot {$i}: MechID = {$mechID}");
     
     // Pobierz cząstkę kodu mechanizmu (snippet)
     $slot_mech_code = '';
     if (!empty($mechID) && isset($mechanizm_options[$mechID]['snippet'])) {
         $slot_mech_code = $mechanizm_options[$mechID]['snippet'];
         // Debug: Zapisz pobraną cząstkę kodu
-        error_log("Slot {$i}: Snippet = {$slot_mech_code}");
+        error_log("Slot {$i}: Znaleziono snippet = {$slot_mech_code}");
     } else {
-        error_log("Slot {$i}: Brak snippetu dla mechanizmu {$mechID}");
+        if (empty($mechID)) {
+            error_log("Slot {$i}: MechID jest pusty");
+        } else if (!isset($mechanizm_options[$mechID])) {
+            error_log("Slot {$i}: Nie znaleziono mechanizmu o ID: {$mechID}");
+        } else if (!isset($mechanizm_options[$mechID]['snippet'])) {
+            error_log("Slot {$i}: Mechanizm {$mechID} nie ma ustawionego snippetu");
+        }
     }
     
     // Dodaj cząstkę kodu mechanizmu do łącznego kodu
