@@ -430,6 +430,55 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSlotState() {
         updateSlotBorders();
         updateSlotSummaryVisibility();
+        updateSlotSummaries(); // Dodaj tę linię!
+    }
+
+    // Funkcja wypełniająca podsumowania slotów
+    function updateSlotSummaries() {
+        for (let i = 0; i < <?php echo $ileSlotow; ?>; i++) {
+            const mechField = document.getElementById(`mechanizm_${i}`);
+            const techField = document.getElementById(`technologia_${i}`);
+            const colorField = document.getElementById(`kolor_mechanizmu_${i}`);
+            
+            if (!mechField || !mechField.value) continue;
+            
+            // Pobierz elementy podsumowania
+            const mechNameSpan = document.getElementById(`slot-mech-name-${i}`);
+            const techSummarySpan = document.getElementById(`slot-tech-summary-${i}`);
+            const colorSummarySpan = document.getElementById(`slot-color-summary-${i}`);
+            const summaryDiv = document.querySelector(`.slot-summary[data-slot="${i}"]`);
+            
+            if (!summaryDiv) continue;
+            
+            // Znajdź nazwę mechanizmu
+            const mechData = mechanizmyData.find(m => m.ID == mechField.value);
+            if (mechNameSpan && mechData) {
+                mechNameSpan.textContent = mechData.nazwa;
+            }
+            
+            // Znajdź nazwę technologii
+            const techData = technologieData.find(t => t.ID == techField.value);
+            if (techSummarySpan && techData) {
+                techSummarySpan.textContent = techData.nazwa;
+            } else if (techSummarySpan) {
+                techSummarySpan.textContent = "—";
+            }
+            
+            // Znajdź nazwę koloru
+            if (colorSummarySpan && colorField && colorField.value) {
+                const colorData = window.kolor_mechanizmu_options[colorField.value];
+                colorSummarySpan.textContent = colorData ? colorData.name : "—";
+            } else if (colorSummarySpan) {
+                colorSummarySpan.textContent = "—";
+            }
+            
+            // Dodaj klasę filled, jeśli mamy mechanizm
+            if (mechField.value) {
+                summaryDiv.classList.add('filled');
+            } else {
+                summaryDiv.classList.remove('filled');
+            }
+        }
     }
 
     // Funkcja pokazująca panel edycji dla aktywnego slotu
@@ -634,5 +683,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     fillExistingSlotImages();
+    
+    // Wywołaj na starcie, aby wypełnić podsumowania
+    updateSlotSummaries();
 });
 </script>
