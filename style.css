@@ -586,7 +586,7 @@ select#kolor-mechanizmu-selector {
 }
 
 .series-item {
-  width: 250px; /* Zwiększona szerokość, aby zmieścić szersze obrazy */
+  width: 250px; 
   padding: 15px;
   border: 2px solid #eee;
   border-radius: 8px;
