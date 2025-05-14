@@ -531,3 +531,42 @@ select#kolor-mechanizmu-selector {
     flex-direction: column;
   }
 }
+
+/* =========================
+   MECHANISM LIST (LISTA MECHANIZMÓW)
+   ========================= */
+.mechanism-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.mechanizm-item {
+  width: 80px;
+  text-align: center;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mechanizm-item:hover {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  background-color: #f9f9f9;
+}
+
+.mechanizm-item img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 5px;
+}
+
+.mechanizm-item .name {
+  font-size: 12px;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
