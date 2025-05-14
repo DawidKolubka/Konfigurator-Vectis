@@ -2,7 +2,7 @@
 // krok1.php
 ?>
 <div class="step-content">
-    <h2>Krok 1: Wybierz serię</h2>
+    <h2>Wybierz serię produktów którą chcesz konfigurować</h2>
     
     <div class="series-container">
         <?php
