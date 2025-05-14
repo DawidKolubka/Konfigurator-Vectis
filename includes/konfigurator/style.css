@@ -1,4 +1,7 @@
 /* Pasek postępu */
+.step-content{
+    text-align: center;
+}
 #progress-bar {
     display: flex;
     justify-content: space-between;
