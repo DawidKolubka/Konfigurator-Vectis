@@ -610,17 +610,22 @@ select#kolor-mechanizmu-selector {
 
 .series-image {
   margin-bottom: 10px;
-  height: auto; /* Usunięto stałą wysokość */
+  width: 210px; /* Stała szerokość */
+  height: 140px; /* Stała wysokość */
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: auto;
+  margin-right: auto; /* Wyśrodkowanie kontenera */
+  overflow: hidden; /* Zapobiega wystawaniu obrazków poza kontener */
 }
 
 .series-image img {
-  max-width: 223px; /* Dokładnie 223px maksymalnej szerokości */
-  width: 100%; /* Zajmuje pełną dostępną szerokość */
-  height: auto; /* Zachowuje proporcje */
-  object-fit: contain;
+  max-width: 210px; /* Maksymalna szerokość obrazka */
+  max-height: 140px; /* Maksymalna wysokość obrazka */
+  width: auto; /* Pozwala zachować proporcje */
+  height: auto; /* Pozwala zachować proporcje */
+  object-fit: contain; /* Upewnia się, że cały obrazek jest widoczny */
 }
 
 .series-name {
