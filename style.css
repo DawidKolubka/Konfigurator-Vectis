@@ -586,7 +586,7 @@ select#kolor-mechanizmu-selector {
 }
 
 .series-item {
-  width: 250px; 
+  width: 300px; /* Zwiększona szerokość, aby pomieścić większe obrazy */
   padding: 15px;
   border: 2px solid #eee;
   border-radius: 8px;
@@ -610,50 +610,30 @@ select#kolor-mechanizmu-selector {
 
 .series-image {
   margin-bottom: 10px;
-  width: 210px; /* Stała szerokość */
-  height: 140px; /* Stała wysokość */
   display: flex;
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  margin-right: auto; /* Wyśrodkowanie kontenera */
-  overflow: hidden; /* Zapobiega wystawaniu obrazków poza kontener */
+  margin-right: auto;
+  width: 223px; /* Dokładna szerokość 223px */
+  height: 397px; /* Dokładna wysokość 397px */
+  overflow: hidden; /* Ukrycie części obrazu wykraczającej poza kontener */
 }
 
 .series-image img {
-  max-width: 210px; /* Maksymalna szerokość obrazka */
-  max-height: 140px; /* Maksymalna wysokość obrazka */
-  width: auto; /* Pozwala zachować proporcje */
-  height: auto; /* Pozwala zachować proporcje */
-  object-fit: contain; /* Upewnia się, że cały obrazek jest widoczny */
+  width: 223px; /* Dokładna szerokość */
+  height: 397px; /* Dokładna wysokość */
+  object-fit: cover; /* Wypełnia cały kontener, przycinając obraz jeśli potrzeba */
+  object-position: center; /* Wyśrodkowanie obrazu */
 }
 
-.series-name {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-/* Responsywność dla małych ekranów */
-@media (max-width: 768px) {
-  .series-item {
-    width: calc(50% - 20px);
-  }
-}
-
-@media (max-width: 480px) {
-  .series-item {
-    width: 100%;
-    max-width: 250px;
-  }
-}
-
-/* Style dla wyboru kształtu - podobne do wyboru serii */
+/* Style dla wyboru kształtu - inne niż dla serii */
 .shape-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
-  margin: 20px auto;
+  margin: 50px auto;
 }
 
 .shape-item {
@@ -681,40 +661,6 @@ select#kolor-mechanizmu-selector {
 
 .shape-image {
   margin-bottom: 10px;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.shape-image img {
-  max-width: 223px; /* Taka sama szerokość jak w przypadku serii */
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-.shape-name {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-/* Responsywność - taka sama jak dla serii */
-@media (max-width: 768px) {
-  .shape-item {
-    width: calc(50% - 20px);
-  }
-}
-
-@media (max-width: 480px) {
-  .shape-item {
-    width: 100%;
-    max-width: 250px;
-  }
-}
-
-.shape-image {
-  margin-bottom: 10px;
   width: 210px; /* Stała szerokość */
   height: 140px; /* Stała wysokość */
   display: flex;
@@ -731,4 +677,31 @@ select#kolor-mechanizmu-selector {
   width: auto; /* Pozwala zachować proporcje */
   height: auto; /* Pozwala zachować proporcje */
   object-fit: contain; /* Upewnia się, że cały obrazek jest widoczny */
+}
+
+/* Responsywność dla małych ekranów */
+@media (max-width: 768px) {
+  .series-item {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .series-item {
+    width: 100%;
+    max-width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .shape-item {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 480px) {
+  .shape-item {
+    width: 100%;
+    max-width: 250px;
+  }
 }
