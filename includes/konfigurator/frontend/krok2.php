@@ -2,7 +2,7 @@
 // krok2.php
 ?>
 <div class="step-content">
-    <h2>Krok 2: Wybierz kształt</h2>
+    <h2>Wybierz kształt produktu</h2>
     <?php
     $ksztalt_options = get_option('kv_ksztalt_options', array());
     if (!empty($ksztalt_options)) {
