@@ -586,7 +586,7 @@ select#kolor-mechanizmu-selector {
 }
 
 .series-item {
-  width: 200px;
+  width: 250px; /* Zwiększona szerokość, aby zmieścić szersze obrazy */
   padding: 15px;
   border: 2px solid #eee;
   border-radius: 8px;
@@ -610,15 +610,16 @@ select#kolor-mechanizmu-selector {
 
 .series-image {
   margin-bottom: 10px;
-  height: 120px;
+  height: auto; /* Usunięto stałą wysokość */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .series-image img {
-  max-width: 100%;
-  max-height: 110px;
+  max-width: 223px; /* Dokładnie 223px maksymalnej szerokości */
+  width: 100%; /* Zajmuje pełną dostępną szerokość */
+  height: auto; /* Zachowuje proporcje */
   object-fit: contain;
 }
 
