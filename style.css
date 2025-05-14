@@ -707,3 +707,23 @@ select#kolor-mechanizmu-selector {
     max-width: 250px;
   }
 }
+
+.shape-image {
+  margin-bottom: 10px;
+  width: 210px; /* Stała szerokość */
+  height: 140px; /* Stała wysokość */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto; /* Wyśrodkowanie kontenera */
+  overflow: hidden; /* Zapobiega wystawaniu obrazków poza kontener */
+}
+
+.shape-image img {
+  max-width: 210px; /* Maksymalna szerokość obrazka */
+  max-height: 140px; /* Maksymalna wysokość obrazka */
+  width: auto; /* Pozwala zachować proporcje */
+  height: auto; /* Pozwala zachować proporcje */
+  object-fit: contain; /* Upewnia się, że cały obrazek jest widoczny */
+}
