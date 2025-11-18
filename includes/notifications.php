@@ -103,10 +103,11 @@ function kv_send_order_status_notification($order_id, $old_status, $new_status) 
     $customer_name = $user->display_name ?: $user->user_login;
     
     $status_messages = array(
-        'submitted' => 'Twoje zamówienie zostało przesłane do realizacji',
-        'processing' => 'Twoje zamówienie jest w trakcie przetwarzania',
-        'completed' => 'Twoje zamówienie zostało ukończone',
-        'cancelled' => 'Twoje zamówienie zostało anulowane'
+        'submitted' => 'Twoje zamówienie zostało wysłane do realizacji',
+        'processing' => 'Twoje zamówienie jest w realizacji',
+        'partially_completed' => 'Twoje zamówienie zostało częściowo zrealizowane',
+        'completed' => 'Twoje zamówienie zostało zrealizowane',
+        'cancelled' => 'Twoje zamówienie zostało oznaczone jako niezrealizowane'
     );
     
     if (!isset($status_messages[$new_status])) {
@@ -299,6 +300,7 @@ function kv_get_status_change_email_template($order, $old_status, $new_status, $
     $status_colors = array(
         'submitted' => '#17a2b8',
         'processing' => '#ffc107',
+        'partially_completed' => '#fd7e14',
         'completed' => '#28a745',
         'cancelled' => '#dc3545'
     );
@@ -306,6 +308,7 @@ function kv_get_status_change_email_template($order, $old_status, $new_status, $
     $status_icons = array(
         'submitted' => '📤',
         'processing' => '⚙️',
+        'partially_completed' => '🔄',
         'completed' => '✅',
         'cancelled' => '❌'
     );
@@ -363,16 +366,19 @@ function kv_get_status_change_email_template($order, $old_status, $new_status, $
             // Dodaj specjalne wiadomości dla różnych statusów
             switch ($new_status) {
                 case 'submitted':
-                    echo '<p>📤 Twoje zamówienie zostało oficjalnie przesłane do realizacji. Nasze biuro rozpocznie jego przetwarzanie.</p>';
+                    echo '<p>📤 Twoje zamówienie zostało oficjalnie wysłane do realizacji. Nasze biuro rozpocznie jego przetwarzanie.</p>';
                     break;
                 case 'processing':
-                    echo '<p>⚙️ Twoje zamówienie jest obecnie przetwarzane przez nasz zespół. Skontaktujemy się z Tobą w razie potrzeby dodatkowych informacji.</p>';
+                    echo '<p>⚙️ Twoje zamówienie jest obecnie w realizacji. Skontaktujemy się z Tobą w razie potrzeby dodatkowych informacji.</p>';
+                    break;
+                case 'partially_completed':
+                    echo '<p>🔄 Część Twojego zamówienia została zrealizowana. Reszta jest w trakcie przygotowania. Skontaktujemy się z Tobą wkrótce.</p>';
                     break;
                 case 'completed':
-                    echo '<p>🎉 Gratulacje! Twoje zamówienie zostało ukończone. Skontaktuj się z nami, aby ustalić szczegóły odbioru lub dostawy.</p>';
+                    echo '<p>🎉 Gratulacje! Twoje zamówienie zostało w pełni zrealizowane. Skontaktuj się z nami, aby ustalić szczegóły odbioru lub dostawy.</p>';
                     break;
                 case 'cancelled':
-                    echo '<p>❌ Twoje zamówienie zostało anulowane. Jeśli masz pytania, skontaktuj się z naszym biurem obsługi klienta.</p>';
+                    echo '<p>❌ Twoje zamówienie zostało oznaczone jako niezrealizowane. Jeśli masz pytania, skontaktuj się z naszym biurem obsługi klienta.</p>';
                     break;
             }
             ?>
@@ -400,10 +406,11 @@ if (!function_exists('kv_get_status_label')) {
     function kv_get_status_label($status) {
         $labels = array(
             'draft' => 'Wersja robocza',
-            'submitted' => 'Przesłane',
-            'processing' => 'W trakcie realizacji',
-            'completed' => 'Ukończone',
-            'cancelled' => 'Anulowane'
+            'submitted' => 'Wysłane',
+            'processing' => 'W realizacji',
+            'partially_completed' => 'Częściowo zrealizowane',
+            'completed' => 'Zrealizowane',
+            'cancelled' => 'Niezrealizowane'
         );
         
         return isset($labels[$status]) ? $labels[$status] : ucfirst($status);

@@ -88,7 +88,7 @@ if ( ! function_exists('kv_admin_page') ) {
                     $orders = kv_get_orders(); // Można dodać filtrowanie dla konkretnych klientów
                     break;
                 case 'biuro':
-                    $orders = kv_get_orders_by_status(['submitted', 'processing', 'draft']);
+                    $orders = kv_get_orders_by_status(['submitted', 'processing', 'partially_completed', 'draft']);
                     break;
                 default:
                     $orders = array();
@@ -130,10 +130,11 @@ if ( ! function_exists('kv_admin_page') ) {
                         echo '<br><select onchange="changeOrderStatus(' . $order['id'] . ', this.value)" style="margin-top: 5px; font-size: 11px;">';
                         echo '<option value="">-- Zmień status --</option>';
                         echo '<option value="draft"' . selected($status, 'draft', false) . '>Wersja robocza</option>';
-                        echo '<option value="submitted"' . selected($status, 'submitted', false) . '>Przesłane</option>';
+                        echo '<option value="submitted"' . selected($status, 'submitted', false) . '>Wysłane</option>';
                         echo '<option value="processing"' . selected($status, 'processing', false) . '>W realizacji</option>';
-                        echo '<option value="completed"' . selected($status, 'completed', false) . '>Ukończone</option>';
-                        echo '<option value="cancelled"' . selected($status, 'cancelled', false) . '>Anulowane</option>';
+                        echo '<option value="partially_completed"' . selected($status, 'partially_completed', false) . '>Częściowo zrealizowane</option>';
+                        echo '<option value="completed"' . selected($status, 'completed', false) . '>Zrealizowane</option>';
+                        echo '<option value="cancelled"' . selected($status, 'cancelled', false) . '>Niezrealizowane</option>';
                         echo '</select>';
                     }
                     echo '</td>';
@@ -356,8 +357,28 @@ if ( ! function_exists('kv_admin_page') ) {
         }
         
         .status-completed {
-            background-color: #cce5ff;
-            color: #004085;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-processing {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-partially_completed {
+            background-color: #ffeaa7;
+            color: #d63384;
             padding: 3px 8px;
             border-radius: 4px;
             font-size: 11px;
@@ -648,7 +669,7 @@ function kv_change_order_status_ajax() {
     $new_status = sanitize_text_field($_POST['status']);
     
     // Walidacja statusu
-    $allowed_statuses = array('draft', 'submitted', 'processing', 'completed', 'cancelled');
+    $allowed_statuses = array('draft', 'submitted', 'processing', 'partially_completed', 'completed', 'cancelled');
     if (!in_array($new_status, $allowed_statuses)) {
         wp_send_json_error('Nieprawidłowy status');
     }

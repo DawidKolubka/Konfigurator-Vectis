@@ -229,6 +229,21 @@ function kv_moje_zamowienia_shortcode($atts) {
     }
     
     .kv-status-submitted {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .kv-status-processing {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+    
+    .kv-status-partially_completed {
+        background-color: #ffeaa7;
+        color: #d63384;
+    }
+    
+    .kv-status-completed {
         background-color: #d4edda;
         color: #155724;
     }
@@ -236,11 +251,6 @@ function kv_moje_zamowienia_shortcode($atts) {
     .kv-status-cancelled {
         background-color: #f8d7da;
         color: #721c24;
-    }
-    
-    .kv-status-completed {
-        background-color: #cce5ff;
-        color: #004085;
     }
     
     .kv-btn {
