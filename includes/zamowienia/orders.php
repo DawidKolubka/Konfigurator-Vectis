@@ -194,10 +194,15 @@ if ( ! function_exists('kv_save_configurator_order') ) {
             return false;
         }
         
-        $insert_id = $wpdb->insert_id;
-        error_log("kv_save_configurator_order: Zamówienie zapisane pomyślnie z ID: " . $insert_id);
+        $order_id = $wpdb->insert_id;
+        error_log('kv_save_configurator_order: Zamówienie zapisane z ID: ' . $order_id);
         
-        return $insert_id;
+        // Wyślij powiadomienia email
+        if (function_exists('kv_send_new_order_notification')) {
+            kv_send_new_order_notification($order_id, $order_data);
+        }
+        
+        return $order_id;
     }
 }
 
@@ -370,5 +375,44 @@ if ( ! function_exists('kv_update_order_details') ) {
             array('%s', '%s'),
             array('%d')
         );
+    }
+}
+
+if ( ! function_exists('kv_update_order_status_with_notification') ) {
+    /**
+     * Aktualizuje status zamówienia i wysyła powiadomienie
+     */
+    function kv_update_order_status_with_notification($order_id, $new_status) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'vectis_orders';
+        
+        // Pobierz obecny status
+        $current_order = $wpdb->get_row(
+            $wpdb->prepare("SELECT status FROM $table_name WHERE id = %d", $order_id)
+        );
+        
+        if (!$current_order) {
+            return false;
+        }
+        
+        $old_status = $current_order->status;
+        
+        // Aktualizuj status
+        $result = $wpdb->update(
+            $table_name,
+            array('status' => $new_status),
+            array('id' => $order_id),
+            array('%s'),
+            array('%d')
+        );
+        
+        if ($result !== false && $old_status !== $new_status) {
+            // Wyślij powiadomienie o zmianie statusu
+            if (function_exists('kv_send_order_status_notification')) {
+                kv_send_order_status_notification($order_id, $old_status, $new_status);
+            }
+        }
+        
+        return $result;
     }
 }

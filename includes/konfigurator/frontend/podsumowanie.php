@@ -9,7 +9,12 @@ if (session_status() == PHP_SESSION_NONE) {
 if (isset($_GET['order_saved']) && $_GET['order_saved'] == 1) {
     echo '<div class="notice notice-success" style="padding: 15px; margin: 20px 0; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">';
     echo '<h3 style="margin: 0 0 10px 0;">✅ Dziękujęmy za wypełnienie konfiguratora!</h3>';
-    echo '<p style="margin: 0;">Twoje zamówienie zostało pomyślnie zapisane w systemie. Administratorzy strony otrzymali powiadomienie o nowym zamówieniu.</p>';
+    echo '<p style="margin: 0;">Twoje zamówienie zostało pomyślnie zapisane w systemie.</p>';
+    
+    // Sprawdź czy użytkownik jest zalogowany i dodaj informację o powiadomieniach
+    if (is_user_logged_in()) {
+        echo '<p style="margin: 10px 0 0 0;"><small>📧 Potwierdzenie zamówienia zostało wysłane na Twój adres email.</small></p>';
+    }
     echo '</div>';
     
     // Dodaj przyciski akcji po komunikacie sukcesu

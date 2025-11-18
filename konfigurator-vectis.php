@@ -38,6 +38,9 @@ require_once plugin_dir_path(__FILE__) . 'includes/konfigurator/data_integrity.p
 // Załaduj system ról
 require_once plugin_dir_path(__FILE__) . 'includes/roles.php';
 
+// Załaduj system powiadomień
+require_once plugin_dir_path(__FILE__) . 'includes/notifications.php';
+
 // Załaduj pliki modułów
 require_once plugin_dir_path(__FILE__) . 'includes/zamowienia/orders.php'; 
 require_once plugin_dir_path(__FILE__) . 'includes/zamowienia/frontend.php';

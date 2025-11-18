@@ -117,11 +117,26 @@ if ( ! function_exists('kv_admin_page') ) {
                     echo '<td><strong>' . esc_html( $order['order_number'] ) . '</strong></td>';
                     echo '<td>' . esc_html( date('d.m.Y H:i', strtotime($order['created_at'])) ) . '</td>';
                     
-                    // Status zamówienia
+                    // Status zamówienia z możliwością zmiany
                     $status = isset($order['status']) ? $order['status'] : 'draft';
                     $status_label = kv_get_status_label($status);
                     $status_class = 'status-' . $status;
-                    echo '<td><span class="' . $status_class . '">' . esc_html($status_label) . '</span></td>';
+                    
+                    echo '<td>';
+                    echo '<span class="' . $status_class . '">' . esc_html($status_label) . '</span>';
+                    
+                    // Dodaj dropdown do zmiany statusu dla uprawnnionych ról
+                    if (kv_user_has_role('biuro')) {
+                        echo '<br><select onchange="changeOrderStatus(' . $order['id'] . ', this.value)" style="margin-top: 5px; font-size: 11px;">';
+                        echo '<option value="">-- Zmień status --</option>';
+                        echo '<option value="draft"' . selected($status, 'draft', false) . '>Wersja robocza</option>';
+                        echo '<option value="submitted"' . selected($status, 'submitted', false) . '>Przesłane</option>';
+                        echo '<option value="processing"' . selected($status, 'processing', false) . '>W realizacji</option>';
+                        echo '<option value="completed"' . selected($status, 'completed', false) . '>Ukończone</option>';
+                        echo '<option value="cancelled"' . selected($status, 'cancelled', false) . '>Anulowane</option>';
+                        echo '</select>';
+                    }
+                    echo '</td>';
                     
                     // Numer zamówienia klienta
                     $customer_order_number = isset($order['customer_order_number']) ? $order['customer_order_number'] : 
@@ -613,5 +628,95 @@ if ( ! function_exists('kv_generate_product_code_admin') ) {
         $frame_color_code = str_pad(substr($frame_color_code, 0, 2), 2, '0');
         
         return strtoupper($seria_code . $ksztalt_code . "0-" . $mech_code . "-" . $uklad_code . $frame_color_code);
+    }
+}
+
+// Obsługa AJAX do zmiany statusu zamówienia
+add_action('wp_ajax_kv_change_order_status', 'kv_change_order_status_ajax');
+function kv_change_order_status_ajax() {
+    // Sprawdź uprawnienia
+    if (!kv_user_has_role('biuro')) {
+        wp_die('Nie masz uprawnień do tej akcji');
+    }
+    
+    // Sprawdź nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'kv_admin_nonce')) {
+        wp_die('Nieprawidłowy token bezpieczeństwa');
+    }
+    
+    $order_id = intval($_POST['order_id']);
+    $new_status = sanitize_text_field($_POST['status']);
+    
+    // Walidacja statusu
+    $allowed_statuses = array('draft', 'submitted', 'processing', 'completed', 'cancelled');
+    if (!in_array($new_status, $allowed_statuses)) {
+        wp_send_json_error('Nieprawidłowy status');
+    }
+    
+    // Aktualizuj status z powiadomieniem
+    if (function_exists('kv_update_order_status_with_notification')) {
+        $result = kv_update_order_status_with_notification($order_id, $new_status);
+    } else {
+        // Fallback - zwykła aktualizacja bez powiadomienia
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'vectis_orders';
+        $result = $wpdb->update(
+            $table_name,
+            array('status' => $new_status),
+            array('id' => $order_id),
+            array('%s'),
+            array('%d')
+        );
+    }
+    
+    if ($result !== false) {
+        wp_send_json_success(array(
+            'message' => 'Status zamówienia został zaktualizowany',
+            'new_status' => $new_status,
+            'new_status_label' => kv_get_status_label($new_status)
+        ));
+    } else {
+        wp_send_json_error('Błąd podczas aktualizacji statusu');
+    }
+}
+
+// JavaScript do obsługi zmiany statusu
+add_action('admin_footer', 'kv_admin_status_change_script');
+function kv_admin_status_change_script() {
+    $current_screen = get_current_screen();
+    if ($current_screen && $current_screen->id === 'toplevel_page_konfigurator-vectis') {
+        ?>
+        <script type="text/javascript">
+        function changeOrderStatus(orderId, newStatus) {
+            if (!newStatus) return; // Jeśli wybrano "-- Zmień status --"
+            
+            if (!confirm('Czy na pewno chcesz zmienić status zamówienia? Klient zostanie powiadomiony o zmianie.')) {
+                // Reset selecta jeśli anulowano
+                event.target.selectedIndex = 0;
+                return;
+            }
+            
+            jQuery.post(ajaxurl, {
+                action: 'kv_change_order_status',
+                order_id: orderId,
+                status: newStatus,
+                nonce: '<?php echo wp_create_nonce('kv_admin_nonce'); ?>'
+            }, function(response) {
+                if (response.success) {
+                    alert('✅ ' + response.data.message);
+                    location.reload(); // Odśwież stronę, aby zobaczyć zmiany
+                } else {
+                    alert('❌ Błąd: ' + response.data);
+                    // Reset selecta
+                    event.target.selectedIndex = 0;
+                }
+            }).fail(function() {
+                alert('❌ Błąd komunikacji z serwerem');
+                // Reset selecta
+                event.target.selectedIndex = 0;
+            });
+        }
+        </script>
+        <?php
     }
 }
