@@ -8,7 +8,7 @@ add_action('init', 'kv_repair_data');
 Plugin Name: Konfigurator Vectis
 Plugin URI: https://github.com/DawidKolubka/Konfigurator-Vectis
 Description: Wtyczka do zarządzania zamówieniami niezależnie od WooCommerce + konfigurator
-Version: 0.92
+Version: 0.95
 Author: Dawid Kolubka
 Author URI: https://net-help.pl.pl/
 License: GPL2
