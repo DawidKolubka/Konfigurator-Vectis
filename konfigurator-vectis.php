@@ -35,6 +35,9 @@ if (!function_exists('wp_create_nonce')) {
 // Załaduj plik integralności danych jako pierwszy - zawiera funkcje bezpieczeństwa
 require_once plugin_dir_path(__FILE__) . 'includes/konfigurator/data_integrity.php';
 
+// Załaduj system ról
+require_once plugin_dir_path(__FILE__) . 'includes/roles.php';
+
 // Załaduj pliki modułów
 require_once plugin_dir_path(__FILE__) . 'includes/zamowienia/orders.php'; 
 require_once plugin_dir_path(__FILE__) . 'includes/zamowienia/frontend.php';

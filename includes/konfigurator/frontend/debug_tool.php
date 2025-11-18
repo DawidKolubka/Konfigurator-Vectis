@@ -5,10 +5,12 @@ defined('ABSPATH') or die('Brak dostępu');
  * Wyświetla informacje debugowania dla administratorów
  */
 function kv_debug_panel() {
-    // Sprawdź, czy użytkownik jest adminem
-    if (!current_user_can('manage_options')) {
+    // Sprawdź, czy użytkownik ma uprawnienia (administrator lub wyższa rola w systemie konfiguratora)
+    if (!kv_user_has_role('administrator')) {
         return;
     }
+    
+    $current_user_role = kv_get_user_configurator_role();
     
     // Pobierz dane
     $mechanizm_options = get_option('kv_mechanizm_options', []);
@@ -16,7 +18,23 @@ function kv_debug_panel() {
     
     ?>
     <div class="debug-panel" style="margin-top: 30px; padding: 15px; background: #f1f1f1; border: 1px solid #ddd; border-radius: 4px;">
-        <h3>Panel diagnostyczny (tylko dla administratora)</h3>
+        <h3>Panel diagnostyczny (Twoja rola: <?php echo esc_html(kv_get_role_display_name($current_user_role)); ?>)</h3>
+        
+        <div class="debug-section">
+            <h4>Informacje o rolach użytkownika:</h4>
+            <ul>
+                <li><strong>Rola w konfiguratorze:</strong> <?php echo esc_html($current_user_role); ?></li>
+                <li><strong>Nazwa wyświetlana:</strong> <?php echo esc_html(kv_get_role_display_name($current_user_role)); ?></li>
+                <li><strong>Uprawnienia:</strong>
+                    <ul>
+                        <li>Zarządzanie wszystkimi zamówieniami: <?php echo kv_user_can('kv_manage_all_orders') ? 'TAK' : 'NIE'; ?></li>
+                        <li>Przeglądanie wszystkich zamówień: <?php echo kv_user_can('kv_view_all_orders') ? 'TAK' : 'NIE'; ?></li>
+                        <li>Edycja konfiguratora: <?php echo kv_user_can('kv_edit_configurator') ? 'TAK' : 'NIE'; ?></li>
+                        <li>Przetwarzanie zamówień: <?php echo kv_user_can('kv_process_orders') ? 'TAK' : 'NIE'; ?></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
         
         <div class="debug-section">
             <h4>Mechanizmy</h4>

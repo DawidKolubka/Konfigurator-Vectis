@@ -13,14 +13,37 @@ function kv_moje_zamowienia_shortcode($atts) {
     }
     
     $user_id = get_current_user_id();
+    $user_role = kv_get_user_configurator_role($user_id);
     
     // Obsługa akcji
     if (isset($_POST['kv_action']) && wp_verify_nonce($_POST['kv_frontend_nonce'], 'kv_frontend_action')) {
         $order_id = intval($_POST['order_id']);
         
-        // Sprawdź czy zamówienie należy do aktualnego użytkownika
+        // Sprawdź uprawnienia w zależności od roli
         $order = kv_get_order_by_id($order_id);
-        if (!$order || $order->user_id != $user_id) {
+        if (!$order) {
+            return '<div class="kv-notice kv-notice-error"><p>Zamówienie nie istnieje.</p></div>';
+        }
+        
+        // Sprawdź uprawnienia w zależności od roli
+        $has_permission = false;
+        switch ($user_role) {
+            case 'administrator':
+                $has_permission = true; // Administrator ma dostęp do wszystkiego
+                break;
+            case 'handlowiec':
+                $has_permission = kv_user_can('kv_manage_client_orders'); // Handlowiec może zarządzać zamówieniami klientów
+                break;
+            case 'biuro':
+                $has_permission = kv_user_can('kv_process_orders'); // Biuro może przetwarzać zamówienia
+                break;
+            case 'klient':
+            default:
+                $has_permission = ($order->user_id == $user_id); // Klient tylko swoje zamówienia
+                break;
+        }
+        
+        if (!$has_permission) {
             return '<div class="kv-notice kv-notice-error"><p>Nie masz uprawnień do tej akcji.</p></div>';
         }
         
@@ -51,14 +74,38 @@ function kv_moje_zamowienia_shortcode($atts) {
     ?>
     
     <div class="kv-frontend-orders">
-        <h2>Moje zamówienia</h2>
+        <h2>Moje zamówienia 
+            <small>(<?php echo esc_html(kv_get_role_display_name($user_role)); ?>)</small>
+        </h2>
         
         <?php
-        // Pobierz zamówienia użytkownika
-        $orders = kv_get_user_orders($user_id);
+        // Pobierz zamówienia w zależności od roli użytkownika
+        switch ($user_role) {
+            case 'administrator':
+                // Administrator widzi wszystkie zamówienia
+                $orders = kv_get_orders();
+                break;
+            case 'handlowiec':
+                // Handlowiec widzi zamówienia swoich klientów (można rozszerzyć o przypisanie klientów)
+                $orders = kv_get_orders(); // Na razie wszystkie, można dodać filtrowanie
+                break;
+            case 'biuro':
+                // Biuro widzi zamówienia do przetworzenia (submitted, processing)
+                $orders = kv_get_orders_by_status(['submitted', 'processing']);
+                break;
+            case 'klient':
+            default:
+                // Klient widzi tylko swoje zamówienia
+                $orders = kv_get_user_orders($user_id);
+                break;
+        }
         
         if (empty($orders)) {
-            echo '<p>Nie masz jeszcze żadnych zamówień. <a href="' . site_url('/konfigurator/') . '">Rozpocznij konfigurację</a></p>';
+            if ($user_role === 'klient') {
+                echo '<p>Nie masz jeszcze żadnych zamówień. <a href="' . site_url('/konfigurator/') . '">Rozpocznij konfigurację</a></p>';
+            } else {
+                echo '<p>Brak zamówień do wyświetlenia.</p>';
+            }
         } else {
             ?>
             <div class="kv-orders-table-container">

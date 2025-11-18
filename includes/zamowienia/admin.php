@@ -23,6 +23,14 @@ if ( ! function_exists('kv_admin_page') ) {
      * Funkcja wyświetlająca zawartość strony administracyjnej wtyczki.
      */
     function kv_admin_page() {
+        // Sprawdź uprawnienia na podstawie ról
+        $user_role = kv_get_user_configurator_role();
+        
+        if (!kv_user_has_role('biuro')) {
+            echo '<div class="notice notice-error"><p>Nie masz uprawnień do tej strony.</p></div>';
+            return;
+        }
+        
         // Obsługa akcji
         if (isset($_GET['action']) && isset($_GET['order_id'])) {
             $order_id = intval($_GET['order_id']);
@@ -64,12 +72,29 @@ if ( ! function_exists('kv_admin_page') ) {
         }
         
         echo '<div class="wrap">';
-        echo '<h1>Panel administracyjny Konfiguratora Vectis</h1>';
+        echo '<h1>Panel administracyjny Konfiguratora Vectis 
+            <small>(Twoja rola: ' . esc_html(kv_get_role_display_name($user_role)) . ')</small>
+        </h1>';
         echo '<p>Tutaj możesz zarządzać zamówieniami z konfiguratora.</p>';
         
         // Sprawdź czy funkcja do pobierania zamówień istnieje
         if ( function_exists('kv_get_orders') ) {
-            $orders = kv_get_orders();
+            // Pobierz zamówienia w zależności od roli
+            switch ($user_role) {
+                case 'administrator':
+                    $orders = kv_get_orders();
+                    break;
+                case 'handlowiec':
+                    $orders = kv_get_orders(); // Można dodać filtrowanie dla konkretnych klientów
+                    break;
+                case 'biuro':
+                    $orders = kv_get_orders_by_status(['submitted', 'processing', 'draft']);
+                    break;
+                default:
+                    $orders = array();
+                    break;
+            }
+            
             if ( ! empty( $orders ) ) {
                 echo '<h2>Lista zamówień (' . count($orders) . ')</h2>';
                 echo '<table class="wp-list-table widefat fixed striped">';

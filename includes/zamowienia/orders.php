@@ -111,6 +111,34 @@ if ( ! function_exists('kv_get_orders') ) {
     }
 }
 
+if ( ! function_exists('kv_get_orders_by_status') ) {
+    /**
+     * Pobiera zamówienia o określonym statusie z bazy.
+     *
+     * @param array $statuses Lista statusów do pobrania
+     * @return array Lista zamówień o określonym statusie.
+     */
+    function kv_get_orders_by_status($statuses = array()) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'vectis_orders';
+
+        if (empty($statuses)) {
+            return array();
+        }
+
+        // Przygotuj placeholdery dla IN clause
+        $placeholders = implode(',', array_fill(0, count($statuses), '%s'));
+        
+        $query = $wpdb->prepare(
+            "SELECT * FROM $table_name WHERE status IN ($placeholders) ORDER BY created_at DESC",
+            $statuses
+        );
+        
+        $results = $wpdb->get_results($query, ARRAY_A);
+        return $results;
+    }
+}
+
 if ( ! function_exists('kv_save_configurator_order') ) {
     /**
      * Zapisuje zamówienie z konfiguratora do bazy danych.
