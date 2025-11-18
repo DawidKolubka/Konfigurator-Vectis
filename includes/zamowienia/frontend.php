@@ -402,20 +402,6 @@ function kv_cancel_order($order_id) {
 }
 
 /**
- * Zwraca etykietę statusu
- */
-function kv_get_status_label($status) {
-    $labels = array(
-        'draft' => 'Wersja robocza',
-        'submitted' => 'Wysłane',
-        'cancelled' => 'Anulowane',
-        'completed' => 'Zakończone'
-    );
-    
-    return isset($labels[$status]) ? $labels[$status] : ucfirst($status);
-}
-
-/**
  * Wyświetla szczegóły zamówienia na frontend
  */
 function kv_display_order_details_frontend($order) {

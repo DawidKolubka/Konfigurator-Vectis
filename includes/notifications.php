@@ -396,14 +396,16 @@ function kv_get_status_change_email_template($order, $old_status, $new_status, $
 /**
  * Pobiera etykietę statusu zamówienia
  */
-function kv_get_status_label($status) {
-    $labels = array(
-        'draft' => 'Wersja robocza',
-        'submitted' => 'Przesłane',
-        'processing' => 'W trakcie realizacji',
-        'completed' => 'Ukończone',
-        'cancelled' => 'Anulowane'
-    );
-    
-    return isset($labels[$status]) ? $labels[$status] : ucfirst($status);
+if (!function_exists('kv_get_status_label')) {
+    function kv_get_status_label($status) {
+        $labels = array(
+            'draft' => 'Wersja robocza',
+            'submitted' => 'Przesłane',
+            'processing' => 'W trakcie realizacji',
+            'completed' => 'Ukończone',
+            'cancelled' => 'Anulowane'
+        );
+        
+        return isset($labels[$status]) ? $labels[$status] : ucfirst($status);
+    }
 }
