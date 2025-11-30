@@ -238,6 +238,11 @@ function kv_moje_zamowienia_shortcode($atts) {
         color: #856404;
     }
     
+    .kv-status-new {
+        background-color: #e0cffc;
+        color: #6f42c1;
+    }
+    
     .kv-status-submitted {
         background-color: #d1ecf1;
         color: #0c5460;

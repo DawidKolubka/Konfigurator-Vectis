@@ -103,6 +103,7 @@ function kv_send_order_status_notification($order_id, $old_status, $new_status) 
     $customer_name = $user->display_name ?: $user->user_login;
     
     $status_messages = array(
+        'new' => 'Twoje zamówienie zostało otrzymane i oczekuje na przetworzenie',
         'submitted' => 'Twoje zamówienie zostało wysłane do realizacji',
         'processing' => 'Twoje zamówienie jest w realizacji',
         'partially_completed' => 'Twoje zamówienie zostało częściowo zrealizowane',
@@ -298,6 +299,7 @@ function kv_get_status_change_email_template($order, $old_status, $new_status, $
     $my_account_url = site_url('/moje-konto/');
     
     $status_colors = array(
+        'new' => '#6f42c1',
         'submitted' => '#17a2b8',
         'processing' => '#ffc107',
         'partially_completed' => '#fd7e14',
@@ -306,6 +308,7 @@ function kv_get_status_change_email_template($order, $old_status, $new_status, $
     );
     
     $status_icons = array(
+        'new' => '🆕',
         'submitted' => '📤',
         'processing' => '⚙️',
         'partially_completed' => '🔄',
@@ -365,6 +368,9 @@ function kv_get_status_change_email_template($order, $old_status, $new_status, $
             <?php
             // Dodaj specjalne wiadomości dla różnych statusów
             switch ($new_status) {
+                case 'new':
+                    echo '<p>🆕 Twoje zamówienie zostało otrzymane i oczekuje na przetworzenie. Skontaktujemy się z Tobą wkrótce.</p>';
+                    break;
                 case 'submitted':
                     echo '<p>📤 Twoje zamówienie zostało oficjalnie wysłane do realizacji. Nasze biuro rozpocznie jego przetwarzanie.</p>';
                     break;
@@ -406,6 +412,7 @@ if (!function_exists('kv_get_status_label')) {
     function kv_get_status_label($status) {
         $labels = array(
             'draft' => 'Wersja robocza',
+            'new' => 'Nowe',
             'submitted' => 'Wysłane',
             'processing' => 'W realizacji',
             'partially_completed' => 'Częściowo zrealizowane',

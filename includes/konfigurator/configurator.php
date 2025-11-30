@@ -78,7 +78,7 @@ function kv_handle_global_actions() {
                 if (isset($_POST['kv_global_save_draft'])) {
                     $order_data['status'] = 'draft';
                 } else {
-                    $order_data['status'] = 'submitted';
+                    $order_data['status'] = 'new';
                 }
                 
                 // Zapisz zamówienie do bazy danych

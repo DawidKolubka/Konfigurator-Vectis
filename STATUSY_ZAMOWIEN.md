@@ -8,10 +8,15 @@ System zamówień został zaktualizowany o nowe statusy, które lepiej odzwierci
 
 1. **🟡 Wersja robocza** (`draft`)
    - Zamówienie w trakcie tworzenia
-   - Klient może edytować
+   - Klient może edytować i usuwać
    - Nie wysyłane powiadomienia
 
-2. **🔵 Wysłane** (`submitted`)  
+2. **🟣 Nowe** (`new`)
+   - Zamówienie zostało złożone przez klienta
+   - Czeka na weryfikację przez biuro
+   - **Email:** "Twoje zamówienie zostało otrzymane i oczekuje na przetworzenie"
+
+3. **🔵 Wysłane** (`submitted`)
    - Zamówienie zostało oficjalnie złożone
    - Przekazane do biura/handlowca
    - **Email:** "Twoje zamówienie zostało wysłane do realizacji"
@@ -39,6 +44,7 @@ System zamówień został zaktualizowany o nowe statusy, które lepiej odzwierci
 
 ### **Panel administracyjny:**
 - **Wersja robocza:** Żółty (#fff3cd / #856404)
+- **Nowe:** Fioletowy (#e0cffc / #6f42c1)
 - **Wysłane:** Zielony (#d4edda / #155724)  
 - **W realizacji:** Żółty (#fff3cd / #856404)
 - **Częściowo zrealizowane:** Pomarańczowy (#ffeaa7 / #d63384)
@@ -47,6 +53,7 @@ System zamówień został zaktualizowany o nowe statusy, które lepiej odzwierci
 
 ### **Frontend (strona klienta):**
 - **Wersja robocza:** Żółty (#fff3cd / #856404)
+- **Nowe:** Fioletowy (#e0cffc / #6f42c1)
 - **Wysłane:** Niebieski (#d1ecf1 / #0c5460)
 - **W realizacji:** Żółty (#fff3cd / #856404) 
 - **Częściowo zrealizowane:** Pomarańczowy (#ffeaa7 / #d63384)

@@ -130,6 +130,7 @@ if ( ! function_exists('kv_admin_page') ) {
                         echo '<br><select onchange="changeOrderStatus(' . $order['id'] . ', this.value)" style="margin-top: 5px; font-size: 11px;">';
                         echo '<option value="">-- Zmień status --</option>';
                         echo '<option value="draft"' . selected($status, 'draft', false) . '>Wersja robocza</option>';
+                        echo '<option value="new"' . selected($status, 'new', false) . '>Nowe</option>';
                         echo '<option value="submitted"' . selected($status, 'submitted', false) . '>Wysłane</option>';
                         echo '<option value="processing"' . selected($status, 'processing', false) . '>W realizacji</option>';
                         echo '<option value="partially_completed"' . selected($status, 'partially_completed', false) . '>Częściowo zrealizowane</option>';
@@ -329,6 +330,16 @@ if ( ! function_exists('kv_admin_page') ) {
         .status-draft {
             background-color: #fff3cd;
             color: #856404;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-new {
+            background-color: #e0cffc;
+            color: #6f42c1;
             padding: 3px 8px;
             border-radius: 4px;
             font-size: 11px;
@@ -669,7 +680,7 @@ function kv_change_order_status_ajax() {
     $new_status = sanitize_text_field($_POST['status']);
     
     // Walidacja statusu
-    $allowed_statuses = array('draft', 'submitted', 'processing', 'partially_completed', 'completed', 'cancelled');
+    $allowed_statuses = array('draft', 'new', 'submitted', 'processing', 'partially_completed', 'completed', 'cancelled');
     if (!in_array($new_status, $allowed_statuses)) {
         wp_send_json_error('Nieprawidłowy status');
     }
