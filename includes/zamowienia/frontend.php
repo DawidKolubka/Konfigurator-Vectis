@@ -1,5 +1,11 @@
+
 <?php
 defined('ABSPATH') or die('Brak dostępu');
+
+// Upewnij się, że środowisko WordPress jest załadowane na frontendzie
+if (!defined('ABSPATH')) {
+    require_once(dirname(__FILE__, 6) . '/wp-load.php');
+}
 
 /**
  * Shortcode do wyświetlania zamówień użytkownika na frontend
@@ -11,9 +17,13 @@ function kv_moje_zamowienia_shortcode($atts) {
             <p>Musisz być zalogowany, aby zobaczyć swoje zamówienia. <a href="' . wp_login_url() . '">Zaloguj się</a></p>
         </div>';
     }
-    
+
     $user_id = get_current_user_id();
     $user_role = kv_get_user_configurator_role($user_id);
+    if (empty($user_role)) {
+        error_log('KV: Nie wykryto roli użytkownika o ID ' . $user_id);
+        $user_role = 'klient';
+    }
     
     // Obsługa akcji
     if (isset($_POST['kv_action']) && wp_verify_nonce($_POST['kv_frontend_nonce'], 'kv_frontend_action')) {
