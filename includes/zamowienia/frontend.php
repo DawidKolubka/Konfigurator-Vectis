@@ -432,11 +432,6 @@ function kv_cancel_order($order_id) {
 function kv_display_order_details_frontend($order) {
     $order_data = json_decode($order->order_data, true);
     
-    if (empty($order_data)) {
-        echo '<p>Brak szczegółów zamówienia.</p>';
-        return;
-    }
-    
     // Pobierz opcje z bazy danych
     $seria_options = get_option('kv_seria_options', array());
     $ksztalt_options = get_option('kv_ksztalt_options', array());
@@ -448,11 +443,29 @@ function kv_display_order_details_frontend($order) {
     
     echo '<div class="order-details-frontend">';
     
+    // Wyświetl numer zamówienia klienta jeśli istnieje
+    if (!empty($order->customer_order_number)) {
+        echo '<div class="customer-order-number">';
+        echo '<h4>Twój numer zamówienia:</h4>';
+        echo '<p><strong>' . esc_html($order->customer_order_number) . '</strong></p>';
+        echo '</div>';
+    }
+    
+    // Wyświetl uwagi do zamówienia jeśli istnieją
     if (!empty($order->order_notes)) {
         echo '<div class="order-notes">';
-        echo '<h4>Notatki do zamówienia:</h4>';
-        echo '<p>' . esc_html($order->order_notes) . '</p>';
+        echo '<h4>Uwagi do zamówienia:</h4>';
+        echo '<p>' . nl2br(esc_html($order->order_notes)) . '</p>';
         echo '</div>';
+    }
+    
+    // Jeśli brak danych zamówienia, pokaż komunikat i zakończ
+    if (empty($order_data) || !isset($order_data['items'])) {
+        if (empty($order->customer_order_number) && empty($order->order_notes)) {
+            echo '<p>Brak szczegółów zamówienia.</p>';
+        }
+        echo '</div>';
+        return;
     }
     
     if (isset($order_data['items']) && is_array($order_data['items'])) {
@@ -587,6 +600,23 @@ function kv_display_order_details_frontend($order) {
         padding: 10px;
         border-radius: 4px;
         margin-bottom: 8px;
+    }
+    
+    .customer-order-number {
+        background: #e3f2fd;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+    
+    .customer-order-number h4 {
+        margin: 0 0 5px 0;
+        color: #0c5460;
+    }
+    
+    .customer-order-number p {
+        margin: 0;
+        color: #0c5460;
     }
     
     .order-notes {
