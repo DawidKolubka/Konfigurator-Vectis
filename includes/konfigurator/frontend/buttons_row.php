@@ -31,7 +31,6 @@ defined('ABSPATH') or die('Brak dostępu');
     <div class="nav-buttons-container">
         <!-- Grupa przycisków akcji (Zapisz/Anuluj) -->
         <div class="action-buttons">
-            <button type="submit" name="kv_global_save" class="btn-save">Wyślij zamówienie</button>
             <?php if ($step === 5): ?>
             <button type="submit" name="kv_global_save_draft" class="btn-save-draft">Zapisz wersję roboczą</button>
             <?php endif; ?>
@@ -53,7 +52,6 @@ defined('ABSPATH') or die('Brak dostępu');
         <?php if ($step === 5): ?>
             <div class="summary-buttons">
                 <button type="submit" name="add_item" class="btn-add-item">Dodaj kolejną pozycję</button>
-                <button type="submit" name="kv_global_save" class="btn-order">Złóż zamówienie</button>
             </div>
         <?php endif; ?>    </div>
 </div>
