@@ -43,6 +43,46 @@ if ( ! function_exists('kv_create_orders_table') ) {
         } else {
             error_log("kv_create_orders_table: BŁĄD - Tabela $table_name nie została utworzona!");
         }
+        
+        // Utwórz tabelę komentarzy
+        kv_create_order_comments_table();
+    }
+}
+
+if ( ! function_exists('kv_create_order_comments_table') ) {
+    /**
+     * Tworzy tabelę do przechowywania komentarzy zamówień.
+     */
+    function kv_create_order_comments_table() {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'vectis_order_comments';
+        $charset_collate = $wpdb->get_charset_collate();
+
+        error_log("kv_create_order_comments_table: Tworzenie/sprawdzanie tabeli: " . $table_name);
+
+        $sql = "CREATE TABLE $table_name (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            order_id mediumint(9) NOT NULL,
+            user_id bigint(20) unsigned NOT NULL,
+            comment_text text NOT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            PRIMARY KEY (id),
+            INDEX order_id_idx (order_id),
+            INDEX user_id_idx (user_id)
+        ) $charset_collate;";
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        $result = dbDelta($sql);
+        
+        error_log("kv_create_order_comments_table: Wynik dbDelta: " . print_r($result, true));
+        
+        // Sprawdź czy tabela istnieje
+        $table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'");
+        if ($table_exists) {
+            error_log("kv_create_order_comments_table: Tabela $table_name istnieje");
+        } else {
+            error_log("kv_create_order_comments_table: BŁĄD - Tabela $table_name nie została utworzona!");
+        }
     }
 }
 
@@ -414,5 +454,119 @@ if ( ! function_exists('kv_update_order_status_with_notification') ) {
         }
         
         return $result;
+    }
+}
+
+// ==================== FUNKCJE DO OBSŁUGI KOMENTARZY ====================
+
+if ( ! function_exists('kv_add_order_comment') ) {
+    /**
+     * Dodaje komentarz do zamówienia
+     *
+     * @param int $order_id ID zamówienia
+     * @param string $comment_text Treść komentarza
+     * @param int $user_id ID użytkownika (opcjonalnie, domyślnie aktualny użytkownik)
+     * @return int|false ID komentarza lub false w przypadku błędu
+     */
+    function kv_add_order_comment($order_id, $comment_text, $user_id = null) {
+        global $wpdb;
+        
+        if (empty($comment_text)) {
+            return false;
+        }
+        
+        if ($user_id === null) {
+            $user_id = get_current_user_id();
+        }
+        
+        $table_name = $wpdb->prefix . 'vectis_order_comments';
+        
+        $result = $wpdb->insert(
+            $table_name,
+            array(
+                'order_id' => $order_id,
+                'user_id' => $user_id,
+                'comment_text' => $comment_text,
+                'created_at' => current_time('mysql')
+            ),
+            array('%d', '%d', '%s', '%s')
+        );
+        
+        if ($result === false) {
+            error_log('kv_add_order_comment: Błąd dodawania komentarza: ' . $wpdb->last_error);
+            return false;
+        }
+        
+        return $wpdb->insert_id;
+    }
+}
+
+if ( ! function_exists('kv_get_order_comments') ) {
+    /**
+     * Pobiera wszystkie komentarze dla zamówienia
+     *
+     * @param int $order_id ID zamówienia
+     * @return array Lista komentarzy
+     */
+    function kv_get_order_comments($order_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'vectis_order_comments';
+        
+        $comments = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT c.*, u.display_name, u.user_login 
+                FROM $table_name c
+                LEFT JOIN {$wpdb->users} u ON c.user_id = u.ID
+                WHERE c.order_id = %d 
+                ORDER BY c.created_at DESC",
+                $order_id
+            ),
+            ARRAY_A
+        );
+        
+        return $comments ? $comments : array();
+    }
+}
+
+if ( ! function_exists('kv_get_order_comments_count') ) {
+    /**
+     * Pobiera liczbę komentarzy dla zamówienia
+     *
+     * @param int $order_id ID zamówienia
+     * @return int Liczba komentarzy
+     */
+    function kv_get_order_comments_count($order_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'vectis_order_comments';
+        
+        $count = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM $table_name WHERE order_id = %d",
+                $order_id
+            )
+        );
+        
+        return intval($count);
+    }
+}
+
+if ( ! function_exists('kv_delete_order_comment') ) {
+    /**
+     * Usuwa komentarz (tylko dla administratorów)
+     *
+     * @param int $comment_id ID komentarza
+     * @return bool
+     */
+    function kv_delete_order_comment($comment_id) {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'vectis_order_comments';
+        
+        $result = $wpdb->delete(
+            $table_name,
+            array('id' => $comment_id),
+            array('%d')
+        );
+        
+        return $result !== false;
     }
 }

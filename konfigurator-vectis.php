@@ -295,10 +295,10 @@ add_action('plugins_loaded', 'kv_check_db_structure');
 function kv_check_db_structure() {
     // Sprawdź wersję struktury bazy danych
     $db_version = get_option('kv_db_version', '0');
-    $current_version = '1.0'; // Aktualna wersja struktury
+    $current_version = '1.1'; // Aktualna wersja struktury - zwiększona dla tabeli komentarzy
     
     if (version_compare($db_version, $current_version, '<')) {
-        kv_create_orders_table(); // To automatycznie zaktualizuje strukturę
+        kv_create_orders_table(); // To automatycznie zaktualizuje strukturę i utworzy tabelę komentarzy
         update_option('kv_db_version', $current_version);
         error_log('KV: Zaktualizowano strukturę bazy danych do wersji ' . $current_version);
     }

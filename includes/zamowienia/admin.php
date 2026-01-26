@@ -105,6 +105,7 @@ if ( ! function_exists('kv_admin_page') ) {
                 echo '<th style="width: 80px;">Status</th>';
                 echo '<th style="width: 120px;">Numer klienta</th>';
                 echo '<th style="width: 150px;">Uwagi</th>';
+                echo '<th style="width: 150px;">Komentarze</th>';
                 echo '<th>Szczegóły zamówienia</th>';
                 echo '<th style="width: 200px;">Akcje</th>';
                 echo '</tr></thead>';
@@ -151,6 +152,21 @@ if ( ! function_exists('kv_admin_page') ) {
                     echo '<td title="' . esc_attr($order_notes) . '">' . 
                          esc_html(strlen($order_notes) > 50 ? substr($order_notes, 0, 50) . '...' : $order_notes) . '</td>';
                     
+                    // Komentarze
+                    echo '<td>';
+                    $comments_count = kv_get_order_comments_count($order['id']);
+                    if ($comments_count > 0) {
+                        echo '<button class="button button-small" onclick="toggleComments(' . $order['id'] . ')" style="font-size: 11px; padding: 2px 6px;">';
+                        echo '💬 Pokaż (' . $comments_count . ')';
+                        echo '</button>';
+                        echo '<div id="comments-' . $order['id'] . '" class="order-comments-container" style="display: none; margin-top: 10px;">';
+                        kv_display_order_comments($order['id']);
+                        echo '</div>';
+                    } else {
+                        echo '<span style="color: #999; font-size: 11px;">Brak komentarzy</span>';
+                    }
+                    echo '</td>';
+                    
                     // Szczegóły zamówienia
                     echo '<td>';
                     if ( is_array( $order_data ) ) {
@@ -170,6 +186,9 @@ if ( ! function_exists('kv_admin_page') ) {
                     
                     // Przycisk edycji podstawowych danych
                     echo '<div class="action-button edit-data"><a href="#" onclick="openEditModal(' . $order['id'] . ', \'' . esc_js($order['order_number']) . '\', \'' . esc_js($customer_order_number) . '\', \'' . esc_js($order_notes) . '\')" title="Edytuj podstawowe dane zamówienia" class="button button-small">📝 Edytuj dane</a></div>';
+                    
+                    // Przycisk dodawania komentarza
+                    echo '<div class="action-button add-comment"><a href="#" onclick="openCommentModal(' . $order['id'] . ')" title="Dodaj komentarz" class="button button-small">💬 Dodaj komentarz</a></div>';
                     
                     // Przycisk duplikowania
                     $duplicate_url = add_query_arg([
@@ -233,6 +252,28 @@ if ( ! function_exists('kv_admin_page') ) {
             </div>
         </div>
         
+        <!-- Modal do dodawania komentarzy -->
+        <div id="comment-modal" style="display: none;">
+            <div class="comment-modal-content">
+                <h3>Dodaj komentarz do zamówienia</h3>
+                <form id="comment-form">
+                    <input type="hidden" id="comment-order-id" name="order_id" value="">
+                    
+                    <table class="form-table">
+                        <tr>
+                            <th><label for="comment-text">Komentarz:</label></th>
+                            <td><textarea id="comment-text" name="comment_text" rows="4" cols="50" required style="width: 100%;"></textarea></td>
+                        </tr>
+                    </table>
+                    
+                    <p class="submit">
+                        <button type="button" class="button-primary" onclick="saveComment()">Dodaj komentarz</button>
+                        <button type="button" class="button" onclick="closeCommentModal()">Anuluj</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+        
         <script>
         function openEditModal(orderId, orderNumber, customerNumber, orderNotes) {
             document.getElementById('edit-order-id').value = orderId;
@@ -275,6 +316,84 @@ if ( ! function_exists('kv_admin_page') ) {
             var overlay = document.getElementById('modal-overlay');
             if (overlay) {
                 overlay.remove();
+            }
+        }
+        
+        function openCommentModal(orderId) {
+            document.getElementById('comment-order-id').value = orderId;
+            document.getElementById('comment-text').value = '';
+            
+            // Pokaż modal
+            var modal = document.getElementById('comment-modal');
+            modal.style.display = 'block';
+            modal.style.position = 'fixed';
+            modal.style.top = '50%';
+            modal.style.left = '50%';
+            modal.style.transform = 'translate(-50%, -50%)';
+            modal.style.zIndex = '999999';
+            modal.style.background = 'white';
+            modal.style.padding = '20px';
+            modal.style.border = '1px solid #ccc';
+            modal.style.borderRadius = '5px';
+            modal.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+            modal.style.maxWidth = '600px';
+            modal.style.width = '90%';
+            
+            // Dodaj overlay
+            var overlay = document.createElement('div');
+            overlay.id = 'modal-overlay-comment';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.background = 'rgba(0,0,0,0.5)';
+            overlay.style.zIndex = '999998';
+            overlay.onclick = closeCommentModal;
+            document.body.appendChild(overlay);
+        }
+        
+        function closeCommentModal() {
+            document.getElementById('comment-modal').style.display = 'none';
+            var overlay = document.getElementById('modal-overlay-comment');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+        
+        function saveComment() {
+            var orderId = document.getElementById('comment-order-id').value;
+            var commentText = document.getElementById('comment-text').value;
+            
+            if (!commentText.trim()) {
+                alert('Proszę wpisać treść komentarza.');
+                return;
+            }
+            
+            jQuery.post(ajaxurl, {
+                action: 'kv_add_order_comment',
+                order_id: orderId,
+                comment_text: commentText,
+                nonce: '<?php echo wp_create_nonce('kv_comment_nonce'); ?>'
+            }, function(response) {
+                if (response.success) {
+                    alert('✅ Komentarz został dodany!');
+                    closeCommentModal();
+                    location.reload(); // Odśwież stronę, aby zobaczyć nowy komentarz
+                } else {
+                    alert('❌ Błąd: ' + response.data);
+                }
+            }).fail(function() {
+                alert('❌ Błąd komunikacji z serwerem');
+            });
+        }
+        
+        function toggleComments(orderId) {
+            var container = document.getElementById('comments-' + orderId);
+            if (container.style.display === 'none') {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
             }
         }
         </script>
@@ -485,6 +604,70 @@ if ( ! function_exists('kv_admin_page') ) {
             margin-top: 0;
             padding-bottom: 10px;
             border-bottom: 1px solid #ddd;
+        }
+        
+        .comment-modal-content h3 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        /* Style dla przycisków komentarzy */
+        .action-button.add-comment .button {
+            background: #8e44ad;
+            color: white;
+            border-color: #6c3483;
+        }
+        
+        .action-button.add-comment .button:hover {
+            background: #6c3483;
+            border-color: #512e62;
+        }
+        
+        /* Style dla kontenera komentarzy */
+        .order-comments-container {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        
+        .comment-item {
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #8e44ad;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+        
+        .comment-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            color: #8e44ad;
+        }
+        
+        .comment-date {
+            font-style: italic;
+        }
+        
+        .comment-text {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #333;
         }
         
         /* Responsywność dla tabeli */
@@ -750,5 +933,64 @@ function kv_admin_status_change_script() {
         }
         </script>
         <?php
+    }
+}
+
+// Handler AJAX do dodawania komentarzy
+add_action('wp_ajax_kv_add_order_comment', 'kv_add_order_comment_ajax');
+function kv_add_order_comment_ajax() {
+    // Sprawdź uprawnienia
+    if (!kv_user_has_role('biuro')) {
+        wp_send_json_error('Nie masz uprawnień do tej akcji');
+    }
+    
+    // Sprawdź nonce
+    if (!wp_verify_nonce($_POST['nonce'], 'kv_comment_nonce')) {
+        wp_send_json_error('Nieprawidłowy token bezpieczeństwa');
+    }
+    
+    $order_id = intval($_POST['order_id']);
+    $comment_text = sanitize_textarea_field($_POST['comment_text']);
+    
+    if (empty($comment_text)) {
+        wp_send_json_error('Komentarz nie może być pusty');
+    }
+    
+    $comment_id = kv_add_order_comment($order_id, $comment_text);
+    
+    if ($comment_id) {
+        wp_send_json_success(array(
+            'message' => 'Komentarz został dodany',
+            'comment_id' => $comment_id
+        ));
+    } else {
+        wp_send_json_error('Błąd podczas dodawania komentarza');
+    }
+}
+
+if ( ! function_exists('kv_display_order_comments') ) {
+    /**
+     * Wyświetla komentarze dla zamówienia
+     */
+    function kv_display_order_comments($order_id) {
+        $comments = kv_get_order_comments($order_id);
+        
+        if (empty($comments)) {
+            echo '<p style="color: #999; font-style: italic;">Brak komentarzy</p>';
+            return;
+        }
+        
+        foreach ($comments as $comment) {
+            $author_name = !empty($comment['display_name']) ? $comment['display_name'] : $comment['user_login'];
+            $comment_date = date('d.m.Y H:i', strtotime($comment['created_at']));
+            
+            echo '<div class="comment-item">';
+            echo '<div class="comment-header">';
+            echo '<span class="comment-author">' . esc_html($author_name) . '</span>';
+            echo '<span class="comment-date">' . esc_html($comment_date) . '</span>';
+            echo '</div>';
+            echo '<div class="comment-text">' . nl2br(esc_html($comment['comment_text'])) . '</div>';
+            echo '</div>';
+        }
     }
 }
