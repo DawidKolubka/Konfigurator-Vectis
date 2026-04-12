@@ -10,8 +10,20 @@
         $ksztalt_options = get_option('kv_ksztalt_options', array());
         $selected_ksztalt = isset($_SESSION['kv_configurator']['ksztalt']) ? $_SESSION['kv_configurator']['ksztalt'] : '';
         
+        // Pobieramy wybraną serię z sesji
+        $selected_seria = isset($_SESSION['kv_configurator']['seria']) ? $_SESSION['kv_configurator']['seria'] : '';
+        
         if (!empty($ksztalt_options)) {
             foreach ($ksztalt_options as $k_index => $k_item) {
+                // Filtruje kształty - pokazuj tylko te przypisane do wybranej serii
+                $k_seria = isset($k_item['seria']) ? $k_item['seria'] : '';
+                
+                // Jeśli seria jest wybrana, pokazuj tylko kształty przypisane do tej serii
+                // Jeśli seria nie jest wybrana, nie pokazuj żadnych kształtów
+                if (empty($selected_seria) || $k_seria !== $selected_seria) {
+                    continue;
+                }
+                
                 $is_selected = ($selected_ksztalt == $k_index) ? 'selected' : '';
                 // Pobierz nazwę kształtu do danych atrybutu (będzie używane przez JavaScript)
                 $shape_name = isset($k_item['name']) ? $k_item['name'] : '';
@@ -30,6 +42,13 @@
                     <input type="hidden" name="ksztalt_name" value="<?php echo esc_attr($shape_name); ?>">
                 </div>
                 <?php
+            }
+            
+            // Jeśli żaden kształt nie spełnia kryteriów, wyświetl komunikat
+            if (empty($selected_seria)) {
+                echo "<p><strong>Najpierw wybierz serię w poprzednim kroku.</strong></p>";
+            } elseif (empty($ksztalt_options) || !in_array($selected_seria, array_column(array_filter($ksztalt_options, function($item) { return isset($item['seria']) && !empty($item['seria']); }), 'seria'))) {
+                echo "<p>Brak kształtów dostępnych dla wybranej serii.</p>";
             }
         } else {
             echo "<p>Brak dostępnych kształtów.</p>";

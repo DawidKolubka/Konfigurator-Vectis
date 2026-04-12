@@ -49,10 +49,12 @@ if ( ! function_exists('kv_admin_ksztalt_page') ) {
                     $edited_name  = sanitize_text_field( $_POST['edit_ksztalt'] );
                     $edited_image = esc_url_raw( $_POST['edit_ksztalt_image'] );
                     $edited_snippet = isset($_POST['edit_ksztalt_snippet']) ? sanitize_text_field($_POST['edit_ksztalt_snippet']) : '';
+                    $edited_seria = isset($_POST['edit_ksztalt_seria']) ? sanitize_text_field($_POST['edit_ksztalt_seria']) : '';
                     kv_update_item( $option_key, $id, array(
                         'name'    => $edited_name,
                         'image'   => $edited_image,
                         'snippet' => $edited_snippet,
+                        'seria'   => $edited_seria,
                     ) );
                     echo '<div class="notice notice-success is-dismissible"><p>Kształt został zaktualizowany.</p></div>';
                     echo '<a href="' . esc_url( remove_query_arg( array('action','id','kv_ksztalt_nonce') ) ) . '" class="button">Powrót</a>';
@@ -82,6 +84,24 @@ if ( ! function_exists('kv_admin_ksztalt_page') ) {
                                 <th scope="row"><label for="edit_ksztalt_snippet">Cząstka kodu</label></th>
                                 <td>
                                     <input type="text" id="edit_ksztalt_snippet" name="edit_ksztalt_snippet" class="regular-text" value="<?php echo isset($current['snippet']) ? esc_attr($current['snippet']) : ''; ?>" placeholder="Opcjonalnie" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><label for="edit_ksztalt_seria">Przypisz do serii</label></th>
+                                <td>
+                                    <select id="edit_ksztalt_seria" name="edit_ksztalt_seria" class="regular-text">
+                                        <option value="">-- Wybierz serię --</option>
+                                        <?php
+                                        $seria_options = get_option('kv_seria_options', array());
+                                        $current_seria = isset($current['seria']) ? $current['seria'] : '';
+                                        if (!empty($seria_options)) {
+                                            foreach ($seria_options as $seria_item) {
+                                                $selected = ($seria_item['name'] === $current_seria) ? 'selected' : '';
+                                                echo '<option value="' . esc_attr($seria_item['name']) . '" ' . $selected . '>' . esc_html($seria_item['name']) . '</option>';
+                                            }
+                                        }
+                                        ?>
+                                    </select>
                                 </td>
                             </tr>
                         </table>
@@ -114,11 +134,13 @@ if ( ! function_exists('kv_admin_ksztalt_page') ) {
             $new_ksztalt   = sanitize_text_field( $_POST['new_ksztalt'] );
             $ksztalt_image = esc_url_raw( $_POST['ksztalt_image'] );
             $ksztalt_snippet = isset($_POST['ksztalt_snippet']) ? sanitize_text_field($_POST['ksztalt_snippet']) : '';
+            $ksztalt_seria = isset($_POST['ksztalt_seria']) ? sanitize_text_field($_POST['ksztalt_seria']) : '';
             if ( ! empty( $new_ksztalt ) ) {
                 kv_add_item( $option_key, array(
                     'name'    => $new_ksztalt,
                     'image'   => $ksztalt_image,
                     'snippet' => $ksztalt_snippet,
+                    'seria'   => $ksztalt_seria,
                 ) );
                 echo '<div class="notice notice-success is-dismissible"><p>Nowy kształt został dodany.</p></div>';
             } else {
@@ -157,6 +179,23 @@ if ( ! function_exists('kv_admin_ksztalt_page') ) {
                             <input type="text" id="ksztalt_snippet" name="ksztalt_snippet" class="regular-text" placeholder="Opcjonalnie" />
                         </td>
                     </tr>
+                    <!-- Dodaj nowy wiersz: Seria -->
+                    <tr>
+                        <th scope="row"><label for="ksztalt_seria">Przypisz do serii</label></th>
+                        <td>
+                            <select id="ksztalt_seria" name="ksztalt_seria" class="regular-text">
+                                <option value="">-- Wybierz serię --</option>
+                                <?php
+                                $seria_options = get_option('kv_seria_options', array());
+                                if (!empty($seria_options)) {
+                                    foreach ($seria_options as $seria_item) {
+                                        echo '<option value="' . esc_attr($seria_item['name']) . '">' . esc_html($seria_item['name']) . '</option>';
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
                 </table>
                 <?php submit_button('Dodaj nowy kształt'); ?>
             </form>
@@ -169,6 +208,7 @@ if ( ! function_exists('kv_admin_ksztalt_page') ) {
                             <th>Nazwa kształtu</th>
                             <th>Obrazek</th>
                             <th>Cząstka kodu</th>
+                            <th>Seria</th>
                             <th>Liczba przypisanych układów</th>
                             <th>Akcje</th>
                         </tr>
@@ -183,6 +223,7 @@ if ( ! function_exists('kv_admin_ksztalt_page') ) {
                                     <?php endif; ?>
                                 </td>
                                 <td><?php echo isset($ksztalt['snippet']) ? esc_html($ksztalt['snippet']) : ''; ?></td>
+                                <td><?php echo isset($ksztalt['seria']) && !empty($ksztalt['seria']) ? esc_html($ksztalt['seria']) : '—'; ?></td>
                                 <td>
                                     <?php
                                     $count_uklady = 0;

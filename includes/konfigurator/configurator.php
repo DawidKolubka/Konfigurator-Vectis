@@ -278,7 +278,12 @@ function kv_configurator_shortcode() {
             switch (intval($_POST['kv_step'])) {
                 case 1:
                     if (isset($_POST['seria'])) {
-                        $_SESSION['kv_configurator']['seria'] = sanitize_text_field($_POST['seria']);
+                        $new_seria = sanitize_text_field($_POST['seria']);
+                        // Jeśli seria się zmieniła, zresetuj wybór kształtu
+                        if (isset($_SESSION['kv_configurator']['seria']) && $_SESSION['kv_configurator']['seria'] !== $new_seria) {
+                            unset($_SESSION['kv_configurator']['ksztalt']);
+                        }
+                        $_SESSION['kv_configurator']['seria'] = $new_seria;
                     }
                     $new_step = 2;
                     break;
