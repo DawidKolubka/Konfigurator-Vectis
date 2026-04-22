@@ -292,7 +292,7 @@ th.summary-akcje
   padding: 0!important;
 }
 .summary-table .ramka-slots.horizontal {
-    scale: 0.34;
+    scale: 0.32;
     transform-origin: left top;
     margin-left: 0px;
     margin-right: auto;
