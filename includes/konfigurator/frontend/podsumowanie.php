@@ -1166,22 +1166,41 @@ function render_item_row($row_number, $item_data, $uklad_options, $kolor_ramki_o
                     
                     <!-- Kod mechanizmu (jeśli jest dostępny) -->
                     <?php
-                    // Pobierz dane tak jak w głównym podsumowaniu
+                    // Pobierz dane mechanizmu, technologii i koloru
                     $mechID = $slot['mechanizm_id'];
                     $techID = $slot['technologia_id'];
                     $colorID = isset($slot['kolor_mech_id']) ? $slot['kolor_mech_id'] : '';
+                    $tech_name = isset($slot['technologia']) ? $slot['technologia'] : '';
                     $tech_code = '';
                     
                     // Pobierz wszystkie technologie
                     $technologie = kv_get_items('kv_technologia_options');
                     
-                    // Znajdź dokładnie wybraną technologię i kolor
-                    if (isset($techID) && $techID !== '' && !empty($technologie) && isset($technologie[$techID])) {
-                        $selected_tech = $technologie[$techID];
-                        
-                        // Sprawdź czy technologia jest powiązana z właściwym mechanizmem
-                        if (isset($selected_tech['group']) && $selected_tech['group'] == $mechID && isset($selected_tech['code'])) {
-                            $tech_code = $selected_tech['code'];
+                    // NAPRAWKA: Szukaj technologii po kombinacji mechanizm + technologia + kolor
+                    if (!empty($technologie) && $mechID !== '') {
+                        // Przeszukaj wszystkie technologie szukając dokładnego dopasowania
+                        foreach ($technologie as $tech_id => $tech_item) {
+                            // Sprawdź czy technologia należy do właściwego mechanizmu
+                            if (isset($tech_item['group']) && $tech_item['group'] == $mechID) {
+                                // Sprawdź czy nazwa technologii się zgadza (jeśli jest dostępna)
+                                $tech_matches_name = true;
+                                if (!empty($tech_name) && isset($tech_item['technology'])) {
+                                    $tech_matches_name = ($tech_item['technology'] === $tech_name);
+                                }
+                                
+                                // Sprawdź czy kolor się zgadza (jeśli był wybrany)
+                                $color_matches = true;
+                                if (!empty($colorID) && isset($tech_item['color'])) {
+                                    $color_matches = ($tech_item['color'] == $colorID);
+                                }
+                                
+                                // Jeśli wszystko się zgadza (mechanizm, technologia, kolor) - użyj tego kodu
+                                if ($tech_matches_name && $color_matches && isset($tech_item['code'])) {
+                                    $tech_code = $tech_item['code'];
+                                    error_log("PODSUMOWANIE: Znaleziono kod technologii dla mechID={$mechID}, colorID={$colorID}, tech={$tech_name}: {$tech_code}");
+                                    break;
+                                }
+                            }
                         }
                     }
                     
