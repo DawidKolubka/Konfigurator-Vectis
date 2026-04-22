@@ -294,7 +294,7 @@ th.summary-akcje
 .summary-table .ramka-slots.horizontal {
     scale: 0.34;
     transform-origin: left top;
-    margin-left: 20px;
+    margin-left: 0px;
     margin-right: auto;
     max-height: 0px;
     margin-top: 50px;
